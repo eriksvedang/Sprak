@@ -1,0 +1,12 @@
+
+
+string getString(number x)
+	if(x > 0)
+		return "a"
+	end
+	return "b"
+end
+
+
+print(getString(5))
+print(getString(-5))

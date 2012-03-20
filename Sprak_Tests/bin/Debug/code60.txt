@@ -1,0 +1,7 @@
+
+array names = ["erik", "heather", "johannes", "niklas"]
+
+loop names
+	print(@)	
+end
+

@@ -1,0 +1,31 @@
+ERROR MESSAGES
+
+- TOKENIZER -
+Unrecognized character
+Can't have several period signs in a number
+
+- PARSER -
+Can't understand the word "___"
+Can't assign to @
+Can't understand what the word "___" means here
+Can't understand the words at the end of this line
+Something is wrong with the argument list
+Ending parenthesis is missing in function call
+A comma is missing in argument list
+Something is wrong with the IF-statement
+The expression after = makes no sense
+Can't handle operator "___"
+Trying to define a function inside a function (are you missing the END word?)
+The code word "___" doesn't match the expected "___"
+
+- EXTERNAL FUNCTION CREATOR -
+There is already a function called "___"
+
+- SCOPE BUILDER -
+There is already a variable called '___'
+Can't find anything called
+
+- INTERPRETER -
+
+- MEMORY SPACE -
+Can't find variable with name '___'

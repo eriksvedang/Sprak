@@ -1,0 +1,14 @@
+number a
+number b
+number c
+number d
+
+a = 10
+b = 5
+c = 2
+d = a + b + c	# = 17
+
+print(a)
+print(10 * c)
+print(d * 2 + -4)
+print((a * b * c) / 2.5)

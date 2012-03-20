@@ -1,0 +1,11 @@
+array a = allocate(5)
+
+a[0] = "abc"
+a[1] = true
+a[2] = false
+a[3] = 1
+a[4] = [1,2,3]
+
+loop a
+	print(@)
+end

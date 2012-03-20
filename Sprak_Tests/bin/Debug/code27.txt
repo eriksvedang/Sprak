@@ -1,0 +1,20 @@
+number x = foo(4, 10)
+
+print(x)
+
+number foo(number x, number y)
+	number a = times2(x)
+	number b = half(y)
+	return a - b
+end
+
+number times2(number n)
+	number x = 0
+	return n * 2
+end
+
+number half(number n)
+	return n / 2
+end
+
+

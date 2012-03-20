@@ -1,0 +1,4 @@
+number foo()
+	4 + 5
+	3 + 2
+end

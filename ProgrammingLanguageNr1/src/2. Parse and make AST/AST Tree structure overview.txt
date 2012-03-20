@@ -1,0 +1,88 @@
+
+/*
+
+PROGRAM_ROOT
+	statement list
+	external func declarations ...
+
+
+expressions:
+	
+OPERATOR
+	left hand expression
+	right hand expression
+
+		
+		
+function call:
+		
+NAME
+	ARGUMENT_LIST
+		arg0
+		arg1
+		arg2
+		etc...
+	REFERENCE TO FUNCTION_DECLARATION
+		
+		
+ifthenelse:
+		
+IF
+	expression
+	statement list if true
+	statement list if false
+		
+		
+		
+variable declaration:
+					
+VAR_DECLARATION
+	name of type
+	name of variable
+		
+		
+					
+function declaration:
+					
+FUNC_DECLARATION
+	0 name of return type
+	1 name of function
+	2 parameter list
+	3 statement list
+		
+		
+
+return statement:
+	
+RETURN
+	0 expression
+	1 RETURN!
+		
+
+
+parameter list:
+	
+PARAMETER LIST
+	PARAMETER
+		VAR_DECLARATION
+			type
+			name
+		ASSIGN_SIGNAL
+
+					
+assignment:
+					
+ASSIGNMENT
+	returnvalue
+	assignment signal (contains name of variable to assign to)	
+					
+*/				
+					
+					
+					
+					
+					
+					
+					
+					
+		

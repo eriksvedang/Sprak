@@ -1,0 +1,19 @@
+number square(number n)
+	return n * n
+end
+
+number geometricSum(number start, number stop)
+	if(start < stop)
+		return start + geometricSum(start + 1, stop)
+	else
+		return stop
+	end
+end
+
+number pythagoras(number a, number b)
+	return (sqrt(square(a) + square(b)))
+end
+
+print(pythagoras(3, 4))
+print(square(0.5))
+print(geometricSum(5, 9))

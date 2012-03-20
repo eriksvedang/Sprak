@@ -1,0 +1,42 @@
+void foo(number max)
+
+	print("Max: " + max)
+
+	string a = "a"
+	string b = "b"
+	string c = "c"
+	string d = "d"
+	string e = "e"
+	string f = "f"
+	string g = "g"
+	string h = "h"
+	string i = "i"
+	string j = "j"
+	
+	array word = [a, b, c, d, e, f, g, h, i, j]
+	print("Type of word: " + type(word))
+	string flipped = ""
+	print("Type of flipped: " + type(flipped))
+	
+	loop from 0 to count(word) - 1
+		var i = count(word) - @
+		string s = ""
+		string w = word[@]
+		loop from 0 to max
+			s = s + w
+		end
+		flipped[i] = s
+	end
+	
+	print("Indexes:")
+	loop getIndexes(flipped)
+		print(@)
+	end
+	
+	print("Flipped string: " + toString(flipped))
+	
+end
+
+loop from 1 to 10
+	foo(@)
+end

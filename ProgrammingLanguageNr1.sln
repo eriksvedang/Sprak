@@ -1,0 +1,47 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sprak", "ProgrammingLanguageNr1\Sprak.csproj", "{07C3477F-7293-42CC-9B77-C2D66A91A45F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SprakProfiling", "SprakProfiling\SprakProfiling.csproj", "{679981A9-9D48-420F-A540-4C4332F02727}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Relay", "..\Relay\Relay\Relay.csproj", "{9CFC0B9C-EC60-4488-9D4A-79F191AA5AFF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameTypes", "..\GameTypes\GameTypes\GameTypes.csproj", "{EC63C4E3-C5B8-4EB1-90CD-2D2FC17801BD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sprak_Tests", "Sprak_Tests\Sprak_Tests.csproj", "{CEC707D6-CC5F-425B-8F7C-5E49803735A7}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{07C3477F-7293-42CC-9B77-C2D66A91A45F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{07C3477F-7293-42CC-9B77-C2D66A91A45F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{07C3477F-7293-42CC-9B77-C2D66A91A45F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{07C3477F-7293-42CC-9B77-C2D66A91A45F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{679981A9-9D48-420F-A540-4C4332F02727}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{679981A9-9D48-420F-A540-4C4332F02727}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{679981A9-9D48-420F-A540-4C4332F02727}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{679981A9-9D48-420F-A540-4C4332F02727}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9CFC0B9C-EC60-4488-9D4A-79F191AA5AFF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9CFC0B9C-EC60-4488-9D4A-79F191AA5AFF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9CFC0B9C-EC60-4488-9D4A-79F191AA5AFF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9CFC0B9C-EC60-4488-9D4A-79F191AA5AFF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CEC707D6-CC5F-425B-8F7C-5E49803735A7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CEC707D6-CC5F-425B-8F7C-5E49803735A7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CEC707D6-CC5F-425B-8F7C-5E49803735A7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CEC707D6-CC5F-425B-8F7C-5E49803735A7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EC63C4E3-C5B8-4EB1-90CD-2D2FC17801BD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EC63C4E3-C5B8-4EB1-90CD-2D2FC17801BD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EC63C4E3-C5B8-4EB1-90CD-2D2FC17801BD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EC63C4E3-C5B8-4EB1-90CD-2D2FC17801BD}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(MonoDevelopProperties) = preSolution
+		StartupItem = SprakProfiling\SprakProfiling.csproj
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,8 @@
+*.suo
+*.DS_Store
+*.mdb
+*.pidb
+*.userprefs
+*.json
+*.xml
+test-results

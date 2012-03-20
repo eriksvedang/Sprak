@@ -1,0 +1,33 @@
+number a = 100
+number b = a / 2 # (50)
+number c = a * 2 # (200)
+
+if(a>b){
+	print("blå")
+} else {
+	print("röd")
+}
+
+if(-b <= -b){
+print("lila")
+}else{
+print("gredelin")
+}
+
+if (c / 2 != b * 2) # false, they are the same
+{
+	print("grön")
+} 
+else 
+{
+	print("gul")
+}
+
+if(a > -1000 && a < 1000) {
+	print("orange")
+}
+
+if(0) {
+	print("blah")
+}
+

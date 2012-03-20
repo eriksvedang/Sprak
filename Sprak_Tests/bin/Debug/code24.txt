@@ -1,0 +1,13 @@
+number a = 10
+number b = 15
+number c
+
+if(1)
+	number a = 30
+	b = 20
+	number c = 100
+end
+
+print(a)
+print(b)
+print(c)

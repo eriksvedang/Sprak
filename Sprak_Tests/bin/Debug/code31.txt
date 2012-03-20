@@ -1,0 +1,3 @@
+number f()
+	return
+end

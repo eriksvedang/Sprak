@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="3.5" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.21022</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{07C3477F-7293-42CC-9B77-C2D66A91A45F}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>ProgrammingLanguageNr1</RootNamespace>
+    <AssemblyName>ProgrammingLanguageNr1</AssemblyName>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug</OutputPath>
+    <DefineConstants>DEBUG</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>none</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="src\FunctionDefinitionCreator.cs" />
+    <Compile Include="src\2. Parse and make AST\AST_Assignment.cs" />
+    <Compile Include="src\2. Parse and make AST\AST_JumpToFunction.cs" />
+    <Compile Include="src\2. Parse and make AST\AST_VariableDeclaration.cs" />
+    <Compile Include="src\5. Run\InterpreterTwo.cs" />
+    <Compile Include="src\AssemblyInfo.cs" />
+    <Compile Include="src\2. Parse and make AST\AST.cs" />
+    <Compile Include="src\5. Run\DefaultSprakRunner.cs" />
+    <Compile Include="src\3. Add external functions to tree\ExternalFunctionCreator.cs" />
+    <Compile Include="src\3. Add external functions to tree\FunctionDefinition.cs" />
+    <Compile Include="src\2. Parse and make AST\Parser.cs" />
+    <Compile Include="src\1. Tokenize\Token.cs" />
+    <Compile Include="src\1. Tokenize\Tokenizer.cs" />
+    <Compile Include="src\ASTPainter.cs" />
+    <Compile Include="src\Expression evaluator %28for testing%29\ExpressionEvaluator.cs" />
+    <Compile Include="src\Symbols\Symbol.cs" />
+    <Compile Include="src\Symbols\VariableSymbol.cs" />
+    <Compile Include="src\4. Create scope tree\ScopeBuilder.cs" />
+    <Compile Include="src\4. Create scope tree\Scope.cs" />
+    <Compile Include="src\2. Parse and make AST\AST Tree structure overview.txt" />
+    <Compile Include="src\Errors\ErrorHandler.cs" />
+    <Compile Include="src\Errors\Error.cs" />
+    <Compile Include="src\2. Parse and make AST\AST_FunctionDefinitionNode.cs" />
+    <Compile Include="src\2. Parse and make AST\AST_IfNode.cs" />
+    <Compile Include="src\5. Run\SprakRunner.cs" />
+    <Compile Include="src\5. Run\ReturnValue.cs" />
+    <Compile Include="src\5. Run\MemorySpace.cs" />
+    <Compile Include="src\Symbols\FunctionSymbol.cs" />
+    <Compile Include="src\2. Parse and make AST\AST_LoopNode.cs" />
+    <Compile Include="src\3. Add external functions to tree\VariableDefinition.cs" />
+    <Compile Include="src\2. Parse and make AST\AST_LoopIncrementNode.cs" />
+    <Compile Include="src\2. Parse and make AST\AST_LoopBlockNode.cs" />
+    <Compile Include="src\2. Parse and make AST\AST_ArrayEndSignal.cs" />
+    <Compile Include="src\5. Run\MemorySpaceNodeListCache.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\GameTypes\GameTypes\GameTypes.csproj">
+      <Project>{EC63C4E3-C5B8-4EB1-90CD-2D2FC17801BD}</Project>
+      <Name>GameTypes</Name>
+    </ProjectReference>
+  </ItemGroup>
+</Project>

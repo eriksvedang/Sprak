@@ -1,0 +1,5 @@
+g()
+
+number g()
+	print(42)
+end

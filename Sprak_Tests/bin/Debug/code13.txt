@@ -1,0 +1,12 @@
+number a
+number b
+void f(number n) {}
+
+a
+b
+f(42)
+
+void g(number a1, number a2) { f(4) + a2 - b }
+number h() { g(f(42)) }
+
+number x = g(a, b)

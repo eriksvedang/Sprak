@@ -1,0 +1,9 @@
+array a = from 0 to 2000
+number sum = 0
+
+loop a
+	sum += @
+end
+
+print(sum)
+
