@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Reflection;
+
 namespace ProgrammingLanguageNr1
 {
     public class SprakAPI : Attribute
@@ -28,7 +29,7 @@ namespace ProgrammingLanguageNr1
                     SprakAPI[] help = (SprakAPI[])methodI.GetCustomAttributes(typeof(SprakAPI), true);
                     if (help.Length > 0)
                     {
-                        Console.WriteLine("found " + String.Join( ",", help[0].Values));
+                        //Console.WriteLine("found " + String.Join( ",", help[0].Values));
                         List<string> parameterHelp = new List<string>();
                         for (int i = 1; i < help[0].Values.Length; i++)
                             parameterHelp.Add(help[0].Values[i]);
@@ -42,7 +43,7 @@ namespace ProgrammingLanguageNr1
             {
                 if (mi.Name.StartsWith("API_"))
                 {
-                    Console.WriteLine("parsing " + mi.Name + " return Type " + mi.ReturnType.Name);
+                    //Console.WriteLine("parsing " + mi.Name + " return Type " + mi.ReturnType.Name);
                     string shortname = mi.Name.Substring(4);
                     if(mi.ReturnType.IsArray)
                         throw new Exception("FunctionDefinitionCreator can't handle array return value!");
