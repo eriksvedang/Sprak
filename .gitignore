@@ -5,4 +5,9 @@
 *.userprefs
 *.json
 *.xml
+*.exe
 test-results
+
+ProgrammingLanguageNr1.dll
+GameTypes.dll
+Sprak_Tests.dll
