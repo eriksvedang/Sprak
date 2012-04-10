@@ -79,10 +79,4 @@
     <PostBuildEvent>
     </PostBuildEvent>
   </PropertyGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\GameTypes\GameTypes\GameTypes.csproj">
-      <Project>{EC63C4E3-C5B8-4EB1-90CD-2D2FC17801BD}</Project>
-      <Name>GameTypes</Name>
-    </ProjectReference>
-  </ItemGroup>
 </Project>

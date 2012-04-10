@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
-using GameTypes;
 
 namespace ProgrammingLanguageNr1
 {
@@ -1178,7 +1177,9 @@ namespace ProgrammingLanguageNr1
 		}
 		
 		public AST getAST() {
-			D.isNull(m_programAST, "AST is null, this probably means that you haven't called process() on Parser");
+			if(m_programAST == null) {
+				throw new Exception("AST is null, this probably means that you haven't called process() on Parser");
+			}
 			return m_programAST; 
 		}
 		
