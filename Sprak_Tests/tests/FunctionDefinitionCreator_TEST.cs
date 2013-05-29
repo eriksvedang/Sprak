@@ -35,7 +35,7 @@ namespace ProgrammingLanguageNr1.tests
     }
     
     [TestFixture]
-    public class FunctionDefinitionCreater_TEST
+    public class FunctionDefinitionCreator_TEST
     {
         [Test]
         public void BasicUsage()
@@ -71,5 +71,7 @@ namespace ProgrammingLanguageNr1.tests
             DemoClassTwo dc = new DemoClassTwo();
             Assert.Throws<Exception>(() => FunctionDefinitionCreator.CreateDefinitions(dc, typeof(DemoClassTwo)));
         }
+
+
     }
 }
