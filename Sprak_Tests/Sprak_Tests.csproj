@@ -41,7 +41,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyInfo.cs" />
-    <Compile Include="tests\FunctionDefinitionCreater_test.cs" />
     <Compile Include="tests\MemorySpace_TEST.cs" />
     <Compile Include="tests\DefaultSprakRunner_TEST.cs" />
     <Compile Include="tests\AST_TEST.cs" />
@@ -50,6 +49,7 @@
     <Compile Include="tests\Scope_TEST.cs" />
     <Compile Include="tests\ScopeBuilder_TEST.cs" />
     <Compile Include="tests\Tokenizer_TEST.cs" />
+    <Compile Include="tests\FunctionDefinitionCreator_TEST.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

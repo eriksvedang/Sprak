@@ -1,4 +1,4 @@
-//#define WRITE_DEBUG_INFO
+#define WRITE_DEBUG_INFO
 
 using System;
 using System.Collections.Generic;
@@ -380,8 +380,7 @@ namespace ProgrammingLanguageNr1
 		void checkLeftHandSide(AST lhs, Token operatorToken)
 		{
 			if(lhs == null) {
-				m_errorHandler.errorOccured(
-					"No expression on the left side of '" + operatorToken.getTokenString() + "'",
+				throw new Error("No expression on the left side of '" + operatorToken.getTokenString() + "'",
 				    Error.ErrorType.SYNTAX, operatorToken.LineNr, operatorToken.LinePosition - 1);
 			}
 		}
@@ -389,8 +388,7 @@ namespace ProgrammingLanguageNr1
 		void checkRightHandSide(AST rhs, Token operatorToken)
 		{
 			if(rhs == null) {
-				m_errorHandler.errorOccured(
-					"No expression on the right side of '" + operatorToken.getTokenString() + "'",
+				throw new Error("No expression on the right side of '" + operatorToken.getTokenString() + "'",
 				    Error.ErrorType.SYNTAX, operatorToken.LineNr, operatorToken.LinePosition + 2);
 			}
 		}
