@@ -64,48 +64,61 @@ namespace ProgrammingLanguageNr1
                 {
                     //Console.WriteLine("parsing " + mi.Name + " return Type " + mi.ReturnType.Name);
                     string shortname = methodInfo.Name.Substring(4);
-                    if(methodInfo.ReturnType.IsArray)
-                        throw new Exception("FunctionDefinitionCreator can't handle array return value!");
+
+					if (methodInfo.ReturnType.IsArray) {
+						throw new Exception ("FunctionDefinitionCreator can't handle array return value");
+					}
+
                     List<ReturnValueType> parameterTypes = new List<ReturnValueType>();
                     List<string> parameterNames = new List<string>();
                     List<string> parameterTypeNames = new List<string>();
-                    foreach (ParameterInfo pi in methodInfo.GetParameters())
-                    {
-                        if (pi.ParameterType.IsArray)
-                            throw new Exception("FunctionDefinitionCreator can't handle array parameters!");
 
-                        parameterNames.Add(pi.Name);
-                        parameterTypes.Add(ReturnValue.SystemTypeToReturnValueType(pi.ParameterType));
-                        parameterTypeNames.Add(ReturnValue.SystemTypeToReturnValueType(pi.ParameterType).ToString().ToLower());
+                    foreach (ParameterInfo parameterInfo in methodInfo.GetParameters())
+                    {
+						if (parameterInfo.ParameterType.IsArray) {
+							throw new Exception ("FunctionDefinitionCreator can't handle array parameters");
+						}
+                        parameterNames.Add(parameterInfo.Name);
+                        parameterTypes.Add(ReturnValue.SystemTypeToReturnValueType(parameterInfo.ParameterType));
+                        parameterTypeNames.Add(ReturnValue.SystemTypeToReturnValueType(parameterInfo.ParameterType).ToString().ToLower());
                     }
+
                     MethodInfo lamdaMethodInfo = methodInfo;
                     ExternalFunctionCreator.OnFunctionCall function = (retvals) =>
                     {
                         int i = 0;
                         ParameterInfo[] realParamInfo = lamdaMethodInfo.GetParameters();
                         List<object> parameters = new List<object>();
+
                         foreach (ReturnValue r in retvals)
                         {
-                            if (realParamInfo[i++].ParameterType == typeof(int))
+                            if (realParamInfo[i++].ParameterType == typeof(int)) {
                                 parameters.Add(Convert.ToInt32(r.Unpack()));
-                            else
+							}
+                            else {
                                 parameters.Add(r.Unpack());
+							}
                         }
+
                         //Console.WriteLine("supplied parameter count" + parameters.Count + " neededParamter count " + lamdaMethodInfo.GetParameters().Length);
                         object result = lamdaMethodInfo.Invoke(pProgramTarget, parameters.ToArray());
-                        if (lamdaMethodInfo.ReturnType == typeof(void))
+
+                        if (lamdaMethodInfo.ReturnType == typeof(void)) {
                             return new ReturnValue(ReturnValueType.VOID);
-                        else
-                        {
+						}
+                        else {
                             return new ReturnValue(ReturnValue.SystemTypeToReturnValueType(lamdaMethodInfo.ReturnType), result);
                         }
                     };
+
                     ReturnValueType returnValueType = ReturnValue.SystemTypeToReturnValueType(methodInfo.ReturnType);
-                    FunctionDocumentation doc;
-                    if (functionDocumentations.TryGetValue(shortname, out doc))
-                        functionDefinitions.Add(new FunctionDefinition(returnValueType.ToString(), shortname, parameterTypeNames.ToArray(), parameterNames.ToArray(), function, doc));
-                    else
-                        functionDefinitions.Add(new FunctionDefinition(returnValueType.ToString(), shortname, parameterTypeNames.ToArray(), parameterNames.ToArray(), function, FunctionDocumentation.Default()));
+                    
+					FunctionDocumentation doc;
+					if (functionDocumentations.TryGetValue (shortname, out doc)) {
+						functionDefinitions.Add (new FunctionDefinition(returnValueType.ToString(), shortname, parameterTypeNames.ToArray(), parameterNames.ToArray(), function, doc));
+					} else {
+						functionDefinitions.Add (new FunctionDefinition(returnValueType.ToString(), shortname, parameterTypeNames.ToArray(), parameterNames.ToArray(), function, FunctionDocumentation.Default()));
+					}
                 }
             }
 
