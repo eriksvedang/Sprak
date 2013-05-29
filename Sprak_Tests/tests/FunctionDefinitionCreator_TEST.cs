@@ -1,9 +1,8 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 using NUnit.Framework;
-
+using System.IO;
 using ProgrammingLanguageNr1;
 using System.Reflection;
 
@@ -72,6 +71,17 @@ namespace ProgrammingLanguageNr1.tests
             Assert.Throws<Exception>(() => FunctionDefinitionCreator.CreateDefinitions(dc, typeof(DemoClassTwo)));
         }
 
+		[Test]
+		public void CallingFunctionDefinitionCreatorFunctionWithWrongArgumentType()
+		{
+			TextReader programString = File.OpenText("code72.txt");
+			DefaultSprakRunner program = new DefaultSprakRunner(programString);
 
+
+
+			program.run();
+
+			Assert.AreEqual (0, program.getCompileTimeErrorHandler().getErrors().Count);
+		}
     }
 }

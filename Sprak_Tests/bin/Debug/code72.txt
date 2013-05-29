@@ -1,2 +1,2 @@
 string a = "hej"
-Sin(a)
+ThisFunctionTakesANumber(a)

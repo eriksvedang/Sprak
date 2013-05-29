@@ -342,7 +342,7 @@ namespace ProgrammingLanguageNr1
             else 
             {
 				Console.WriteLine("Can't run program since it contains errors!");
-                m_compileTimeErrorHandler.printErrorsToConsole();
+                //m_compileTimeErrorHandler.printErrorsToConsole();
 			}
 		}
         
