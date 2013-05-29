@@ -7,8 +7,19 @@ using NUnit.Framework;
 using ProgrammingLanguageNr1;
 using System.Reflection;
 
-namespace Sprak_Tests.tests
+namespace ProgrammingLanguageNr1.tests
 {
+	public class DemoClass
+	{
+		[SprakAPI("returns two values", "floatA", "second float")]
+		public int API_GetValues(int pFloatA, int pFloatB) { return (int)(pFloatA * pFloatB); }
+
+		[SprakAPI("werw", "sdf")]
+		public bool API_UseBool(bool pFloatA) { return pFloatA; }
+
+		//no api
+		public string API_NumberToString(float pFloat) { return pFloat.ToString(); }
+	}
 
     public class DemoClassTwo
     {
@@ -22,20 +33,9 @@ namespace Sprak_Tests.tests
         public string[] API_NumberToString(float pFloat) { return null; }
 
     }
-    public class DemoClass
-    {
-        [SprakAPI("returns two values", "floatA", "second float")]
-        public int API_GetValues(int pFloatA, int pFloatB) { return (int)(pFloatA * pFloatB); }
-
-        [SprakAPI("werw", "sdf")]
-        public bool API_UseBool(bool pFloatA) { return pFloatA; }
-        
-        //no api
-        public string API_NumberToString(float pFloat) { return pFloat.ToString(); }
-
-    }
+    
     [TestFixture]
-    public class FunctionDefinitionCreater_test
+    public class FunctionDefinitionCreater_TEST
     {
         [Test]
         public void BasicUsage()
@@ -64,6 +64,7 @@ namespace Sprak_Tests.tests
                 }
             }
         }
+
         [Test]
         public void ThrowsException()
         {
