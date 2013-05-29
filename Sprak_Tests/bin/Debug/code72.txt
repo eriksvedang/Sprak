@@ -1,2 +1,3 @@
 string a = "hej"
-ThisFunctionTakesANumber(a)
+var answer = ThisFunctionTakesANumber(a)
+print("The answer was: " + answer)

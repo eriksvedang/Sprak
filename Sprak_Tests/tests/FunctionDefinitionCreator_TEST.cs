@@ -71,14 +71,55 @@ namespace ProgrammingLanguageNr1.tests
             Assert.Throws<Exception>(() => FunctionDefinitionCreator.CreateDefinitions(dc, typeof(DemoClassTwo)));
         }
 
+		static FunctionDefinition GetPrintFunction() {
+			return new FunctionDefinition (
+				"void", "print",
+				new string[] { "string" }, new string[] { "text" },
+				o => {
+				Console.WriteLine (o[0].StringValue);
+				return new ReturnValue (); }, 
+				FunctionDocumentation.Default ());
+		}
+
 		[Test]
-		public void CallingFunctionDefinitionCreatorFunctionWithWrongArgumentType()
+		public void CallingFunctionWithWrongArgumentType_MANUAL_FUNCTION_DEFINITION()
 		{
 			TextReader programString = File.OpenText("code72.txt");
-			DefaultSprakRunner program = new DefaultSprakRunner(programString);
 
+			FunctionDefinition[] functionDefinitions = new FunctionDefinition[] {
+				new FunctionDefinition(
+					"number", "ThisFunctionTakesANumber",
+					new string[] { "number" }, new string[] { "x" },
+				ThisFunctionTakesANumber, FunctionDocumentation.Default()),
 
+				GetPrintFunction()
+			};
 
+			SprakRunner program = new SprakRunner(programString, functionDefinitions);
+			program.run();
+
+			Assert.AreEqual (0, program.getCompileTimeErrorHandler().getErrors().Count);
+		}
+
+		ReturnValue ThisFunctionTakesANumber(ReturnValue[] pArguments) {
+			return new ReturnValue(pArguments[0].NumberValue * 2.0f);
+		}
+
+		[Test]
+		public void CallingFunctionWithWrongArgumentType_USING_FUNCTION_DEFINITION_CREATOR()
+		{
+			TextReader programString = File.OpenText("code72.txt");
+
+			FunctionDefinition[] functionDefinitions = new FunctionDefinition[] {
+				new FunctionDefinition(
+					"number", "ThisFunctionTakesANumber",
+					new string[] { "number" }, new string[] { "x" },
+				ThisFunctionTakesANumber, FunctionDocumentation.Default()),
+
+				GetPrintFunction()
+			};
+
+			SprakRunner program = new SprakRunner(programString, functionDefinitions);
 			program.run();
 
 			Assert.AreEqual (0, program.getCompileTimeErrorHandler().getErrors().Count);
