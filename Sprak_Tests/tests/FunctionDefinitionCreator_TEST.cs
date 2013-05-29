@@ -105,21 +105,29 @@ namespace ProgrammingLanguageNr1.tests
 			return new ReturnValue(pArguments[0].NumberValue * 2.0f);
 		}
 
+		public class ClassWithFunction
+		{
+			[SprakAPI("Returns the number times two", "The number")]
+			public float API_ThisFunctionTakesANumber(float x) { 
+				return x * 2.0f;
+			}
+		}
+
 		[Test]
 		public void CallingFunctionWithWrongArgumentType_USING_FUNCTION_DEFINITION_CREATOR()
 		{
-			TextReader programString = File.OpenText("code72.txt");
+			TextReader programString = File.OpenText("code73.txt");
 
-			FunctionDefinition[] functionDefinitions = new FunctionDefinition[] {
-				new FunctionDefinition(
-					"number", "ThisFunctionTakesANumber",
-					new string[] { "number" }, new string[] { "x" },
-				ThisFunctionTakesANumber, FunctionDocumentation.Default()),
+			ClassWithFunction c = new ClassWithFunction ();
+			FunctionDefinition[] funcDefs = FunctionDefinitionCreator.CreateDefinitions (c, typeof(ClassWithFunction));
 
-				GetPrintFunction()
+			List<FunctionDefinition> moreFunctionDefinitions = new List<FunctionDefinition> {
+				GetPrintFunction ()
 			};
 
-			SprakRunner program = new SprakRunner(programString, functionDefinitions);
+			moreFunctionDefinitions.AddRange (funcDefs);
+
+			SprakRunner program = new SprakRunner(programString, moreFunctionDefinitions.ToArray());
 			program.run();
 
 			Assert.AreEqual (0, program.getCompileTimeErrorHandler().getErrors().Count);
