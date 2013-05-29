@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Reflection;
+using ProgrammingLanguageNr1;
 
 namespace ProgrammingLanguageNr1
 {
@@ -15,42 +16,60 @@ namespace ProgrammingLanguageNr1
         }
     }
 
+	public delegate void Log(string pString);
+
     public class FunctionDefinitionCreator
     {
-        public static FunctionDefinition[] CreateDefinitions(object o, Type t)
-        {
-            List<FunctionDefinition> methods = new List<FunctionDefinition>();
-            Dictionary<string, FunctionDocumentation> HelpInfo = new Dictionary<string, FunctionDocumentation>();
-            MethodInfo[] methodInfos = t.GetMethods();
-            foreach (MethodInfo methodI in methodInfos)
+		public static Log logger;
+
+		public static void Log (string pString)
+		{
+			if (logger != null) {
+				logger(pString);
+			}
+		}
+
+        public static FunctionDefinition[] CreateDefinitions (object pProgramTarget, Type pClassType)
+		{
+			//Log("Creating function definition targeted on " + pProgramTarget.ToString () + " on class of type " + pClassType.ToString ());
+
+            List<FunctionDefinition> functionDefinitions = new List<FunctionDefinition>();
+            Dictionary<string, FunctionDocumentation> functionDocumentations = new Dictionary<string, FunctionDocumentation>();
+            MethodInfo[] methodInfos = pClassType.GetMethods();
+
+            foreach (MethodInfo methodInfo in methodInfos)
             {
-                if (methodI.Name.StartsWith("API_"))
+				//Log("Found method " + methodInfo.Name);
+
+                if (methodInfo.Name.StartsWith("API_"))
                 {
-                    SprakAPI[] help = (SprakAPI[])methodI.GetCustomAttributes(typeof(SprakAPI), true);
-                    if (help.Length > 0)
+                    SprakAPI[] helpAttributes = (SprakAPI[])methodInfo.GetCustomAttributes(typeof(SprakAPI), true);
+                    if (helpAttributes.Length > 0)
                     {
                         //Console.WriteLine("found " + String.Join( ",", help[0].Values));
                         List<string> parameterHelp = new List<string>();
-                        for (int i = 1; i < help[0].Values.Length; i++)
-                            parameterHelp.Add(help[0].Values[i]);
-                        string shortname = methodI.Name.Substring(4);
-                        FunctionDocumentation fd = new FunctionDocumentation(help[0].Values[0], parameterHelp.ToArray());
-                        HelpInfo.Add(shortname, fd);
+                        for (int i = 1; i < helpAttributes[0].Values.Length; i++) {
+                            parameterHelp.Add(helpAttributes[0].Values[i]);
+						}
+                        string shortname = methodInfo.Name.Substring(4);
+                        FunctionDocumentation fd = new FunctionDocumentation(helpAttributes[0].Values[0], parameterHelp.ToArray());
+                        functionDocumentations.Add(shortname, fd);
                     }
                 }
             }
-            foreach (MethodInfo mi in methodInfos)
+
+            foreach (MethodInfo methodInfo in methodInfos)
             {
-                if (mi.Name.StartsWith("API_"))
+                if (methodInfo.Name.StartsWith("API_"))
                 {
                     //Console.WriteLine("parsing " + mi.Name + " return Type " + mi.ReturnType.Name);
-                    string shortname = mi.Name.Substring(4);
-                    if(mi.ReturnType.IsArray)
+                    string shortname = methodInfo.Name.Substring(4);
+                    if(methodInfo.ReturnType.IsArray)
                         throw new Exception("FunctionDefinitionCreator can't handle array return value!");
                     List<ReturnValueType> parameterTypes = new List<ReturnValueType>();
                     List<string> parameterNames = new List<string>();
                     List<string> parameterTypeNames = new List<string>();
-                    foreach (ParameterInfo pi in mi.GetParameters())
+                    foreach (ParameterInfo pi in methodInfo.GetParameters())
                     {
                         if (pi.ParameterType.IsArray)
                             throw new Exception("FunctionDefinitionCreator can't handle array parameters!");
@@ -59,7 +78,7 @@ namespace ProgrammingLanguageNr1
                         parameterTypes.Add(ReturnValue.SystemTypeToReturnValueType(pi.ParameterType));
                         parameterTypeNames.Add(ReturnValue.SystemTypeToReturnValueType(pi.ParameterType).ToString().ToLower());
                     }
-                    MethodInfo lamdaMethodInfo = mi;
+                    MethodInfo lamdaMethodInfo = methodInfo;
                     ExternalFunctionCreator.OnFunctionCall function = (retvals) =>
                     {
                         int i = 0;
@@ -73,7 +92,7 @@ namespace ProgrammingLanguageNr1
                                 parameters.Add(r.Unpack());
                         }
                         //Console.WriteLine("supplied parameter count" + parameters.Count + " neededParamter count " + lamdaMethodInfo.GetParameters().Length);
-                        object result = lamdaMethodInfo.Invoke(o, parameters.ToArray());
+                        object result = lamdaMethodInfo.Invoke(pProgramTarget, parameters.ToArray());
                         if (lamdaMethodInfo.ReturnType == typeof(void))
                             return new ReturnValue(ReturnValueType.VOID);
                         else
@@ -81,15 +100,16 @@ namespace ProgrammingLanguageNr1
                             return new ReturnValue(ReturnValue.SystemTypeToReturnValueType(lamdaMethodInfo.ReturnType), result);
                         }
                     };
-                    ReturnValueType returnValueType = ReturnValue.SystemTypeToReturnValueType(mi.ReturnType);
+                    ReturnValueType returnValueType = ReturnValue.SystemTypeToReturnValueType(methodInfo.ReturnType);
                     FunctionDocumentation doc;
-                    if (HelpInfo.TryGetValue(shortname, out doc))
-                        methods.Add(new FunctionDefinition(returnValueType.ToString(), shortname, parameterTypeNames.ToArray(), parameterNames.ToArray(), function, doc));
+                    if (functionDocumentations.TryGetValue(shortname, out doc))
+                        functionDefinitions.Add(new FunctionDefinition(returnValueType.ToString(), shortname, parameterTypeNames.ToArray(), parameterNames.ToArray(), function, doc));
                     else
-                        methods.Add(new FunctionDefinition(returnValueType.ToString(), shortname, parameterTypeNames.ToArray(), parameterNames.ToArray(), function, FunctionDocumentation.Default()));
+                        functionDefinitions.Add(new FunctionDefinition(returnValueType.ToString(), shortname, parameterTypeNames.ToArray(), parameterNames.ToArray(), function, FunctionDocumentation.Default()));
                 }
             }
-            return methods.ToArray();
+
+            return functionDefinitions.ToArray();
         }
     }
 }
