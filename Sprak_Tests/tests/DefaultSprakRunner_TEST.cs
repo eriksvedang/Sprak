@@ -647,6 +647,18 @@ namespace ProgrammingLanguageNr1.tests
 			
             //Assert.AreEqual(1, program.getCompileTimeErrorHandler().getErrors().Count);
 		}
+
+		[Test()]
+		public void LispyLookingStatement ()
+		{
+			TextReader programString = File.OpenText("code71.txt");
+			DefaultSprakRunner program = new DefaultSprakRunner(programString);
+			program.run();
+			program.printOutputToConsole();
+			program.getCompileTimeErrorHandler().printErrorsToConsole();
+
+
+		}
 		
 		/*
 		[Test()]
