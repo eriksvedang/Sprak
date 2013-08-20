@@ -51,6 +51,18 @@ namespace ProgrammingLanguageNr1
             }
             
         }
+		
+		public object GetValueAsObject()
+        {
+            switch (m_returnType)
+            {
+                case ReturnValueType.STRING: return m_stringValue;
+                case ReturnValueType.NUMBER: return m_numberValue;
+                case ReturnValueType.BOOL: return m_boolValue;
+                case ReturnValueType.ARRAY: return m_arrayValue;
+			default: return null;
+			}
+		}
 
 		public ReturnValue (string text)
 		{

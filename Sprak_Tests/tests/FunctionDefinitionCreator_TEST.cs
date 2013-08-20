@@ -132,5 +132,39 @@ namespace ProgrammingLanguageNr1.tests
 
 			Assert.AreEqual (0, program.getCompileTimeErrorHandler().getErrors().Count);
 		}
+		
+		public class DemoClassThree
+	    {
+	        [SprakAPI("adds all the numbers", "numbers")]
+	        public float API_AddListOfNumbers(object[] nums) 
+			{ 
+				float sum = 0;
+				foreach(float f in nums) {
+					sum += f;
+				}
+				return sum;					
+			}
+	    }
+		
+		[Test]
+		public void ArrayAsArgumentListTest()
+		{
+			DemoClassThree dc3 = new DemoClassThree();
+			FunctionDefinition[] defs = FunctionDefinitionCreator.CreateDefinitions(dc3, typeof(DemoClassThree));
+			Assert.AreEqual(1, defs.Length);
+			
+			List<FunctionDefinition> moreFunctionDefinitions = new List<FunctionDefinition> {
+				GetPrintFunction ()
+			};
+
+			moreFunctionDefinitions.AddRange (defs);
+			
+			TextReader programString = File.OpenText("code75.txt");
+			SprakRunner program = new SprakRunner(programString, moreFunctionDefinitions.ToArray());
+			
+			program.run();
+			
+			Assert.AreEqual (0, program.getCompileTimeErrorHandler().getErrors().Count);
+		}
     }
 }

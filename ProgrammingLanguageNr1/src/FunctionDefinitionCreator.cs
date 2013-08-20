@@ -87,30 +87,40 @@ namespace ProgrammingLanguageNr1
 				List<string> parameterTypeNames = new List<string> ();
 
 				foreach (ParameterInfo parameterInfo in methodInfo.GetParameters ()) {
-					
+					/*
 					if (parameterInfo.ParameterType.IsArray) {
 						throw new Exception ("FunctionDefinitionCreator can't handle array parameters");
 					}
-					
+					*/
 					parameterNames.Add (parameterInfo.Name);
 					parameterTypes.Add (ReturnValue.SystemTypeToReturnValueType (parameterInfo.ParameterType));
 					parameterTypeNames.Add (ReturnValue.SystemTypeToReturnValueType (parameterInfo.ParameterType).ToString ().ToLower ());
 				}
 
-				MethodInfo lamdaMethodInfo = methodInfo; // "hard copy" because of c# lambda rules
+				MethodInfo lambdaMethodInfo = methodInfo; // "hard copy" because of c# lambda rules
 
 				ExternalFunctionCreator.OnFunctionCall function = (sprakArguments =>  {
 
-					ParameterInfo[] realParamInfo = lamdaMethodInfo.GetParameters ();
+					ParameterInfo[] realParamInfo = lambdaMethodInfo.GetParameters ();
 					List<object> parameters = new List<object> ();
 
 					int i = 0;
 					foreach (ReturnValue sprakArg in sprakArguments) {
-						//Console.WriteLine(string.Format("Argument {0} in function {1} is of type {2}", i, shortname, realParamInfo[i].ParameterType));
+						Console.WriteLine(string.Format("Argument {0} in function {1} is of type {2}", i, shortname, realParamInfo[i].ParameterType));
 
 						var realParamType = realParamInfo [i].ParameterType;
-
-						if (realParamType == typeof(int)) {
+						Console.WriteLine("Real param type is " + realParamType);
+						
+						if (realParamInfo[i].ParameterType.IsArray) {
+							object[] converted = new object[sprakArg.ArrayValue.Count];
+							int arrayCounter = 0;
+							foreach(ReturnValue arrayItem in sprakArg.ArrayValue.Values) {
+								converted[arrayCounter] = arrayItem.GetValueAsObject();
+								arrayCounter++;
+							}
+							parameters.Add (converted);
+						}
+						else if (realParamType == typeof(int)) {
 							parameters.Add (Convert.ToInt32 (sprakArg.NumberValue));
 						}
 						else if (realParamType == typeof(float)) {
@@ -125,16 +135,17 @@ namespace ProgrammingLanguageNr1
 						else {
 							throw new Error("Can't deal with arg " + i.ToString() + " in function " + shortname);
 						}
+						
 						i++;
 					}
 
 					//Console.WriteLine("supplied parameter count" + parameters.Count + " neededParamter count " + lamdaMethodInfo.GetParameters().Length);
-					object result = lamdaMethodInfo.Invoke (pProgramTarget, parameters.ToArray ());
-					if (lamdaMethodInfo.ReturnType == typeof(void)) {
+					object result = lambdaMethodInfo.Invoke (pProgramTarget, parameters.ToArray ());
+					if (lambdaMethodInfo.ReturnType == typeof(void)) {
 						return new ReturnValue (ReturnValueType.VOID);
 					}
 					else {
-						return new ReturnValue (ReturnValue.SystemTypeToReturnValueType (lamdaMethodInfo.ReturnType), result);
+						return new ReturnValue (ReturnValue.SystemTypeToReturnValueType (lambdaMethodInfo.ReturnType), result);
 					}
 				});
 
