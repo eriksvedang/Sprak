@@ -60,7 +60,7 @@ namespace ProgrammingLanguageNr1
         {
             m_sprakRunner.run();
         }
-		
+
 		public List<string> Output
         {
             get { return m_output; }
@@ -69,6 +69,10 @@ namespace ProgrammingLanguageNr1
 		public void printTree(bool printExecutionCounters)
 		{
 			m_sprakRunner.printTree(printExecutionCounters);
+		}
+
+		public ReturnValue RunFunction(string functionName, ReturnValue[] args) {
+			return m_sprakRunner.RunFunction (functionName, args);
 		}
 
         List<string> m_output = new List<string>();

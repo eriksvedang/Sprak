@@ -1,3 +1,12 @@
-string a = "hej"
-var answer = ThisFunctionTakesANumber(a)
-print("The answer was: " + answer)
+
+number foo()
+	return 10 + 32
+end
+
+number bar()
+	return 123 + four()
+end
+
+number four()
+	return 4
+end

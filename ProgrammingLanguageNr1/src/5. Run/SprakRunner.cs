@@ -212,6 +212,14 @@ namespace ProgrammingLanguageNr1
             return externalFunctionCreator;
         }
 
+		public ReturnValue RunFunction(string functionName, ReturnValue[] args) 
+		{
+			m_interpreter.setProgramToExecuteFunction (functionName, args);
+			run ();
+			ReturnValue result = m_interpreter.PopValue ();
+			return result;
+		}
+
         private static ReturnValue API_type(ReturnValue[] args)
         {
 			return new ReturnValue(args[0].getReturnValueType().ToString());

@@ -684,6 +684,26 @@ namespace ProgrammingLanguageNr1.tests
             Assert.AreEqual(0, program.getErrorHandler().getErrors().Count);
 			Assert.AreEqual("5", program.Output[0]);
         }*/
+
+
+		
+		[Test()]
+		public void CallFunctionFromOutside ()
+		{
+			TextReader programString = File.OpenText("code73.txt");
+			DefaultSprakRunner program = new DefaultSprakRunner(programString);
+			program.run();
+			program.printOutputToConsole();
+			program.getCompileTimeErrorHandler().printErrorsToConsole();
+			ReturnValue result1 = program.RunFunction ("foo", new ReturnValue[] {});
+			ReturnValue result2 = program.RunFunction ("bar", new ReturnValue[] {});
+
+			Console.WriteLine ("Result from foo: " + result1.ToString ());
+			Console.WriteLine ("Result from bar: " + result2.ToString ());
+
+			Assert.AreEqual (42, (int)result1.NumberValue);
+			Assert.AreEqual (127, (int)result2.NumberValue);
+		}
 	}
 }
 

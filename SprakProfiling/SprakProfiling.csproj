@@ -11,6 +11,7 @@
     <RootNamespace>SprakProfiling</RootNamespace>
     <AssemblyName>SprakProfiling</AssemblyName>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>

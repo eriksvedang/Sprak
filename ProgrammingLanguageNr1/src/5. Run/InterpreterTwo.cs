@@ -32,12 +32,17 @@ namespace ProgrammingLanguageNr1
 
         public void Reset()
         {
-            m_globalMemorySpace = new MemorySpace("globals", m_ast.getChild(0), m_currentScope, m_memorySpaceNodeListCache);
-            m_currentMemorySpace = m_globalMemorySpace;
-            m_currentScope.ClearMemorySpaces();
-            m_currentScope.PushMemorySpace(m_currentMemorySpace);
-			m_memorySpaceNodeListCache.clear();
+			ResetAtPositionInAst (m_ast.getChild (0));
         }
+
+		private void ResetAtPositionInAst(AST astPosition)
+		{
+			m_globalMemorySpace = new MemorySpace("globals", astPosition, m_currentScope, m_memorySpaceNodeListCache);
+			m_currentMemorySpace = m_globalMemorySpace;
+			m_currentScope.ClearMemorySpaces();
+			m_currentScope.PushMemorySpace(m_currentMemorySpace);
+			m_memorySpaceNodeListCache.clear();
+		}
 
         public IEnumerator<Status> GetEnumerator()
         {
@@ -103,6 +108,24 @@ namespace ProgrammingLanguageNr1
             m_valueStack.Pop();
             m_valueStack.Push(pValue);
         }
+
+		public void setProgramToExecuteFunction (string functionName, ReturnValue[] args)
+		{
+			try {
+				FunctionSymbol functionSymbol = (FunctionSymbol)m_globalScope.resolve(functionName);
+				//Console.WriteLine("Found function symbol: " + functionSymbol.ToString());
+				AST_FunctionDefinitionNode functionDefinitionNode = (AST_FunctionDefinitionNode)functionSymbol.getFunctionDefinitionNode();
+				if(functionDefinitionNode != null) {
+					ResetAtPositionInAst(functionDefinitionNode);
+				}
+				else {
+					throw new Error(functionName + " has got no function definition node!");
+				}
+			}
+			catch(Error e) {
+				m_errorHandler.errorOccured (e);
+			}
+		}
 			
 		public ReturnValue GetGlobalVariableValue(string pName) 
 		{
@@ -293,7 +316,7 @@ namespace ProgrammingLanguageNr1
 
         private void JumpToFunction()
         {
-            AST_FunctionDefinitionNode functionDefinitionNode = (CurrentNode as AST_FunctionCall).FunctionDefinitionRef;
+			AST_FunctionDefinitionNode functionDefinitionNode = (CurrentNode as AST_FunctionCall).FunctionDefinitionRef;
             string functionName = functionDefinitionNode.getChild(1).getTokenString();
 
             int nrOfParameters = functionDefinitionNode.getChild(2).getChildren().Count;
