@@ -87,9 +87,11 @@ namespace ProgrammingLanguageNr1
 				List<string> parameterTypeNames = new List<string> ();
 
 				foreach (ParameterInfo parameterInfo in methodInfo.GetParameters ()) {
+					
 					if (parameterInfo.ParameterType.IsArray) {
 						throw new Exception ("FunctionDefinitionCreator can't handle array parameters");
 					}
+					
 					parameterNames.Add (parameterInfo.Name);
 					parameterTypes.Add (ReturnValue.SystemTypeToReturnValueType (parameterInfo.ParameterType));
 					parameterTypeNames.Add (ReturnValue.SystemTypeToReturnValueType (parameterInfo.ParameterType).ToString ().ToLower ());

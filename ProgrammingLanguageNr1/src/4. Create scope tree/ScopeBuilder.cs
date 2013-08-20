@@ -310,7 +310,7 @@ namespace ProgrammingLanguageNr1
                 if (arguments.Count != calleeParameterList.Count)
                 {
                     m_errorHandler.errorOccured(
-                        "Wrong number of arguments to function"
+                        "Wrong number of arguments to function '" + functionDefinitionTree.getTokenString() + "' , expected " + arguments.Count + " but got " + calleeParameterList.Count
                         , Error.ErrorType.SYNTAX, tree.getToken().LineNr, tree.getToken().LinePosition);
                 }
             }
