@@ -368,6 +368,12 @@ namespace ProgrammingLanguageNr1
 			}
         }
 
+		public void ResetAtFunction(string functionName, ReturnValue[] args) 
+		{
+			Reset ();
+			m_interpreter.setProgramToExecuteFunction (functionName, args);
+		}
+
         public bool Start()
         {
             if (m_compileTimeErrorHandler.getErrors().Count != 0)

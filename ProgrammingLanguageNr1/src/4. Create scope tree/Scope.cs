@@ -114,7 +114,9 @@ namespace ProgrammingLanguageNr1
 
         public void setValue(string name, ReturnValue val) {
             Scope scope = resolveToScope(name);
-            Debug.Assert(scope != null, "scope is null, trying to set " + name + " from scope " + m_name);
+            if(scope == null) throw new Exception("scope is null, trying to set '" + name + "' to value " + val + " from scope '" + m_name + "'");
+			if(scope.m_memorySpaces == null) throw new Exception("scope.m_memorySpaces is null, trying to set " + name + " from scope " + m_name);
+			if(scope.m_memorySpaces.Peek() == null) throw new Exception("scope.m_memorySpaces.Peek() is null, trying to set " + name + " from scope " + m_name);
             scope.m_memorySpaces.Peek().setValue(name, val);
 		}
 

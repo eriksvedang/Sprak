@@ -32,17 +32,15 @@ namespace ProgrammingLanguageNr1
 
         public void Reset()
         {
-			ResetAtPositionInAst (m_ast.getChild (0));
-        }
-
-		private void ResetAtPositionInAst(AST astPosition)
-		{
-			m_globalMemorySpace = new MemorySpace("globals", astPosition, m_currentScope, m_memorySpaceNodeListCache);
+			m_globalMemorySpace = new MemorySpace("globals", m_ast.getChild (0), m_globalScope, m_memorySpaceNodeListCache);
 			m_currentMemorySpace = m_globalMemorySpace;
+
+			m_currentScope = m_globalScope;
 			m_currentScope.ClearMemorySpaces();
 			m_currentScope.PushMemorySpace(m_currentMemorySpace);
+
 			m_memorySpaceNodeListCache.clear();
-		}
+        }
 
         public IEnumerator<Status> GetEnumerator()
         {
@@ -114,9 +112,22 @@ namespace ProgrammingLanguageNr1
 			try {
 				FunctionSymbol functionSymbol = (FunctionSymbol)m_globalScope.resolve(functionName);
 				//Console.WriteLine("Found function symbol: " + functionSymbol.ToString());
+
 				AST_FunctionDefinitionNode functionDefinitionNode = (AST_FunctionDefinitionNode)functionSymbol.getFunctionDefinitionNode();
-				if(functionDefinitionNode != null) {
-					ResetAtPositionInAst(functionDefinitionNode);
+
+				if(functionDefinitionNode != null) 
+				{
+					Reset();
+
+					m_currentScope = functionDefinitionNode.getScope ();
+					m_currentScope.ClearMemorySpaces ();
+
+					PushNewScope(functionDefinitionNode.getScope(), functionName + "_memorySpace" + functionCounter++, functionDefinitionNode);
+
+					for (int i = args.Length - 1; i >= 0; i--)
+					{
+						PushValue(args[i]); // reverse order
+					}
 				}
 				else {
 					throw new Error(functionName + " has got no function definition node!");
