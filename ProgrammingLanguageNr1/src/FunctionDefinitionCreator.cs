@@ -106,10 +106,10 @@ namespace ProgrammingLanguageNr1
 
 					int i = 0;
 					foreach (ReturnValue sprakArg in sprakArguments) {
-						Console.WriteLine(string.Format("Argument {0} in function {1} is of type {2}", i, shortname, realParamInfo[i].ParameterType));
+						//Console.WriteLine(string.Format("Argument {0} in function {1} is of type {2}", i, shortname, realParamInfo[i].ParameterType));
 
 						var realParamType = realParamInfo [i].ParameterType;
-						Console.WriteLine("Real param type is " + realParamType);
+						//Console.WriteLine("Real param type is " + realParamType);
 						
 						if (realParamInfo[i].ParameterType.IsArray) {
 							object[] converted = new object[sprakArg.ArrayValue.Count];

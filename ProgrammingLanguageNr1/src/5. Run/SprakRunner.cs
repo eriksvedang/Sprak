@@ -216,6 +216,11 @@ namespace ProgrammingLanguageNr1
 		{
 			m_interpreter.setProgramToExecuteFunction (functionName, args);
 			run ();
+			return GetFinalReturnValue();
+		}
+
+		public ReturnValue GetFinalReturnValue()
+		{
 			ReturnValue result = m_interpreter.PopValue ();
 			return result;
 		}
@@ -371,8 +376,11 @@ namespace ProgrammingLanguageNr1
 		public void ResetAtFunction(string functionName, ReturnValue[] args) 
 		{
 			Reset ();
-			if(m_interpreter == null) throw new Error("m_interpreter is null");
-			m_interpreter.setProgramToExecuteFunction (functionName, args);
+			if (m_interpreter == null) {
+				//throw new Error ("m_interpreter is null");
+			} else {
+				m_interpreter.setProgramToExecuteFunction (functionName, args);
+			}
 		}
 
         public bool Start()

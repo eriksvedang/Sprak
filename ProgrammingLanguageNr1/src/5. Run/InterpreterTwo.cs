@@ -109,32 +109,31 @@ namespace ProgrammingLanguageNr1
 
 		public void setProgramToExecuteFunction (string functionName, ReturnValue[] args)
 		{
-			try {
-				FunctionSymbol functionSymbol = (FunctionSymbol)m_globalScope.resolve(functionName);
-				//Console.WriteLine("Found function symbol: " + functionSymbol.ToString());
+			FunctionSymbol functionSymbol = (FunctionSymbol)m_globalScope.resolve(functionName);
+			//Console.WriteLine("Found function symbol: " + functionSymbol.ToString());
 
-				AST_FunctionDefinitionNode functionDefinitionNode = (AST_FunctionDefinitionNode)functionSymbol.getFunctionDefinitionNode();
+			if(functionSymbol == null) {
+				throw new Error("Can't find function '" + functionName + "' in program");
+			}
 
-				if(functionDefinitionNode != null) 
+			AST_FunctionDefinitionNode functionDefinitionNode = (AST_FunctionDefinitionNode)functionSymbol.getFunctionDefinitionNode();
+
+			if(functionDefinitionNode != null) 
+			{
+				Reset();
+
+				m_currentScope = functionDefinitionNode.getScope ();
+				m_currentScope.ClearMemorySpaces ();
+
+				PushNewScope(functionDefinitionNode.getScope(), functionName + "_memorySpace" + functionCounter++, functionDefinitionNode);
+
+				for (int i = args.Length - 1; i >= 0; i--)
 				{
-					Reset();
-
-					m_currentScope = functionDefinitionNode.getScope ();
-					m_currentScope.ClearMemorySpaces ();
-
-					PushNewScope(functionDefinitionNode.getScope(), functionName + "_memorySpace" + functionCounter++, functionDefinitionNode);
-
-					for (int i = args.Length - 1; i >= 0; i--)
-					{
-						PushValue(args[i]); // reverse order
-					}
-				}
-				else {
-					throw new Error(functionName + " has got no function definition node!");
+					PushValue(args[i]); // reverse order
 				}
 			}
-			catch(Error e) {
-				m_errorHandler.errorOccured (e);
+			else {
+				throw new Error(functionName + " has got no function definition node!");
 			}
 		}
 			
