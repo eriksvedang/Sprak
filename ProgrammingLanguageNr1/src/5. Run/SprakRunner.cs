@@ -81,7 +81,9 @@ namespace ProgrammingLanguageNr1
             m_tokens = Tokenize(stream);
             m_ast = Parse(m_tokens);
 			if(m_compileTimeErrorHandler.getErrors().Count > 0) { m_compileTimeErrorHandler.printErrorsToConsole(); return; }
-			
+
+			//PaintAST(m_ast);
+
 			AddLocalVariables(m_ast, variableDefinitions);
 			ExternalFunctionCreator externalFunctionCreator = AddExternalFunctions(functionDefinitions, m_ast);
 			Scope globalScope = CreateScopeTree(m_ast);
@@ -90,8 +92,6 @@ namespace ProgrammingLanguageNr1
 			
 			m_interpreter = new InterpreterTwo(m_ast, globalScope, m_runtimeErrorHandler, externalFunctionCreator);
             m_started = false; 
-			
-			//PaintAST(m_ast);
 		}
 
 		List<Token> Tokenize (TextReader stream)
