@@ -9,7 +9,14 @@ namespace ProgrammingLanguageNr1
 		}
 		
 		public void setScope(Scope scope) { m_scope = scope; }
-		public Scope getScope() { return m_scope; }
+		public Scope getScope() { 
+#if DEBUG
+			if (m_scope == null) {
+				throw new Exception ("m_scope is null for IfNode at line " + getToken ().LineNr);
+			}
+#endif
+			return m_scope; 
+		}
         
 		Scope m_scope;
 	}

@@ -718,6 +718,19 @@ namespace ProgrammingLanguageNr1.tests
 			Console.WriteLine ("Result from double: " + result.ToString ());
 			Assert.AreEqual (80, (int)result.NumberValue);
 		}
+
+		[Test()]
+		public void ElseIfStatement ()
+		{
+			TextReader programString = File.OpenText("code76.txt");
+			DefaultSprakRunner program = new DefaultSprakRunner(programString);
+			program.run();
+			program.printOutputToConsole();
+			program.getCompileTimeErrorHandler().printErrorsToConsole();
+
+			Assert.AreEqual(1, program.Output.Count);
+			Assert.AreEqual("yup", program.Output[0]);
+		}
 	}
 }
 

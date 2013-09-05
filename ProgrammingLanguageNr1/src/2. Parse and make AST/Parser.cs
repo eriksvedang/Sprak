@@ -641,8 +641,15 @@ namespace ProgrammingLanguageNr1
                 expr = expression(); // child 0
 				match(Token.TokenType.NEW_LINE);
 				trueChild = statementList(false); // child 1
-				
-				if (lookAheadType(1) == Token.TokenType.ELSE) {
+
+				if ((lookAheadType(1) == Token.TokenType.ELSE) && (lookAheadType(2) == Token.TokenType.IF)) {
+#if WRITE_DEBUG_INFO
+Console.WriteLine("if else block");
+#endif
+					match(Token.TokenType.ELSE);
+					falseChild = expression(); //  ifThenElse();
+				}
+				else if (lookAheadType(1) == Token.TokenType.ELSE) {
 #if WRITE_DEBUG_INFO
 					Console.WriteLine("else block");
 #endif

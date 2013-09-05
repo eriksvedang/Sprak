@@ -1,0 +1,13 @@
+
+var a = 10
+
+if a == 8
+	print("nope")
+else if (a == 9)
+	print("not this one")
+else if a == 10
+	print("yup")
+else
+	print("wrong")
+end
+

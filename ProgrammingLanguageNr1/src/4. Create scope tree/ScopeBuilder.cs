@@ -327,6 +327,15 @@ namespace ProgrammingLanguageNr1
 
         private void evaluateReferencesForNAME(AST tree)
         {
+#if DEBUG
+			if (m_currentScope == null) {
+				throw new Exception ("m_currentScope is null");
+			}
+			if (tree == null) {
+				throw new Exception("tree is null");
+			}
+#endif
+
             Symbol symbol = m_currentScope.resolve(tree.getTokenString());
 			
 			if(symbol == null) {
