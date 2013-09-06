@@ -75,9 +75,9 @@ namespace ProgrammingLanguageNr1
 					continue;
 				}
 
-				if (methodInfo.ReturnType.IsArray) {
+				/*if (methodInfo.ReturnType.IsArray) {
 					throw new Exception ("FunctionDefinitionCreator can't handle array return value");
-				}
+				}*/
 
 				//Console.WriteLine("parsing " + mi.Name + " return Type " + mi.ReturnType.Name);
 				string shortname = methodInfo.Name.Substring (4);
