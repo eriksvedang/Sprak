@@ -402,12 +402,23 @@ namespace ProgrammingLanguageNr1
                 Console.WriteLine("Can't continue to run program since it contains errors!");
                 return InterpreterTwo.Status.ERROR;
             }
-            if (m_programIterator.MoveNext()) {
-                return m_programIterator.Current;
-            }
-            else {
-                return InterpreterTwo.Status.FINISHED;
-            }
+			
+			try {
+	            if (m_programIterator.MoveNext()) {
+	                return m_programIterator.Current;
+	            }
+	            else {
+	                return InterpreterTwo.Status.FINISHED;
+	            }
+			}
+			catch(Error sprakError) {
+				m_runtimeErrorHandler.errorOccured(sprakError);
+				return InterpreterTwo.Status.ERROR;
+			}
+			catch(Exception e) {
+				m_runtimeErrorHandler.errorOccured(new Error("Exception: " + e.Message));
+				return InterpreterTwo.Status.ERROR;
+			}
         }
 
         public bool isStarted
