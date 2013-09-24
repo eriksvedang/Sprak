@@ -415,10 +415,10 @@ namespace ProgrammingLanguageNr1
 				m_runtimeErrorHandler.errorOccured(sprakError);
 				return InterpreterTwo.Status.ERROR;
 			}
-			catch(Exception e) {
+			/*catch(Exception e) {
 				m_runtimeErrorHandler.errorOccured(new Error("Exception: " + e.Message));
 				return InterpreterTwo.Status.ERROR;
-			}
+			}*/
         }
 
         public bool isStarted
