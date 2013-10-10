@@ -19,19 +19,6 @@ namespace ProgrammingLanguageNr1.tests
 		//no api
 		public string API_NumberToString(float pFloat) { return pFloat.ToString(); }
 	}
-
-    public class DemoClassTwo
-    {
-        [SprakAPI("returns two values", "floatA", "second float")]
-        public int[] API_GetValues(int pFloatA, int pFloatB) { return null; }
-
-        [SprakAPI("werw", "sdf")]
-        public bool[] API_UseBool(bool pFloatA) { return null; }
-
-        //no api
-        public string[] API_NumberToString(float pFloat) { return null; }
-
-    }
     
     [TestFixture]
     public class FunctionDefinitionCreator_TEST
@@ -62,13 +49,6 @@ namespace ProgrammingLanguageNr1.tests
                     Assert.AreEqual(true, rv.BoolValue);
                 }
             }
-        }
-
-        [Test]
-        public void ThrowsException()
-        {
-            DemoClassTwo dc = new DemoClassTwo();
-            Assert.Throws<Exception>(() => FunctionDefinitionCreator.CreateDefinitions(dc, typeof(DemoClassTwo)));
         }
 
 		static FunctionDefinition GetPrintFunction() {
@@ -166,5 +146,40 @@ namespace ProgrammingLanguageNr1.tests
 			
 			Assert.AreEqual (0, program.getCompileTimeErrorHandler().getErrors().Count);
 		}
+
+		public class DemoClassFour
+		{
+			[SprakAPI("this function crashes")]
+			public void API_crash() 
+			{ 
+				throw new Error("Crashed!");
+			}
+		}
+
+		[Test]
+		public void CallFunctionThatThrowsException()
+		{
+			DemoClassFour dc3 = new DemoClassFour();
+			FunctionDefinition[] defs = FunctionDefinitionCreator.CreateDefinitions(dc3, typeof(DemoClassFour));
+			Assert.AreEqual(1, defs.Length);
+
+			List<FunctionDefinition> moreFunctionDefinitions = new List<FunctionDefinition> {
+				GetPrintFunction ()
+			};
+
+			moreFunctionDefinitions.AddRange (defs);
+
+			TextReader programString = File.OpenText("code77.txt");
+			SprakRunner program = new SprakRunner(programString, moreFunctionDefinitions.ToArray());
+
+			program.run();
+
+			Assert.AreEqual (0, program.getCompileTimeErrorHandler().getErrors().Count);
+			Assert.AreEqual (1, program.getRuntimeErrorHandler().getErrors().Count);
+
+			program.getRuntimeErrorHandler().printErrorsToConsole();
+		}
+
+
     }
 }

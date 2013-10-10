@@ -140,7 +140,18 @@ namespace ProgrammingLanguageNr1
 					}
 
 					//Console.WriteLine("supplied parameter count" + parameters.Count + " neededParamter count " + lamdaMethodInfo.GetParameters().Length);
-					object result = lambdaMethodInfo.Invoke (pProgramTarget, parameters.ToArray ());
+
+					object result = null;
+
+					try {
+						result = lambdaMethodInfo.Invoke (pProgramTarget, parameters.ToArray ());
+					}
+					catch(System.Reflection.TargetInvocationException e) {
+						//Console.WriteLine("Got an exception when calling the lambda: " + e.ToString());
+						//Console.WriteLine("The base exception: " + e.GetBaseException().ToString());
+						throw e.GetBaseException();
+					}
+
 					if (lambdaMethodInfo.ReturnType == typeof(void)) {
 						return new ReturnValue (ReturnValueType.VOID);
 					}
