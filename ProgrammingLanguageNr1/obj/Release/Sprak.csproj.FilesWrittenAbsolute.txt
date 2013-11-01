@@ -1,0 +1,2 @@
+/Users/erik/Documents/Miman/github/Sprak/ProgrammingLanguageNr1/bin/Release/ProgrammingLanguageNr1.dll
+/Users/erik/Documents/Miman/github/Sprak/ProgrammingLanguageNr1/obj/Release/ProgrammingLanguageNr1.dll
