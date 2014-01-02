@@ -69,13 +69,27 @@ PARAMETER LIST
 			name
 		ASSIGN_SIGNAL
 
-					
+		
+
 assignment:
 					
 ASSIGNMENT
 	returnvalue
 	assignment signal (contains name of variable to assign to)	
-					
+		
+
+
+method call:
+
+0 name of variable (pointing to object)
+1 name of method to call on object
+2 ARGUMENT LIST
+	arg 0
+	arg 1
+	etc...
+
+
+
 */				
 					
 					

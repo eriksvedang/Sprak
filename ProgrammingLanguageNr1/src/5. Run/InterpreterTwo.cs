@@ -647,6 +647,7 @@ namespace ProgrammingLanguageNr1
         {
             get { return m_memorySpaceStack.Count; }
         }
+
         public string DumpStack()
         {
             System.Text.StringBuilder b = new System.Text.StringBuilder();

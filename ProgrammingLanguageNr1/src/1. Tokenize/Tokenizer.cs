@@ -95,6 +95,9 @@ namespace ProgrammingLanguageNr1
 						
 					case ',':
 						return COMMA();
+
+					case '.':
+						return DOT();
 						
 					default:
 						if( isLETTER() ) {
@@ -145,6 +148,11 @@ namespace ProgrammingLanguageNr1
 		private Token COMMA() {
 			readNextChar();
 			return new Token(Token.TokenType.COMMA, ",");
+		}
+
+		private Token DOT() {
+			readNextChar();
+			return new Token(Token.TokenType.DOT, ".");
 		}
 
 		private Token NEW_LINE() {

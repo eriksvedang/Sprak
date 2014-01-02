@@ -18,6 +18,7 @@ namespace ProgrammingLanguageNr1
             QUOTED_STRING, 
 			BOOLEAN_VALUE,
 			ARRAY,
+			DOT,
 			
 			ARRAY_END_SIGNAL,
             BUILT_IN_TYPE_NAME,

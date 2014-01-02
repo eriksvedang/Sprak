@@ -1,0 +1,7 @@
+/Users/erik/Documents/Miman/github/Sprak/Sprak_Tests/bin/Debug/Sprak_Tests.dll.mdb
+/Users/erik/Documents/Miman/github/Sprak/Sprak_Tests/bin/Debug/Sprak_Tests.dll
+/Users/erik/Documents/Miman/github/Sprak/Sprak_Tests/obj/Debug/Sprak_Tests.dll
+/Users/erik/Documents/Miman/github/Sprak/Sprak_Tests/obj/Debug/Sprak_Tests.dll.mdb
+/Users/erik/Documents/Miman/github/Sprak/Sprak_Tests/bin/Debug/nunit.framework.dll
+/Users/erik/Documents/Miman/github/Sprak/Sprak_Tests/bin/Debug/ProgrammingLanguageNr1.dll
+/Users/erik/Documents/Miman/github/Sprak/Sprak_Tests/bin/Debug/ProgrammingLanguageNr1.dll.mdb

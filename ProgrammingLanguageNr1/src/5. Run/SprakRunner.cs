@@ -221,8 +221,15 @@ namespace ProgrammingLanguageNr1
 
 		public ReturnValue GetFinalReturnValue()
 		{
-			ReturnValue result = m_interpreter.PopValue ();
-			return result;
+			if (!m_interpreter.ValueStackIsEmpty()) {
+				ReturnValue result = m_interpreter.PopValue();
+				Console.WriteLine("GetFinalReturnValue: " + result);
+				return result;
+			} else {
+				// no value left on the stack to pop, might be OK in some circumstances (like calling a void remote fn with the normal RemoteFunctionCall function)
+				Console.WriteLine("GetFinalReturnValue: Stacksize 0");
+				return new ReturnValue(ReturnValueType.VOID);
+			}
 		}
 
         private static ReturnValue API_type(ReturnValue[] args)

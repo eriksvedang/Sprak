@@ -1,0 +1,6 @@
+/Users/erik/Documents/Miman/github/Sprak/SprakProfiling/bin/Debug/SprakProfiling.exe.mdb
+/Users/erik/Documents/Miman/github/Sprak/SprakProfiling/bin/Debug/SprakProfiling.exe
+/Users/erik/Documents/Miman/github/Sprak/SprakProfiling/obj/Debug/SprakProfiling.exe
+/Users/erik/Documents/Miman/github/Sprak/SprakProfiling/obj/Debug/SprakProfiling.exe.mdb
+/Users/erik/Documents/Miman/github/Sprak/SprakProfiling/bin/Debug/ProgrammingLanguageNr1.dll
+/Users/erik/Documents/Miman/github/Sprak/SprakProfiling/bin/Debug/ProgrammingLanguageNr1.dll.mdb

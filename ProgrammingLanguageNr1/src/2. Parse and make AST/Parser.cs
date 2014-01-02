@@ -112,12 +112,16 @@ namespace ProgrammingLanguageNr1
 		private AST figureOutStatementType() {
 			AST statementTree = null;
 
-            if (lookAheadType(1) == Token.TokenType.NAME &&
-                lookAheadType(2) == Token.TokenType.NAME )
-            {
-                throw new Error("Can't understand what the word '" + lookAhead(1).getTokenString() + "' means here", Error.ErrorType.SYNTAX, lookAhead(1).LineNr, lookAhead(1).LinePosition);
-            }
-            else if ( lookAheadType(1) == Token.TokenType.BUILT_IN_TYPE_NAME &&
+			if (lookAheadType(1) == Token.TokenType.NAME &&
+			             lookAheadType(2) == Token.TokenType.NAME) {
+				throw new Error("Can't understand what the word '" + lookAhead(1).getTokenString() + "' means here", Error.ErrorType.SYNTAX, lookAhead(1).LineNr, lookAhead(1).LinePosition);
+			} /*else if (lookAheadType(1) == Token.TokenType.NAME &&
+			         lookAheadType(2) == Token.TokenType.DOT &&
+			         lookAheadType(3) == Token.TokenType.NAME) 
+			{
+				
+			} */
+			else if ( lookAheadType(1) == Token.TokenType.BUILT_IN_TYPE_NAME &&
 				 lookAheadType(2) == Token.TokenType.NAME &&
 				 lookAheadType(3) == Token.TokenType.PARANTHESIS_LEFT ) 
 			{

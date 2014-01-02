@@ -9,7 +9,7 @@
     <OutputType>Library</OutputType>
     <RootNamespace>ProgrammingLanguageNr1</RootNamespace>
     <AssemblyName>ProgrammingLanguageNr1</AssemblyName>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -31,9 +31,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="System.Core">
-      <RequiredTargetFramework>3.5</RequiredTargetFramework>
-    </Reference>
+    <Reference Include="System.Core" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
   </ItemGroup>
@@ -72,6 +70,7 @@
     <Compile Include="src\2. Parse and make AST\AST_LoopBlockNode.cs" />
     <Compile Include="src\2. Parse and make AST\AST_ArrayEndSignal.cs" />
     <Compile Include="src\5. Run\MemorySpaceNodeListCache.cs" />
+    <Compile Include="src\2. Parse and make AST\AST_MethodCall.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
