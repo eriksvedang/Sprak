@@ -361,7 +361,7 @@ namespace ProgrammingLanguageNr1
 			}
             else 
             {
-				Console.WriteLine("Can't run program since it contains errors!");
+				//Console.WriteLine("Can't run program since it contains errors!");
                 //m_compileTimeErrorHandler.printErrorsToConsole();
 			}
 		}
@@ -394,7 +394,7 @@ namespace ProgrammingLanguageNr1
         {
             if (m_compileTimeErrorHandler.getErrors().Count != 0)
             {
-                Console.WriteLine("Can't run program since it contains errors!");
+				//Console.WriteLine("Can't run program since it contains errors!");
                 return m_started = false;
             }
             m_programIterator = m_interpreter.GetEnumerator();
