@@ -374,20 +374,16 @@ namespace ProgrammingLanguageNr1
                 m_programIterator = null;
             }
             m_started = false;
-			
-			if(m_interpreter != null) {
-            	m_interpreter.Reset();
-			}
+			m_interpreter.Reset();
         }
 
 		public void ResetAtFunction(string functionName, ReturnValue[] args) 
 		{
-			Reset ();
 			if (m_interpreter == null) {
-				//throw new Error ("m_interpreter is null");
-			} else {
-				m_interpreter.setProgramToExecuteFunction (functionName, args);
+				throw new Exception("Interpreter is null!");
 			}
+			Reset ();
+			m_interpreter.setProgramToExecuteFunction (functionName, args);
 		}
 
         public bool Start()

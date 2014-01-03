@@ -40,6 +40,8 @@ namespace ProgrammingLanguageNr1
 			m_currentScope.PushMemorySpace(m_currentMemorySpace);
 
 			m_memorySpaceNodeListCache.clear();
+
+			m_topLevelDepth = 0;
         }
 
         public IEnumerator<Status> GetEnumerator()
@@ -122,6 +124,8 @@ namespace ProgrammingLanguageNr1
 			{
 				Reset();
 
+				m_topLevelDepth = 1;
+
 				m_currentScope = functionDefinitionNode.getScope ();
 				m_currentScope.ClearMemorySpaces ();
 
@@ -148,7 +152,7 @@ namespace ProgrammingLanguageNr1
             while (!m_currentMemorySpace.Next())
             {
                 //Console.WriteLine(m_currentMemorySpace.getName() + " is out of statements to execute.");
-                if (m_memorySpaceStack.Count == 0)
+				if (m_memorySpaceStack.Count == m_topLevelDepth)
                 {
                     //Console.WriteLine("Stack is empty, finishing execution.");
                     return false;
@@ -701,5 +705,6 @@ namespace ProgrammingLanguageNr1
         Stack<MemorySpace> m_memorySpaceStack = new Stack<MemorySpace>();
         Stack<ReturnValue> m_valueStack = new Stack<ReturnValue>();
 		MemorySpaceNodeListCache m_memorySpaceNodeListCache = new MemorySpaceNodeListCache();
+		int m_topLevelDepth = 0; // the stack depth at wich the program starts and ends, normally 0 but can be 1 if jumping into a function
     }
 }
