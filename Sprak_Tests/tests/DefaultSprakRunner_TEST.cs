@@ -731,6 +731,20 @@ namespace ProgrammingLanguageNr1.tests
 			Assert.AreEqual(1, program.Output.Count);
 			Assert.AreEqual("yup", program.Output[0]);
 		}
+
+		[Test()]
+		public void ElseIfStatementInsideFunction ()
+		{
+			TextReader programString = File.OpenText("code78.txt");
+			DefaultSprakRunner program = new DefaultSprakRunner(programString);
+			program.RunFunction("Foo", new ReturnValue[] { new ReturnValue("Left") });
+
+			program.printOutputToConsole();
+			program.getCompileTimeErrorHandler().printErrorsToConsole();
+
+			Assert.AreEqual(1, program.Output.Count);
+			Assert.AreEqual("l", program.Output[0]);
+		}
 	}
 }
 

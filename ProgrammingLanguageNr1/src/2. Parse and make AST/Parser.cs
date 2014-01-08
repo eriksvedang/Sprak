@@ -651,7 +651,7 @@ namespace ProgrammingLanguageNr1
 Console.WriteLine("if else block");
 #endif
 					match(Token.TokenType.ELSE);
-					falseChild = expression(); //  ifThenElse();
+					falseChild = statementList(false); // ifThenElse();
 				}
 				else if (lookAheadType(1) == Token.TokenType.ELSE) {
 #if WRITE_DEBUG_INFO
@@ -659,7 +659,7 @@ Console.WriteLine("if else block");
 #endif
 					match(Token.TokenType.ELSE);
 					match(Token.TokenType.NEW_LINE);
-                    falseChild = statementList(false); // child 2
+					falseChild = statementList(false); // child 2
 					match(Token.TokenType.BLOCK_END);
 				}
 				else {
