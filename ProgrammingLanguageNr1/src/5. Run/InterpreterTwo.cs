@@ -109,7 +109,7 @@ namespace ProgrammingLanguageNr1
             m_valueStack.Push(pValue);
         }
 
-		public void setProgramToExecuteFunction (string functionName, ReturnValue[] args)
+		public void SetProgramToExecuteFunction (string functionName, ReturnValue[] args)
 		{
 			FunctionSymbol functionSymbol = (FunctionSymbol)m_globalScope.resolve(functionName);
 			//Console.WriteLine("Found function symbol: " + functionSymbol.ToString());
@@ -118,26 +118,27 @@ namespace ProgrammingLanguageNr1
 				throw new Error("Can't find function '" + functionName + "' in program");
 			}
 
-			AST_FunctionDefinitionNode functionDefinitionNode = (AST_FunctionDefinitionNode)functionSymbol.getFunctionDefinitionNode();
+			if (IsFunctionExternal(functionName)) {
+				CallExternalFunction(functionName, args);
+			} else {
+				AST_FunctionDefinitionNode functionDefinitionNode = (AST_FunctionDefinitionNode)functionSymbol.getFunctionDefinitionNode();
 
-			if(functionDefinitionNode != null) 
-			{
-				Reset();
+				if (functionDefinitionNode != null) {
+					Reset();
 
-				m_topLevelDepth = 1;
+					m_topLevelDepth = 1;
 
-				m_currentScope = functionDefinitionNode.getScope ();
-				m_currentScope.ClearMemorySpaces ();
+					m_currentScope = functionDefinitionNode.getScope();
+					m_currentScope.ClearMemorySpaces();
 
-				PushNewScope(functionDefinitionNode.getScope(), functionName + "_memorySpace" + functionCounter++, functionDefinitionNode);
+					PushNewScope(functionDefinitionNode.getScope(), functionName + "_memorySpace" + functionCounter++, functionDefinitionNode);
 
-				for (int i = args.Length - 1; i >= 0; i--)
-				{
-					PushValue(args[i]); // reverse order
+					for (int i = args.Length - 1; i >= 0; i--) {
+						PushValue(args[i]); // reverse order
+					}
+				} else {
+					throw new Error(functionName + " has got no function definition node!");
 				}
-			}
-			else {
-				throw new Error(functionName + " has got no function definition node!");
 			}
 		}
 			
@@ -328,6 +329,21 @@ namespace ProgrammingLanguageNr1
 
         static int functionCounter = 0;
 
+		bool IsFunctionExternal(string pFunctionName)
+		{
+			return m_externalFunctionCreator.externalFunctions.ContainsKey(pFunctionName);
+		}
+
+		void CallExternalFunction(string pFunctionName, ReturnValue[] pParameters)
+		{
+			//Console.WriteLine("Calling external function " + functionName);
+			ExternalFunctionCreator.OnFunctionCall fc = m_externalFunctionCreator.externalFunctions[pFunctionName];
+			ReturnValue rv = fc(pParameters);
+			if (rv.getReturnValueType() != ReturnValueType.VOID) {
+				PushValue(rv);
+			}
+		}
+
         private void JumpToFunction()
         {
 			AST_FunctionDefinitionNode functionDefinitionNode = (CurrentNode as AST_FunctionCall).FunctionDefinitionRef;
@@ -340,25 +356,15 @@ namespace ProgrammingLanguageNr1
                 parameters[i] = PopValue();
             }
 
-            if (m_externalFunctionCreator.externalFunctions.ContainsKey(functionName))
-            {
-                //Console.WriteLine("Calling external function " + functionName);
-                ExternalFunctionCreator.OnFunctionCall fc = m_externalFunctionCreator.externalFunctions[functionName];
-                ReturnValue rv = fc(parameters);
-                if (rv.getReturnValueType() != ReturnValueType.VOID)
-                {
-                    PushValue(rv);
-                }
-            }
-            else
-            {
-                PushNewScope(functionDefinitionNode.getScope(), functionName + "_memorySpace" + functionCounter++, functionDefinitionNode);
+			if (IsFunctionExternal(functionName)) {
+				CallExternalFunction(functionName, parameters);
+			} else {
+				PushNewScope(functionDefinitionNode.getScope(), functionName + "_memorySpace" + functionCounter++, functionDefinitionNode);
 
-                for (int i = nrOfParameters - 1; i >= 0; i--)
-                {
-                    PushValue(parameters[i]); // reverse order
-                }
-            }
+				for (int i = nrOfParameters - 1; i >= 0; i--) {
+					PushValue(parameters[i]); // reverse order
+				}
+			}
         }
 
         private void Operator()

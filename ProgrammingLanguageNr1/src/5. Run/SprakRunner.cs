@@ -214,7 +214,7 @@ namespace ProgrammingLanguageNr1
 
 		public ReturnValue RunFunction(string functionName, ReturnValue[] args) 
 		{
-			m_interpreter.setProgramToExecuteFunction (functionName, args);
+			m_interpreter.SetProgramToExecuteFunction (functionName, args);
 			run ();
 			return GetFinalReturnValue();
 		}
@@ -384,7 +384,7 @@ namespace ProgrammingLanguageNr1
 				return;
 			}
 			Reset ();
-			m_interpreter.setProgramToExecuteFunction (functionName, args);
+			m_interpreter.SetProgramToExecuteFunction (functionName, args);
 		}
 
         public bool Start()
