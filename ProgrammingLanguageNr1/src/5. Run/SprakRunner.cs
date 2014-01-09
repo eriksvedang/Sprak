@@ -82,7 +82,7 @@ namespace ProgrammingLanguageNr1
             m_ast = Parse(m_tokens);
 			if(m_compileTimeErrorHandler.getErrors().Count > 0) { m_compileTimeErrorHandler.printErrorsToConsole(); return; }
 
-			PaintAST(m_ast);
+			//PaintAST(m_ast);
 
 			AddLocalVariables(m_ast, variableDefinitions);
 			ExternalFunctionCreator externalFunctionCreator = AddExternalFunctions(functionDefinitions, m_ast);
