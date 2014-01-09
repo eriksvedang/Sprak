@@ -1,4 +1,4 @@
-//#define WRITE_DEBUG_INFO
+#define WRITE_DEBUG_INFO
 
 using System;
 using System.Collections.Generic;
@@ -57,7 +57,7 @@ namespace ProgrammingLanguageNr1
             m_programAST.addChild(statements);
             m_programAST.addChild(m_functionList);
 		}
-		
+
 		private AST statementList(bool isInMainScope) {
 #if WRITE_DEBUG_INFO
 			Console.WriteLine("statement list");
@@ -651,7 +651,13 @@ namespace ProgrammingLanguageNr1
 Console.WriteLine("if else block");
 #endif
 					match(Token.TokenType.ELSE);
-					falseChild = statementList(false); // ifThenElse();
+					var ifElseBranch = statement(); // ifThenElse();
+					// have to put it into a statement list to make scopes work
+					falseChild = new AST(new Token(Token.TokenType.STATEMENT_LIST, "<STATEMENT_LIST>"));
+					falseChild.addChild(ifElseBranch);
+#if WRITE_DEBUG_INFO
+Console.WriteLine("Popping out from ifElse branch");
+#endif
 				}
 				else if (lookAheadType(1) == Token.TokenType.ELSE) {
 #if WRITE_DEBUG_INFO

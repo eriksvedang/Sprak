@@ -745,6 +745,21 @@ namespace ProgrammingLanguageNr1.tests
 			Assert.AreEqual(1, program.Output.Count);
 			Assert.AreEqual("l", program.Output[0]);
 		}
+
+		[Test()]
+		public void DontMissStatementAfterElseIfElse ()
+		{
+			TextReader programString = File.OpenText("code79.txt");
+			DefaultSprakRunner program = new DefaultSprakRunner(programString);
+			program.RunFunction("Foo", new ReturnValue[] { new ReturnValue("Forward") });
+
+			program.printOutputToConsole();
+			program.getCompileTimeErrorHandler().printErrorsToConsole();
+
+			Assert.AreEqual(2, program.Output.Count);
+			Assert.AreEqual("f", program.Output[0]);
+			Assert.AreEqual("buu", program.Output[1]);
+		}
 	}
 }
 

@@ -1,4 +1,4 @@
-//#define WRITE_DEBUG_INFO
+#define WRITE_DEBUG_INFO
 
 using System;
 using System.Collections.Generic;
@@ -91,14 +91,14 @@ namespace ProgrammingLanguageNr1
         {
             Scope subscope = new Scope(Scope.ScopeType.IF_SCOPE,"<IF-SUBSCOPE>", m_currentScope);
 
-#if WRITE_DEBUG_INFO
-            Console.WriteLine("\nDefined IF-subscope");
-#endif
-
             m_currentScope = subscope;
 
             AST_IfNode ifNode = (tree as AST_IfNode);
             Debug.Assert(ifNode != null);
+
+			#if WRITE_DEBUG_INFO
+			Console.WriteLine("\nDefined IF-subscope for ifNode at line " + ifNode.getToken().LineNr);
+			#endif
 
             ifNode.setScope(subscope); // save the new scope in the IF-token tree node
             
@@ -112,7 +112,7 @@ namespace ProgrammingLanguageNr1
                 falseNode = ifNode.getChild(2);
             }
 
-            evaluateScopeDeclarationsInAllChildren(trueNode);
+			evaluateScopeDeclarationsInAllChildren(trueNode);
             if (falseNode != null)
             {
                 evaluateScopeDeclarationsInAllChildren(falseNode);
