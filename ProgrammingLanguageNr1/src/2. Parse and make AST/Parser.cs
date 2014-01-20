@@ -654,7 +654,9 @@ Console.WriteLine("if else block");
 					var ifElseBranch = statement(); // ifThenElse();
 					// have to put it into a statement list to make scopes work
 					falseChild = new AST(new Token(Token.TokenType.STATEMENT_LIST, "<STATEMENT_LIST>"));
-					falseChild.addChild(ifElseBranch);
+					if(ifElseBranch != null) {
+						falseChild.addChild(ifElseBranch);
+					}
 #if WRITE_DEBUG_INFO
 Console.WriteLine("Popping out from ifElse branch");
 #endif

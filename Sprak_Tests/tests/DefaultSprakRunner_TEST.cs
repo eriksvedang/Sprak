@@ -760,6 +760,39 @@ namespace ProgrammingLanguageNr1.tests
 			Assert.AreEqual("f", program.Output[0]);
 			Assert.AreEqual("buu", program.Output[1]);
 		}
+
+		[Test()]
+		public void CrashbugWithElseifWithoutEnd ()
+		{
+			TextReader programString = File.OpenText("code80.txt");
+			DefaultSprakRunner program = new DefaultSprakRunner(programString);
+
+			program.run();
+
+			program.printOutputToConsole();
+			program.getCompileTimeErrorHandler().printErrorsToConsole();
+
+			Assert.AreEqual(1, program.getCompileTimeErrorHandler().getErrors().Count);
+			Assert.AreEqual(0, program.getRuntimeErrorHandler().getErrors().Count);
+		}
+
+		[Test()]
+		public void SimpleAndStatements ()
+		{
+			TextReader programString = File.OpenText("code81.txt");
+			DefaultSprakRunner program = new DefaultSprakRunner(programString);
+
+			program.run();
+
+			program.printOutputToConsole();
+			program.getCompileTimeErrorHandler().printErrorsToConsole();
+			
+			Assert.AreEqual(0, program.getCompileTimeErrorHandler().getErrors().Count);
+			Assert.AreEqual(0, program.getRuntimeErrorHandler().getErrors().Count);
+
+			Assert.AreEqual(1, program.Output.Count);
+			Assert.AreEqual("yep", program.Output[0]);
+		}
 	}
 }
 

@@ -260,70 +260,81 @@ namespace ProgrammingLanguageNr1
 			} while( isLETTER() || isDIGIT() );
 			
 			Token.TokenType tokenType = Token.TokenType.NAME;
-			
+			string ts = tokenString.ToString();
+
             // Keywords
-			if(tokenString.ToString() == "if") 
+			if(ts == "if") 
             {
 				tokenType = Token.TokenType.IF;
 			}
-			else if(tokenString.ToString() == "else") 
+			else if(ts == "else") 
             {
 				tokenType = Token.TokenType.ELSE;
 			}
-			else if(tokenString.ToString() == "return") 
+			else if(ts == "return") 
             {
 				tokenType = Token.TokenType.RETURN;
 			}
-            else if (tokenString.ToString() == "void")
+            else if (ts == "void")
             {
                 tokenType = Token.TokenType.BUILT_IN_TYPE_NAME;
             }
-            else if (tokenString.ToString() == "number")
+            else if (ts == "number")
             {
                 tokenType = Token.TokenType.BUILT_IN_TYPE_NAME;
             }
-            else if (tokenString.ToString() == "string")
+            else if (ts == "string")
             {
                 tokenType = Token.TokenType.BUILT_IN_TYPE_NAME;
             }
-			else if (tokenString.ToString() == "bool")
+			else if (ts == "bool")
             {
                 tokenType = Token.TokenType.BUILT_IN_TYPE_NAME;
             }
-			else if (tokenString.ToString() == "array")
+			else if (ts == "array")
             {
                 tokenType = Token.TokenType.BUILT_IN_TYPE_NAME;
             }
-			else if (tokenString.ToString() == "var")
+			else if (ts == "var")
             {
                 tokenType = Token.TokenType.BUILT_IN_TYPE_NAME;
             }
-            else if (tokenString.ToString() == "loop")
+            else if (ts == "loop")
             {
                 tokenType = Token.TokenType.LOOP;
             }
-            else if (tokenString.ToString() == "break")
+            else if (ts == "break")
             {
                 tokenType = Token.TokenType.BREAK;
             }
-			else if (tokenString.ToString() == "from")
+			else if (ts == "from")
             {
                 tokenType = Token.TokenType.FROM;
             }
-			else if (tokenString.ToString() == "to")
+			else if (ts == "to")
             {
                 tokenType = Token.TokenType.TO;
             }
-			else if (tokenString.ToString() == "end")
+			else if (ts == "end")
             {
                 tokenType = Token.TokenType.BLOCK_END;
             }
-			else if (tokenString.ToString() == "true" || tokenString.ToString() == "false")
+			else if (ts == "and")
+			{
+				tokenType = Token.TokenType.OPERATOR;
+				ts = "&&";
+			}
+			else if (ts == "or")
+			{
+				tokenType = Token.TokenType.OPERATOR;
+				ts = "||";
+			}
+			else if (ts == "true" || ts == "false")
             {
                 tokenType = Token.TokenType.BOOLEAN_VALUE;
             }
 
-			return new Token(tokenType, tokenString.ToString());
+			return new Token(tokenType, ts);
 		}
 		
 		private Token NUMBER(bool negative) {

@@ -47,7 +47,10 @@ namespace ProgrammingLanguageNr1
             PROGRAM_ROOT,
             COMMENT,
 			FROM,
-			TO
+			TO,
+
+			AND,
+			OR,
 		};
 		
 		public Token (TokenType tokenType, string tokenString)
