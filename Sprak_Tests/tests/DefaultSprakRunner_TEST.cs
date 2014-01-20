@@ -793,6 +793,42 @@ namespace ProgrammingLanguageNr1.tests
 			Assert.AreEqual(1, program.Output.Count);
 			Assert.AreEqual("yep", program.Output[0]);
 		}
+
+		[Test()]
+		public void AllowWhitespaceAsCommaInVectors ()
+		{
+			TextReader programString = File.OpenText("code82.txt");
+			DefaultSprakRunner program = new DefaultSprakRunner(programString);
+			
+			program.run();
+			
+			program.printOutputToConsole();
+			program.getCompileTimeErrorHandler().printErrorsToConsole();
+			
+			Assert.AreEqual(0, program.getCompileTimeErrorHandler().getErrors().Count);
+			Assert.AreEqual(0, program.getRuntimeErrorHandler().getErrors().Count);
+			
+			Assert.AreEqual(1, program.Output.Count);
+			Assert.AreEqual("b", program.Output[0]);
+		}
+
+		[Test()]
+		public void AllowWhitespaceAsCommaInFunctionCall ()
+		{
+			TextReader programString = File.OpenText("code83.txt");
+			DefaultSprakRunner program = new DefaultSprakRunner(programString);
+			
+			program.run();
+			
+			program.printOutputToConsole();
+			program.getCompileTimeErrorHandler().printErrorsToConsole();
+			
+			Assert.AreEqual(0, program.getCompileTimeErrorHandler().getErrors().Count);
+			Assert.AreEqual(0, program.getRuntimeErrorHandler().getErrors().Count);
+			
+			Assert.AreEqual(1, program.Output.Count);
+			Assert.AreEqual("500", program.Output[0]);
+		}
 	}
 }
 

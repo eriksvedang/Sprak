@@ -484,8 +484,11 @@ namespace ProgrammingLanguageNr1
 					if(lookAheadType(1) == Token.TokenType.BRACKET_RIGHT) {
 						break;
 					}
-					else {
+					else if(lookAheadType(1) == Token.TokenType.COMMA) {
 						match(Token.TokenType.COMMA);
+					}
+					else {
+						// whitespace is enough! i.e. [1 2 3]
 					}
 				}
 				arrayTree.ArraySize = length;
@@ -614,9 +617,9 @@ namespace ProgrammingLanguageNr1
 								 lookAheadType(1) == Token.TokenType.QUOTED_STRING ||
 								 lookAheadType(1) == Token.TokenType.NUMBER )
 						{
-							throw new Error("A comma is missing in argument list"
-								, Error.ErrorType.SYNTAX,
-								lookAhead(1).LineNr, lookAhead(1).LinePosition);
+							//throw new Error("A comma is missing in argument list", Error.ErrorType.SYNTAX, lookAhead(1).LineNr, lookAhead(1).LinePosition);
+							// allow missing commas in function call 
+							continue;
 						}
 						
 						break;
