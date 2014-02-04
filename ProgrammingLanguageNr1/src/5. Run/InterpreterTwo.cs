@@ -105,8 +105,12 @@ namespace ProgrammingLanguageNr1
 		
         public void SwapStackTopValueTo(ReturnValue pValue)
         {
-            m_valueStack.Pop();
-            m_valueStack.Push(pValue);
+			if(m_valueStack.Count > 0) {
+            	m_valueStack.Pop();
+            	m_valueStack.Push(pValue);
+			} else {
+				throw new Error("Can't return value (stack empty)");
+			}
         }
 
 		public void SetProgramToExecuteFunction (string functionName, ReturnValue[] args)
