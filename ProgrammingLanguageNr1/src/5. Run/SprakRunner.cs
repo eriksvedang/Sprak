@@ -374,7 +374,9 @@ namespace ProgrammingLanguageNr1
                 m_programIterator = null;
             }
             m_started = false;
-			m_interpreter.Reset();
+			if(m_interpreter != null) {
+				m_interpreter.Reset();
+			}
         }
 
 		public void ResetAtFunction(string functionName, ReturnValue[] args) 
