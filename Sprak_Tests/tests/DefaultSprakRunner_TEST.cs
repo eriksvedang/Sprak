@@ -720,6 +720,24 @@ namespace ProgrammingLanguageNr1.tests
 		}
 
 		[Test()]
+		public void RemoteFunctionCallShouldNotRunCodeInGlobalScope ()
+		{
+			TextReader programString = File.OpenText("code84.txt");
+			DefaultSprakRunner program = new DefaultSprakRunner(programString);
+
+			//program.run();
+			program.printOutputToConsole();
+			program.getCompileTimeErrorHandler().printErrorsToConsole();
+			
+			ReturnValue result = program.RunFunction ("double", new ReturnValue[] { new ReturnValue(32) });
+
+			Console.WriteLine ("Result from double: " + result.ToString ());
+			Assert.AreEqual (64, (int)result.NumberValue);
+
+			Assert.AreEqual(1, program.Output.Count);
+		}
+
+		[Test()]
 		public void ElseIfStatement ()
 		{
 			TextReader programString = File.OpenText("code76.txt");
