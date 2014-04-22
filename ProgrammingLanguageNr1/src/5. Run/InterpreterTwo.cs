@@ -554,9 +554,7 @@ namespace ProgrammingLanguageNr1
 			else if(type == ReturnValueType.STRING) {
 				result = new ReturnValue(valueToConvert.StringValue);
 			}
-			else {
-				throw new Exception("Can't happen!");
-			}
+
 #if WRITE_CONVERT_INFO
 			Console.WriteLine("Result: " + result.ToString());
 #endif

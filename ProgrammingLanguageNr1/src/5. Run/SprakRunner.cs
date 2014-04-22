@@ -103,6 +103,9 @@ namespace ProgrammingLanguageNr1
         // Used for the getInput() function
         public void SwapStackTopValueTo(ReturnValue pValue)
         {
+			if(pValue == null) {
+				return;
+			}
             m_interpreter.SwapStackTopValueTo(pValue);
         }
 		
