@@ -1,0 +1,6 @@
+array a = getRange()
+loop(a)
+	print(@)
+end
+
+number getRange() return from 10 to 13 end

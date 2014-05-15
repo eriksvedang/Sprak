@@ -1,0 +1,10 @@
+loopFunction(0, 100)
+
+void loopFunction( number start, number stop )
+	start = start + 1 
+end
+
+void foo( number now )
+	print("then")
+	print(now)
+end

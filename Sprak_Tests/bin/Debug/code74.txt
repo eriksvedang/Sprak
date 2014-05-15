@@ -1,0 +1,5 @@
+
+number double(number x)
+	return x * 2
+end
+

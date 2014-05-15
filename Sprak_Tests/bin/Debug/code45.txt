@@ -1,0 +1,8 @@
+
+array a
+
+a = newArray(5)
+
+
+
+

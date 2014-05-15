@@ -1,0 +1,16 @@
+number x
+
+number answer = foo(4, 5)
+
+void foo(number x, number y) {
+	x + y
+}
+
+
+number a
+
+if (a) {
+	number a	
+} else {
+	number b
+}

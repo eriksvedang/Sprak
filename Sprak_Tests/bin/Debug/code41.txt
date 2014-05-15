@@ -1,0 +1,4 @@
+number a=5.0
+string s = "hej"
+void f()
+p =1

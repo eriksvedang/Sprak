@@ -1,0 +1,4 @@
+
+number a = 0
+
+a = 5 - "hej"

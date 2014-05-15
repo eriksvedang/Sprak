@@ -1,0 +1,6 @@
+int x
+int €
+int y
+int @
+int z
+in§ q

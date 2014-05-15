@@ -1,0 +1,8 @@
+bool a
+bool b
+
+a = true
+b = false
+
+print(a)
+print(b)

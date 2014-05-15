@@ -1,0 +1,13 @@
+
+void print(string s)
+end
+
+
+print("hello")
+
+
+
+end
+
+
+fooo()

@@ -1,0 +1,11 @@
+
+a b c d e
+
+int int int
+
+void foo() {}
+
+d e f
+
+foo()
+

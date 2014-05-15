@@ -1,0 +1,5 @@
+number foo(string a)
+	print(a)
+end
+
+foo("hej", 42)

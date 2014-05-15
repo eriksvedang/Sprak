@@ -1,0 +1,1 @@
+number funky(number a, number b) { }
