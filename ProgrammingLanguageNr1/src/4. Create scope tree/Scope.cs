@@ -68,6 +68,9 @@ namespace ProgrammingLanguageNr1
         }
 		
 		public virtual void define(Symbol symbol) {
+			if(m_symbols.ContainsKey(symbol.getName())) {
+				throw new ProgrammingLanguageNr1.Error("Program already contains a symbol called " + symbol.getName());
+			}
 			m_symbols.Add(symbol.getName(), symbol);
 		}
 		
