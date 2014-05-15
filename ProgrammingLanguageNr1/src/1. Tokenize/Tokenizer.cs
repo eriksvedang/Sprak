@@ -8,6 +8,8 @@ namespace ProgrammingLanguageNr1
 {
 	public class Tokenizer
 	{
+		static char WINDOWS_LINE_ENDING_CRAP = (char)13;
+
         public Tokenizer(ErrorHandler errorHandler, bool stripOutComments)
 		{
 			m_errorHandler = errorHandler;
@@ -73,7 +75,7 @@ namespace ProgrammingLanguageNr1
 						
 					case '\n':
 						return NEW_LINE();
-						
+											
 					case '+': case '-': case '*': case '/': case '<': 
 					case '>': case '=': case '!': case '&': case '|':
 						return OPERATOR();
@@ -106,12 +108,15 @@ namespace ProgrammingLanguageNr1
 						else if ( isDIGIT() ) {
 							return NUMBER(false);
 						}
+						else if(m_currentChar == WINDOWS_LINE_ENDING_CRAP) {
+							return NEW_LINE();
+						}
 	                    else
 	                    {
 	                        m_errorHandler.errorOccured(
 	                            "Can't understand this character: \'" +
 	                            m_currentChar +
-	                            "\'",
+	                            "\' (int code " + (int)m_currentChar + ")",
 	                            Error.ErrorType.SYNTAX,
 	                            m_currentLine,
 	                            m_currentPosition);
@@ -156,7 +161,7 @@ namespace ProgrammingLanguageNr1
 		}
 
 		private Token NEW_LINE() {
-			while(m_currentChar == '\n') { // make several new-lines into a single one
+			while(m_currentChar == '\n' || m_currentChar == WINDOWS_LINE_ENDING_CRAP) { // make several new-lines into a single one
 				m_currentLine++;
 				m_currentPosition = 0;
 				readNextChar();

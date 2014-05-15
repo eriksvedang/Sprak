@@ -424,10 +424,11 @@ namespace ProgrammingLanguageNr1
                     result = new ReturnValue(!equalityTest().BoolValue);
                     break;
                 case "&&":
-                    rhs = PopValue().NumberValue;
-                    lhs = PopValue().NumberValue;
-                    result = new ReturnValue(lhs > 0 && rhs > 0);
+					result = new ReturnValue(PopValue().BoolValue && PopValue().BoolValue);
                     break;
+				case "||":
+					result = new ReturnValue(PopValue().BoolValue || PopValue().BoolValue);
+					break;
 
                 default:
                     throw new Exception("Operator " + CurrentNode.getTokenString() + " is not implemented yet!");
