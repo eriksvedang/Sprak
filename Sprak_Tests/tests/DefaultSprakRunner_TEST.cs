@@ -847,6 +847,18 @@ namespace ProgrammingLanguageNr1.tests
 			Assert.AreEqual(1, program.Output.Count);
 			Assert.AreEqual("500", program.Output[0]);
 		}
+
+		[Test()]
+		public void OrOperator ()
+		{
+			StringReader programString = new StringReader("var x = 2 or 5\nprint(x)");
+			
+			DefaultSprakRunner program = new DefaultSprakRunner(programString);
+			program.run();
+			
+			Assert.AreEqual("true", program.Output[0]);
+			Assert.AreEqual(0, program.getCompileTimeErrorHandler().getErrors().Count);
+		}
 	}
 }
 
