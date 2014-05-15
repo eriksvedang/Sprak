@@ -1,3 +1,0 @@
-print(MAGIC_NUMBER)
-print(MAGIC_BOOL)
-print(MAGIC_STRING)

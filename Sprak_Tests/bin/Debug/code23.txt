@@ -1,5 +1,0 @@
-number a = 3
-number b = 10.5
-
-print(-a + -b)
-print(-(2 * a))

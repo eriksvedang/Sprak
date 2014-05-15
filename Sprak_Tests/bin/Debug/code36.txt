@@ -1,9 +1,0 @@
-number a = 5
-
-if (-1)  
-	a = 10
-else 
-	a = 15
-end
-
-print(a)

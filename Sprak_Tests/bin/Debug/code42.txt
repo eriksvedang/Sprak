@@ -1,9 +1,0 @@
-if(1.0)
-	print("aj")
-end
-
-if(-5)
-	print("ja")
-else
-	print("nej")
-end

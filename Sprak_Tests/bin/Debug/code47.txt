@@ -1,6 +1,0 @@
-number a=10
-number b=a
-a++
-b--
-print(a)
-print(b)

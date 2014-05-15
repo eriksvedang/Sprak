@@ -1,7 +1,0 @@
-number foo()
-	print("hej")
-	
-	
-number bar() {
-	
-}

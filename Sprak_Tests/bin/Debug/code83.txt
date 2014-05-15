@@ -1,6 +1,0 @@
-
-void foo(number x, number y)
-	print(x * y)
-end
-
-foo(10 50)

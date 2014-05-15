@@ -1,7 +1,0 @@
-number foo()
-	
-end
-	
-number bar()
-	
-end

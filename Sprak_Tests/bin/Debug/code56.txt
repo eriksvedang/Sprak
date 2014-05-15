@@ -1,4 +1,0 @@
-
-array a = from 3 to 6
-
-print(a[2])

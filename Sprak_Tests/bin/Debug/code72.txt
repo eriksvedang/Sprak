@@ -1,3 +1,0 @@
-string a = "hej"
-var answer = ThisFunctionTakesANumber(a)
-print("The answer was: " + answer)

@@ -1,6 +1,0 @@
-
-print(foo())
-
-number foo()
-	
-end

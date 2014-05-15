@@ -1,3 +1,0 @@
-
-var l = ["a" "b" "c"]
-print(l[1])

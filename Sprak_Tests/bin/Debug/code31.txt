@@ -1,3 +1,0 @@
-number f()
-	return
-end

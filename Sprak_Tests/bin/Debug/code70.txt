@@ -1,4 +1,0 @@
-
-loop from 1 to
-
-end

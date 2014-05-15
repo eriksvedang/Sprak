@@ -1,8 +1,0 @@
-
-print("DONT PRINT ME")
-
-number double(number x)
-	print("PRINT ME")
-	return x * 2
-end
-

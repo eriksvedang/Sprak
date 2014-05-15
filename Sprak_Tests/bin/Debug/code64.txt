@@ -1,8 +1,0 @@
-array a = ["text", "20", -1.0, 3.5, true, false]
-
-loop a
-	print("--- " + @ + " ---")
-	print("string: " + toString(@))
-	print("number: " + toNumber(@))
-	print("bool:   " + toBool(@))
-end

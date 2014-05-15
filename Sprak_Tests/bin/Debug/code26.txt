@@ -1,5 +1,0 @@
-print(foo())
-
-number foo()
-	return 500
-end

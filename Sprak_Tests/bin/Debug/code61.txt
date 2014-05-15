@@ -1,4 +1,0 @@
-
-array words = ["fel", "hello", "fel", "fel"]
-
-print(words[1])

@@ -1,8 +1,0 @@
-
-number a;
-number b;
-number c;
-
-break
-
-print("hello")

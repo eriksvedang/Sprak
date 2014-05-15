@@ -1,8 +1,0 @@
-bool evil=false
-number age=42
-string name="unknown"
-
-print("Evil: " + evil)
-print("Age: " + age)
-print("Name: " + name)
-print("abc" + (1 + 2 + 3) + "def") ### bug???

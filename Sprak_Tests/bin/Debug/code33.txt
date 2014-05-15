@@ -1,4 +1,0 @@
-number a
-number b
-a = 
-number c
