@@ -859,6 +859,30 @@ namespace ProgrammingLanguageNr1.tests
 			Assert.AreEqual("true", program.Output[0]);
 			Assert.AreEqual(0, program.getCompileTimeErrorHandler().getErrors().Count);
 		}
+
+		[Test()]
+		public void OrOperator2 ()
+		{
+			// TODO: doesn't handle three 'or' statements in a row!
+
+			StringReader programString = new StringReader(
+				@"if false
+                    if true
+                  	  print(10)
+                    end
+                  else if 2 == 3 or 3 == 4 or 4 == 4
+					print(20)
+				  else
+					print(30)
+                  end"
+			);
+
+			DefaultSprakRunner program = new DefaultSprakRunner(programString);
+			program.run();
+
+			Assert.AreEqual("20", program.Output[0]);
+			Assert.AreEqual(0, program.getCompileTimeErrorHandler().getErrors().Count);
+		}
 	}
 }
 
