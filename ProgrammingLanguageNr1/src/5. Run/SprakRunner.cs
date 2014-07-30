@@ -15,6 +15,11 @@ namespace ProgrammingLanguageNr1
         new FunctionDocumentation("Count the number of elements in an array", new string[] { "The array" });
             result.Add(new FunctionDefinition("number", "count", new string[] { "array" }, new string[] { "a" }, new ExternalFunctionCreator.OnFunctionCall(API_count), functionDoc_count));
 
+			// Need an add-function???!
+//			FunctionDocumentation functionDoc_add =
+//				new FunctionDocumentation("Add an element to the end of the array", new string[] { "The element" });
+//			result.Add(new FunctionDefinition("array", "add", new string[] { "var" }, new string[] { "element" }, new ExternalFunctionCreator.OnFunctionCall(API_add), functionDoc_add));
+
             FunctionDocumentation functionDoc_allocate =
                 new FunctionDocumentation("Create a new array with X number of elements", new string[] { "How many elements the array should hold" });
             result.Add(new FunctionDefinition("number", "allocate", new string[] { "number" }, new string[] { "X" }, new ExternalFunctionCreator.OnFunctionCall(API_allocate), functionDoc_allocate));
@@ -50,6 +55,15 @@ namespace ProgrammingLanguageNr1
             FunctionDocumentation functionDoc_type =
                 new FunctionDocumentation("Get the type of something (returns a string)", new string[] { "The value to get the type of" });
             result.Add(new FunctionDefinition("string", "type", new string[] { "var" }, new string[] { "value" }, new ExternalFunctionCreator.OnFunctionCall(API_type), functionDoc_type));
+
+			FunctionDocumentation functionDoc_round =
+				new FunctionDocumentation("Round a number to the nearest integer", new string[] { "The number to round" });
+			result.Add(new FunctionDefinition("number", "round", new string[] { "var" }, new string[] { "x" }, new ExternalFunctionCreator.OnFunctionCall(API_round), functionDoc_round));
+
+			FunctionDocumentation functionDoc_int =
+				new FunctionDocumentation("Remove the decimals of a float", new string[] { "The number to convert to an integer" });
+			result.Add(new FunctionDefinition("number", "int", new string[] { "var" }, new string[] { "x" }, new ExternalFunctionCreator.OnFunctionCall(API_int), functionDoc_int));
+
             return result;
         }
         private static List<FunctionDefinition> __builtInFunctions = null;
@@ -276,6 +290,13 @@ namespace ProgrammingLanguageNr1
 			return new ReturnValue(array);
 		}
 
+//		private static ReturnValue API_add(ReturnValue[] args)
+//		{
+//			ReturnValue elem = args [0];
+//
+//			array.Add(i, new ReturnValue(ReturnValueType.NUMBER));
+//		}
+
         private static ReturnValue API_range(ReturnValue[] args)
         {
 			int start = (int)args[0].NumberValue;
@@ -318,6 +339,16 @@ namespace ProgrammingLanguageNr1
         private static ReturnValue API_toBool(ReturnValue[] args)
         {
 			return new ReturnValue(args[0].BoolValue);
+		}
+
+		private static ReturnValue API_round(ReturnValue[] args)
+		{
+			return new ReturnValue((float)Math.Round(args[0].NumberValue));
+		}
+
+		private static ReturnValue API_int(ReturnValue[] args)
+		{
+			return new ReturnValue((int)args[0].NumberValue);
 		}
 		
 		private Scope CreateScopeTree(AST ast)

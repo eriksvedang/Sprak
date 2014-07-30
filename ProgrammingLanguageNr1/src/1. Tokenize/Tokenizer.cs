@@ -217,6 +217,18 @@ namespace ProgrammingLanguageNr1
 				tokenString.Append('=');
 				readNextChar();
 			}
+			else if( firstChar == '*' && m_currentChar == '=') {
+				tokenString.Append('=');
+				readNextChar();
+			}
+			else if( firstChar == '-' && m_currentChar == '=') {
+				tokenString.Append('=');
+				readNextChar();
+			}
+			else if( firstChar == '/' && m_currentChar == '=') {
+				tokenString.Append('=');
+				readNextChar();
+			}
 			
 			return new Token(Token.TokenType.OPERATOR, tokenString.ToString());
 		}

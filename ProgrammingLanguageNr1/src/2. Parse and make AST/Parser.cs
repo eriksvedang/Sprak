@@ -164,7 +164,7 @@ namespace ProgrammingLanguageNr1
 				{
 					statementTree = assignmentToArray();
 				}
-				else if(lookAhead(2).getTokenString() == "+=") 
+				else if(lookAhead(2).getTokenString() == "+=" || lookAhead(2).getTokenString() == "*=" || lookAhead(2).getTokenString() == "-=" || lookAhead(2).getTokenString() == "/=")
 				{
 					statementTree = assignmentAndOperator();
 				}
@@ -776,6 +776,15 @@ Console.WriteLine("Popping out from ifElse branch");
 				
 				if(operatorToken.getTokenString() == "+=") {
 					selfOperation = new AST(new Token(Token.TokenType.OPERATOR, "+"));
+				}
+				else if(operatorToken.getTokenString() == "*=") {
+					selfOperation = new AST(new Token(Token.TokenType.OPERATOR, "*"));
+				}
+				else if(operatorToken.getTokenString() == "-=") {
+					selfOperation = new AST(new Token(Token.TokenType.OPERATOR, "-"));
+				}
+				else if(operatorToken.getTokenString() == "/=") {
+					selfOperation = new AST(new Token(Token.TokenType.OPERATOR, "/"));
 				}
 				else {
 					throw new Error("Can't handle the operator '" + operatorToken.getTokenString() + "'",
