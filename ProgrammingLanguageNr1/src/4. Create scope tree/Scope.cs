@@ -81,27 +81,27 @@ namespace ProgrammingLanguageNr1
         public override string ToString()
         {
             return m_name;
+			/*
+	        StringBuilder s = new StringBuilder();
 
-            //StringBuilder s = new StringBuilder();
+	        s.Append("\nStart of " + getName());
+	        int i = 0;
+	        foreach (Symbol symbol in m_symbols.Values)
+	        {
+	            if (i == 0)
+	            {
+	                s.Append("\n\t");
+	            }
+	            s.Append(symbol.ToString());
+	            if (i < m_symbols.Count - 1)
+	            {
+	                s.Append(", ");
+	            }
+	            i++;
+	        }
+	        s.Append("\nEnd of " + getName());
 
-            //s.Append("\nStart of " + getName());
-            //int i = 0;
-            //foreach (Symbol symbol in m_symbols.Values)
-            //{
-            //    if (i == 0)
-            //    {
-            //        s.Append("\n\t");
-            //    }
-            //    s.Append(symbol.ToString());
-            //    if (i < m_symbols.Count - 1)
-            //    {
-            //        s.Append(", ");
-            //    }
-            //    i++;
-            //}
-            //s.Append("\nEnd of " + getName());
-
-            //return s.ToString();
+	        return s.ToString();*/
         }
 
         public void PushMemorySpace(MemorySpace pMemorySpace)
