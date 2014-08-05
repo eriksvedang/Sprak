@@ -117,6 +117,10 @@ namespace ProgrammingLanguageNr1
         // Used for the getInput() function
         public void SwapStackTopValueTo(ReturnValue pValue)
         {
+			if (m_interpreter == null) {
+				// TODO: this can happen, like when a function resets the code of itself when running
+				return;
+			}
 			if(pValue == null) {
 				return;
 			}
