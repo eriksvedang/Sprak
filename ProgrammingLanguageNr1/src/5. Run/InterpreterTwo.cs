@@ -115,7 +115,7 @@ namespace ProgrammingLanguageNr1
 
 		public void SetProgramToExecuteFunction (string functionName, ReturnValue[] args)
 		{
-			//Console.WriteLine ("Will execute " + functionName + " in global scope " + m_globalScope);
+			Console.WriteLine ("Will execute " + functionName + " in global scope " + m_globalScope);
 
 			FunctionSymbol functionSymbol = (FunctionSymbol)m_globalScope.resolve(functionName);
 			//Console.WriteLine("Found function symbol: " + functionSymbol.ToString());
@@ -142,6 +142,8 @@ namespace ProgrammingLanguageNr1
 					for (int i = args.Length - 1; i >= 0; i--) {
 						PushValue(args[i]); // reverse order
 					}
+
+					Console.WriteLine ("Ready to start running function " + functionName + "!");
 				} else {
 					throw new Error(functionName + " has got no function definition node!");
 				}
