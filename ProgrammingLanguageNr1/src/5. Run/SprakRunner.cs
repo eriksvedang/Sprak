@@ -420,8 +420,8 @@ namespace ProgrammingLanguageNr1
 		public void ResetAtFunction(string functionName, ReturnValue[] args) 
 		{
 			if (m_interpreter == null) {
-				//throw new Exception("Interpreter is null!");
-				return;
+				throw new Exception("Interpreter is null!");
+				//return;
 			}
 			Reset ();
 			m_interpreter.SetProgramToExecuteFunction (functionName, args);

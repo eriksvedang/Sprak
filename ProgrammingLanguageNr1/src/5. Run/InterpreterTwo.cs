@@ -1,6 +1,7 @@
 //#define WRITE_DEBUG_INFO
 //#define PRINT_STACK
 //#define WRITE_CONVERT_INFO
+//#define LOG_SCOPES
 
 using System;
 using System.Collections.Generic;
@@ -35,6 +36,8 @@ namespace ProgrammingLanguageNr1
 			m_globalMemorySpace = new MemorySpace("globals", m_ast.getChild (0), m_globalScope, m_memorySpaceNodeListCache);
 			m_currentMemorySpace = m_globalMemorySpace;
 
+			m_memorySpaceStack.Clear ();
+
 			m_currentScope = m_globalScope;
 			m_currentScope.ClearMemorySpaces();
 			m_currentScope.PushMemorySpace(m_currentMemorySpace);
@@ -61,13 +64,13 @@ namespace ProgrammingLanguageNr1
         private void PushNewScope(Scope newScope, string nameOfNewMemorySpace, AST startNode) {
 			Debug.Assert(newScope != null);
 			Debug.Assert(startNode != null);
-#if WRITE_DEBUG_INFO
-            Console.WriteLine("Pushed new scope " + newScope.getName());
-#endif
             m_currentScope = newScope;
             m_memorySpaceStack.Push(m_currentMemorySpace);
             m_currentMemorySpace = new MemorySpace(nameOfNewMemorySpace, startNode, m_currentScope, m_memorySpaceNodeListCache);
             m_currentScope.PushMemorySpace(m_currentMemorySpace);
+#if LOG_SCOPES
+			Console.WriteLine("Pushed new scope " + newScope.getName() + " with memory space " + m_currentMemorySpace.getName() + " " + DumpStack());
+#endif
         }
 
         private void PopCurrentScope()
@@ -76,7 +79,7 @@ namespace ProgrammingLanguageNr1
             m_currentMemorySpace = m_memorySpaceStack.Pop();
             m_currentScope = m_currentMemorySpace.Scope;
             m_currentScope.PushMemorySpace(m_currentMemorySpace);
-#if WRITE_DEBUG_INFO
+#if LOG_SCOPES
             Console.WriteLine("Popped back to scope " + m_currentScope.getName());
 #endif
         }
@@ -109,13 +112,15 @@ namespace ProgrammingLanguageNr1
             	m_valueStack.Pop();
             	m_valueStack.Push(pValue);
 			} else {
+				System.Diagnostics.StackTrace t = new System.Diagnostics.StackTrace();
+				Console.WriteLine("SwapStackTopValueTo '" + pValue + "' but stack is empty, stacktrace: " + t.ToString());
 				throw new Error("Can't return value (stack empty)");
 			}
         }
 
 		public void SetProgramToExecuteFunction (string functionName, ReturnValue[] args)
 		{
-			Console.WriteLine ("Will execute " + functionName + " in global scope " + m_globalScope);
+			//Console.WriteLine ("Will execute '" + functionName + "' in global scope '" + m_globalScope + "'");
 
 			FunctionSymbol functionSymbol = (FunctionSymbol)m_globalScope.resolve(functionName);
 			//Console.WriteLine("Found function symbol: " + functionSymbol.ToString());
@@ -137,13 +142,14 @@ namespace ProgrammingLanguageNr1
 					m_currentScope = functionDefinitionNode.getScope();
 					m_currentScope.ClearMemorySpaces();
 
-					PushNewScope(functionDefinitionNode.getScope(), functionName + "_memorySpace" + functionCounter++, functionDefinitionNode);
+					string nameOfNewMemorySpace = functionName + "_memorySpace" + functionCounter++;
+					PushNewScope(functionDefinitionNode.getScope(), nameOfNewMemorySpace, functionDefinitionNode);
 
 					for (int i = args.Length - 1; i >= 0; i--) {
 						PushValue(args[i]); // reverse order
 					}
 
-					Console.WriteLine ("Ready to start running function " + functionName + "!");
+					//Console.WriteLine ("Ready to start running function '" + functionName + "' with memory space '" + nameOfNewMemorySpace + "'");
 				} else {
 					throw new Error(functionName + " has got no function definition node!");
 				}
@@ -161,6 +167,8 @@ namespace ProgrammingLanguageNr1
             while (!m_currentMemorySpace.Next())
             {
                 //Console.WriteLine(m_currentMemorySpace.getName() + " is out of statements to execute.");
+				//Console.WriteLine (DumpStack ());
+
 				if (m_memorySpaceStack.Count == m_topLevelDepth)
                 {
                     //Console.WriteLine("Stack is empty, finishing execution.");
@@ -668,9 +676,10 @@ namespace ProgrammingLanguageNr1
         public string DumpStack()
         {
             System.Text.StringBuilder b = new System.Text.StringBuilder();
+			b.Append ("STACK:");
             foreach (MemorySpace s in m_memorySpaceStack)
             {
-                b.Append("stack: \n" + s.ToString());
+				b.Append(" " + s.getName());
             }
             return b.ToString();
         }
