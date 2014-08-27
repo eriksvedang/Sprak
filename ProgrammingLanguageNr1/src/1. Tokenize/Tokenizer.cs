@@ -93,6 +93,7 @@ namespace ProgrammingLanguageNr1
 						return BRACKET_RIGHT();
 						
 					case '\"':
+				    case '\'':
 						return QUOTED_STRING();
 						
 					case ',':
@@ -256,7 +257,7 @@ namespace ProgrammingLanguageNr1
 		private Token QUOTED_STRING() {
 			StringBuilder tokenString = new StringBuilder();
 			readNextChar();
-            while (m_currentChar != '\"' && m_currentChar != '\n' && m_currentChar != '\0')
+			while (m_currentChar != '\"' && m_currentChar != '\'' && m_currentChar != '\n' && m_currentChar != '\0')
             {
 				tokenString.Append(m_currentChar);
 				readNextChar();
