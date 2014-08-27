@@ -849,6 +849,18 @@ namespace ProgrammingLanguageNr1.tests
 		}
 
 		[Test()]
+		public void BinaryOperatorSimpleCase ()
+		{
+			StringReader programString = new StringReader("var a = 3 + 5 + 6\nprint(a)");
+
+			DefaultSprakRunner program = new DefaultSprakRunner(programString);
+			program.run();
+
+			Assert.AreEqual("14", program.Output[0]);
+			Assert.AreEqual(0, program.getCompileTimeErrorHandler().getErrors().Count);
+		}
+
+		[Test()]
 		public void OrOperator ()
 		{
 			StringReader programString = new StringReader("var x = 2 or 5\nprint(x)");
@@ -866,11 +878,29 @@ namespace ProgrammingLanguageNr1.tests
 			// TODO: doesn't handle three 'or' statements in a row!
 
 			StringReader programString = new StringReader(
+				@"if 2 == 3 or 3 == 4 or 4 == 4
+					print(20)
+				  else
+					print(30)
+                  end"
+			);
+
+			DefaultSprakRunner program = new DefaultSprakRunner(programString);
+			program.run();
+
+			Assert.AreEqual("20", program.Output[0]);
+			Assert.AreEqual(0, program.getCompileTimeErrorHandler().getErrors().Count);
+		}
+
+		[Test()]
+		public void OrOperator3 ()
+		{
+			StringReader programString = new StringReader(
 				@"if false
                     if true
                   	  print(10)
                     end
-                  else if 2 == 3 or 3 == 4 or 4 == 4
+                  else if 2 == 3 || 3 == 4 || 4 == 4
 					print(20)
 				  else
 					print(30)

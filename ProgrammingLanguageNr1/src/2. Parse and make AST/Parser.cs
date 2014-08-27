@@ -1,4 +1,4 @@
-//#define WRITE_DEBUG_INFO
+#define WRITE_DEBUG_INFO
 
 using System;
 using System.Collections.Generic;
@@ -254,7 +254,9 @@ namespace ProgrammingLanguageNr1
 				)
 			{
 				Token operatorToken = match(Token.TokenType.OPERATOR);
-				AST rhs = comparisonExpression();
+				Console.WriteLine ("Matched operator token " + operatorToken.getTokenString() + " at line " + operatorToken.LineNr + " and pos " + operatorToken.LinePosition);
+
+				AST rhs = booleanExpression();
 				checkLeftHandSide(lhs, operatorToken);
 				checkRightHandSide(rhs, operatorToken);
 				
