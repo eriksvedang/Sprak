@@ -1,4 +1,4 @@
-#define WRITE_DEBUG_INFO
+//#define WRITE_DEBUG_INFO
 
 using System;
 using System.Collections.Generic;

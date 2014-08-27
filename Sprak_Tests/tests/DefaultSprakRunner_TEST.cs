@@ -913,6 +913,25 @@ namespace ProgrammingLanguageNr1.tests
 			Assert.AreEqual("20", program.Output[0]);
 			Assert.AreEqual(0, program.getCompileTimeErrorHandler().getErrors().Count);
 		}
+
+		[Test()]
+		public void AndOperator ()
+		{
+			StringReader programString = new StringReader(
+				@"var x = true and true and true
+                  var y = true and true and false
+                  print(x)
+                  print(y)"
+			);
+
+			DefaultSprakRunner program = new DefaultSprakRunner(programString);
+			program.run();
+
+			Assert.AreEqual("true", program.Output[0]);
+			Assert.AreEqual("false", program.Output[1]);
+
+			Assert.AreEqual(0, program.getCompileTimeErrorHandler().getErrors().Count);
+		}
 	}
 }
 
