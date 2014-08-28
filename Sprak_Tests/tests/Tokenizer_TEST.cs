@@ -102,5 +102,23 @@ namespace ProgrammingLanguageNr1.tests
 			Assert.AreEqual(Token.TokenType.EOF, tokens[1].getTokenType());
 			Assert.AreEqual("hej", tokens[0].getTokenString());
 		}
+
+		[Test()]
+		public void TokenizeDoubleQuotedCodeWithSingleQuoteInText ()
+		{
+			StringReader programString = new StringReader(
+				"\"can't\""
+			);
+
+			Tokenizer tokenizer = new Tokenizer(s_errorHandler, true);
+			List<Token> tokens = tokenizer.process(programString);
+
+			tokens.ForEach (t => Console.WriteLine(t.getTokenType().ToString() + ", " + t.getTokenString()));
+
+			Assert.AreEqual(2, tokens.Count);
+			Assert.AreEqual(Token.TokenType.QUOTED_STRING, tokens[0].getTokenType());
+			Assert.AreEqual(Token.TokenType.EOF, tokens[1].getTokenType());
+			Assert.AreEqual("can't", tokens[0].getTokenString());
+		}
 	}
 }

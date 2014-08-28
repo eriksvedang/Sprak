@@ -135,6 +135,12 @@ namespace ProgrammingLanguageNr1
 				AST_FunctionDefinitionNode functionDefinitionNode = (AST_FunctionDefinitionNode)functionSymbol.getFunctionDefinitionNode();
 
 				if (functionDefinitionNode != null) {
+
+					int nrOfParameters = functionDefinitionNode.getChild(2).getChildren().Count;
+					if (nrOfParameters != args.Length) {
+						throw new Error ("The function " + functionName + " takes " + nrOfParameters + " arguments, not " + args.Length);
+					}
+
 					Reset();
 
 					m_topLevelDepth = 1;

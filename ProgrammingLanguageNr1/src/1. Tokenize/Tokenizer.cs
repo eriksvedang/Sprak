@@ -93,8 +93,10 @@ namespace ProgrammingLanguageNr1
 						return BRACKET_RIGHT();
 						
 					case '\"':
+						return QUOTED_STRING(true);
+
 				    case '\'':
-						return QUOTED_STRING();
+						return QUOTED_STRING(false);
 						
 					case ',':
 						return COMMA();
@@ -254,14 +256,17 @@ namespace ProgrammingLanguageNr1
 			return new Token(Token.TokenType.BRACKET_RIGHT, "]");
 		}
 		
-		private Token QUOTED_STRING() {
+		private Token QUOTED_STRING(bool pDoubleQuoted) {
+			var terminatingQuoteChar = pDoubleQuoted ? '\"' : '\'';
+
 			StringBuilder tokenString = new StringBuilder();
 			readNextChar();
-			while (m_currentChar != '\"' && m_currentChar != '\'' && m_currentChar != '\n' && m_currentChar != '\0')
+			while (m_currentChar != terminatingQuoteChar && m_currentChar != '\n' && m_currentChar != '\0')
             {
 				tokenString.Append(m_currentChar);
 				readNextChar();
-			} 
+			}
+
 			readNextChar();
 			return new Token(Token.TokenType.QUOTED_STRING, tokenString.ToString());
 		}

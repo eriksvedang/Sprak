@@ -932,6 +932,7 @@ namespace ProgrammingLanguageNr1.tests
 
 			Assert.AreEqual(0, program.getCompileTimeErrorHandler().getErrors().Count);
 		}
+			
 	}
 }
 
