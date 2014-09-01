@@ -80,7 +80,7 @@ namespace ProgrammingLanguageNr1
         private string GetNodeString( AST pNode )
         {
 			string result;
-			result = /*pNode.getTokenType().ToString() + " : " + */ pNode.ToString();
+			result = pNode.getTokenType().ToString() + " : " + pNode.ToString();
 			if(_printExecutions) {
 				result += " : " + pNode.Executions;
 			}

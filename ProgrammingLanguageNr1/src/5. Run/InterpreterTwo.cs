@@ -532,8 +532,16 @@ namespace ProgrammingLanguageNr1
 
 		void PushValueFromToken ()
 		{
+			/*#if DEBUG
+			if (CurrentNode == null) {
+				throw new Exception("Current node is null");
+			}
+			#endif*/
+
 			TokenWithValue t = CurrentNode.getToken() as TokenWithValue;
-			Debug.Assert(t != null, "Can't convert current node to TokenWithValue: " + CurrentNode);
+			if (t == null) {
+				throw new Exception ("Can't convert current node to TokenWithValue: " + CurrentNode + ", it's of type " + CurrentNode.getTokenType());
+			}
 			PushValue(t.getValue());
 		}
 

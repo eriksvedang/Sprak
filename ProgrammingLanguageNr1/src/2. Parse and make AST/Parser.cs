@@ -113,14 +113,9 @@ namespace ProgrammingLanguageNr1
 			AST statementTree = null;
 
 			if (lookAheadType(1) == Token.TokenType.NAME &&
-			             lookAheadType(2) == Token.TokenType.NAME) {
+			    lookAheadType(2) == Token.TokenType.NAME) {
 				throw new Error("Can't understand what the word '" + lookAhead(1).getTokenString() + "' means here", Error.ErrorType.SYNTAX, lookAhead(1).LineNr, lookAhead(1).LinePosition);
-			} /*else if (lookAheadType(1) == Token.TokenType.NAME &&
-			         lookAheadType(2) == Token.TokenType.DOT &&
-			         lookAheadType(3) == Token.TokenType.NAME) 
-			{
-				
-			} */
+			}
 			else if ( lookAheadType(1) == Token.TokenType.BUILT_IN_TYPE_NAME &&
 				 lookAheadType(2) == Token.TokenType.NAME &&
 				 lookAheadType(3) == Token.TokenType.PARANTHESIS_LEFT ) 
@@ -329,7 +324,7 @@ namespace ProgrammingLanguageNr1
 			Console.WriteLine("multiplication expression");
 #endif
 			
-			AST lhs = parenthesisExpression();
+			AST lhs = dotNotationExpression();
 			
 			if ( lookAhead(1).getTokenString() == "*" ||
 				 lookAhead(1).getTokenString() == "/" ) 
@@ -344,6 +339,64 @@ namespace ProgrammingLanguageNr1
 				multiplicationTree.addChild(rhs);
 				return multiplicationTree;
 				
+			} else {
+				return lhs;
+			}
+		}
+
+		private AST dotNotationExpression() {
+			#if WRITE_DEBUG_INFO
+			Console.WriteLine("dot notation expression");
+			#endif
+
+			AST lhs = parenthesisExpression();
+
+			if ( lookAhead(1).getTokenType() == Token.TokenType.DOT)
+			{
+				match (Token.TokenType.DOT);
+
+				#if WRITE_DEBUG_INFO
+				Console.WriteLine("It's a dot notation expression!!! for example: object.f(a, b)");
+				#endif
+
+				Token nameToken = match(Token.TokenType.NAME);
+
+				AST functionCallTree =
+					new AST_FunctionCall(new Token(Token.TokenType.FUNCTION_CALL, "RemoteFunctionCall", nameToken.LineNr, nameToken.LinePosition));
+
+				// These are the argument sent through the remote function call
+				AST innerArgumentList = FunctionArgumentList ();
+
+				// The call to RemoteFunctionCall always takes three args: <id>, <functionName> & <args>
+				AST argumentList = new AST (new Token (Token.TokenType.NODE_GROUP, "<ARGUMENT_LIST>"));
+
+				// <ID>
+				argumentList.addChild (lhs); // use whatever is on the left side of the dot in the function (method rather) call (.)
+				Console.WriteLine ("Method call ID: ");
+				(new ASTPainter()).PaintAST(lhs);
+
+				// <FunctionName>
+				Token functionNameToken = new TokenWithValue (
+					Token.TokenType.QUOTED_STRING, 
+					nameToken.getTokenString (), 
+					nameToken.LineNr, 
+					nameToken.LinePosition,
+					new ReturnValue(nameToken.getTokenString()));
+
+				argumentList.addChild (new AST(functionNameToken));
+
+				// <args>
+				AST_ArrayEndSignal argsArray = new AST_ArrayEndSignal(new Token(Token.TokenType.ARRAY_END_SIGNAL, "<ARRAY>"));
+				Console.WriteLine ("Inner args:");
+				foreach (var child in innerArgumentList.getChildren()) {
+					Console.WriteLine (child.getTokenString ());
+					argsArray.addChild (child);
+				}
+				argsArray.ArraySize = innerArgumentList.getChildren().Count; // DAMNIT DON'T FORGET THIS ONE
+				argumentList.addChild (argsArray); // send the arguments as an array to RemoteFunctionCall
+
+				functionCallTree.addChild(argumentList);
+				return functionCallTree;
 			} else {
 				return lhs;
 			}
@@ -579,61 +632,51 @@ namespace ProgrammingLanguageNr1
             AST functionCallTree =
                 new AST_FunctionCall(new Token(Token.TokenType.FUNCTION_CALL, nameToken.getTokenString(), nameToken.LineNr, nameToken.LinePosition));
 			
-			match(Token.TokenType.PARANTHESIS_LEFT);
-			
-			functionCallTree.getToken().LineNr = nameToken.LineNr;
-			functionCallTree.getToken().LinePosition = nameToken.LinePosition;
+			var argumentList = FunctionArgumentList ();
 
-            AST argumentList = new AST(new Token(Token.TokenType.NODE_GROUP, "<ARGUMENT_LIST>"));
-			
-			if (lookAheadType(1) != Token.TokenType.PARANTHESIS_RIGHT) {
+			functionCallTree.getToken ().LineNr = nameToken.LineNr;
+			functionCallTree.getToken ().LinePosition = nameToken.LinePosition;
+            functionCallTree.addChild(argumentList);
 
-				while(true) {
-					
-					AST expressionTree = expression();
-					
-					if(expressionTree != null) 
-					{
-						argumentList.addChild(expressionTree); // add arguments as subtrees
+			return functionCallTree;
+		}
+
+		AST FunctionArgumentList ()
+		{
+			match (Token.TokenType.PARANTHESIS_LEFT);
+
+			AST argumentList = new AST (new Token (Token.TokenType.NODE_GROUP, "<ARGUMENT_LIST>"));
+			if (lookAheadType (1) != Token.TokenType.PARANTHESIS_RIGHT) {
+				while (true) {
+					AST expressionTree = expression ();
+					if (expressionTree != null) {
+						argumentList.addChild (expressionTree);
+						// add arguments as subtrees
 					}
-					else 
-					{
-						throw new Error("Something is wrong with the argument list", Error.ErrorType.SYNTAX,
-							lookAhead(1).LineNr, lookAhead(1).LinePosition);
+					else {
+						throw new Error ("Something is wrong with the argument list", Error.ErrorType.SYNTAX, lookAhead (1).LineNr, lookAhead (1).LinePosition);
 					}
-					
-					if (lookAheadType(1) == Token.TokenType.COMMA) {
-						match(Token.TokenType.COMMA);
+					if (lookAheadType (1) == Token.TokenType.COMMA) {
+						match (Token.TokenType.COMMA);
 						continue;
-					} else {
-						
+					}
+					else {
 						// Is something wrong?
-						if( lookAheadType(1) == Token.TokenType.NEW_LINE ||
-							lookAheadType(1) == Token.TokenType.EOF ) 
-						{
-							throw new Error("Ending parenthesis is missing in function call"
-								, Error.ErrorType.SYNTAX,
-								lookAhead(1).LineNr, lookAhead(1).LinePosition);
+						if (lookAheadType (1) == Token.TokenType.NEW_LINE || lookAheadType (1) == Token.TokenType.EOF) {
+							throw new Error ("Ending parenthesis is missing in function call", Error.ErrorType.SYNTAX, lookAhead (1).LineNr, lookAhead (1).LinePosition);
 						}
-						else if( lookAheadType(1) == Token.TokenType.NAME ||
-								 lookAheadType(1) == Token.TokenType.QUOTED_STRING ||
-								 lookAheadType(1) == Token.TokenType.NUMBER )
-						{
-							//throw new Error("A comma is missing in argument list", Error.ErrorType.SYNTAX, lookAhead(1).LineNr, lookAhead(1).LinePosition);
-							// allow missing commas in function call 
-							continue;
-						}
-						
+						else
+							if (lookAheadType (1) == Token.TokenType.NAME || lookAheadType (1) == Token.TokenType.QUOTED_STRING || lookAheadType (1) == Token.TokenType.NUMBER) {
+								//throw new Error("A comma is missing in argument list", Error.ErrorType.SYNTAX, lookAhead(1).LineNr, lookAhead(1).LinePosition);
+								// allow missing commas in function call 
+								continue;
+							}
 						break;
 					}
 				}
 			}
-			
-			match(Token.TokenType.PARANTHESIS_RIGHT);
-
-            functionCallTree.addChild(argumentList);
-
-			return functionCallTree;
+			match (Token.TokenType.PARANTHESIS_RIGHT);
+			return argumentList;
 		}
 		
 		private AST ifThenElse() {

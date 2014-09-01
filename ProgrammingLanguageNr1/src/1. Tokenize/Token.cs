@@ -87,6 +87,11 @@ namespace ProgrammingLanguageNr1
 				return m_linePosition;
 			}
 		}
+
+		public override string ToString ()
+		{
+			return getTokenType () + " " + getTokenString ();
+		}
 		
 		protected TokenType m_tokenType;
 		string m_tokenString;

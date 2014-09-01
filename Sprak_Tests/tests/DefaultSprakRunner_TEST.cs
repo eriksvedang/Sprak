@@ -932,7 +932,106 @@ namespace ProgrammingLanguageNr1.tests
 
 			Assert.AreEqual(0, program.getCompileTimeErrorHandler().getErrors().Count);
 		}
-			
+
+		ReturnValue ExternalFunctionCall(ReturnValue[] args) {
+			string argsAsText = "id = " + args [0] + ", functionName = " + args [1] + ", args = " + args [2];
+			Console.WriteLine("Fake external function call with args " + argsAsText);
+			s_output.Add(argsAsText);
+			return new ReturnValue();
+		}
+
+		[Test()]
+		public void DotNotation ()
+		{
+			s_output = new List<string> ();
+
+			StringReader programString = new StringReader(
+				@"var id = 100
+                  id.foo(42, true)"
+			);
+
+			FunctionDefinition[] funcs = new FunctionDefinition[1];
+			funcs[0] = new FunctionDefinition("void", 
+				"RemoteFunctionCall",
+				new string[] { "number", "string", "array" },
+				new string[] { "id", "functionName", "args" }, 
+				new ExternalFunctionCreator.OnFunctionCall(ExternalFunctionCall),
+				FunctionDocumentation.Default()
+			);
+
+			VariableDefinition[] vars = new VariableDefinition[] {};
+
+			SprakRunner program = new SprakRunner(programString, funcs, vars);
+
+			program.run();
+
+			Assert.AreEqual (1, s_output.Count);
+			Assert.AreEqual ("id = 100, functionName = foo, args = [42, true]", s_output[0]);
+			Assert.AreEqual(0, program.getCompileTimeErrorHandler().getErrors().Count);
+		}
+
+		[Test()]
+		public void RemoteFunctionCallWithoutDotNotation ()
+		{
+			s_output = new List<string> ();
+
+			StringReader programString = new StringReader(
+				@"var id = 100
+                  RemoteFunctionCall(id, 'foo', [42, true])"
+			);
+
+			FunctionDefinition[] funcs = new FunctionDefinition[1];
+			funcs[0] = new FunctionDefinition("void", 
+				"RemoteFunctionCall",
+				new string[] { "number", "string", "array" },
+				new string[] { "id", "functionName", "args" }, 
+				new ExternalFunctionCreator.OnFunctionCall(ExternalFunctionCall),
+				FunctionDocumentation.Default()
+			);
+
+			VariableDefinition[] vars = new VariableDefinition[] {};
+
+			SprakRunner program = new SprakRunner(programString, funcs, vars);
+
+			program.run();
+
+			Assert.AreEqual (1, s_output.Count);
+			Assert.AreEqual ("id = 100, functionName = foo, args = [42, true]", s_output[0]);
+			Assert.AreEqual(0, program.getCompileTimeErrorHandler().getErrors().Count);
+		}
+
+		[Test()]
+		public void ComplexDotNotation ()
+		{
+			s_output = new List<string> ();
+
+			StringReader programString = new StringReader(
+				@"var a = 10
+                  number inc(number x)
+					 return x + 5
+                  end
+                  (inc(a*a)).foo(inc(1), inc(2), [inc(3), inc(4)])"
+			);
+
+			FunctionDefinition[] funcs = new FunctionDefinition[1];
+			funcs[0] = new FunctionDefinition("void", 
+				"RemoteFunctionCall",
+				new string[] { "number", "string", "array" },
+				new string[] { "id", "functionName", "args" }, 
+				new ExternalFunctionCreator.OnFunctionCall(ExternalFunctionCall),
+				FunctionDocumentation.Default()
+			);
+
+			VariableDefinition[] vars = new VariableDefinition[] {};
+
+			SprakRunner program = new SprakRunner(programString, funcs, vars);
+
+			program.run();
+
+			Assert.AreEqual (1, s_output.Count);
+			Assert.AreEqual ("id = 105, functionName = foo, args = [6, 7, [8, 9]]", s_output[0]);
+			Assert.AreEqual(0, program.getCompileTimeErrorHandler().getErrors().Count);
+		}
 	}
 }
 

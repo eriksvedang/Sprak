@@ -93,10 +93,13 @@ namespace ProgrammingLanguageNr1
             m_compileTimeErrorHandler = new ErrorHandler();
 			m_runtimeErrorHandler = new ErrorHandler();
             m_tokens = Tokenize(stream);
+
+			//PrintTokens ();
+
             m_ast = Parse(m_tokens);
 			if(m_compileTimeErrorHandler.getErrors().Count > 0) { m_compileTimeErrorHandler.printErrorsToConsole(); return; }
 
-			//PaintAST(m_ast);
+			PaintAST(m_ast);
 
 			AddLocalVariables(m_ast, variableDefinitions);
 			ExternalFunctionCreator externalFunctionCreator = AddExternalFunctions(functionDefinitions, m_ast);
@@ -367,6 +370,16 @@ namespace ProgrammingLanguageNr1
 		private void PaintAST(AST ast) {
 			ASTPainter painter = new ASTPainter();
             painter.PaintAST(ast);
+		}
+
+		void PrintTokens ()
+		{
+			Console.WriteLine ("TOKENS");
+			Console.WriteLine ("======");
+			foreach (var token in m_tokens) {
+				Console.WriteLine (" " + token.ToString());
+			}
+			Console.WriteLine ("======");
 		}
 
         public void run()
