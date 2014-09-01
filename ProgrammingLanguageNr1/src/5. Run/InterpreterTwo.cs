@@ -529,8 +529,6 @@ namespace ProgrammingLanguageNr1
 			ReturnValue array = m_currentScope.getValue(CurrentNode.getTokenString());
 			ReturnValue val = null;
 
-			Console.WriteLine ("LOOKING UP KEY " + index + " IN ARRAY " + array.ToString ());
-
 			if (array.getReturnValueType () == ReturnValueType.RANGE) {
 
 				if (index.getReturnValueType () == ReturnValueType.NUMBER) {
@@ -540,11 +538,14 @@ namespace ProgrammingLanguageNr1
 					int theNumber = r.start + i;
 					//TODO: do range checking
 					val = new ReturnValue ((float)theNumber);
+					//Console.WriteLine ("LOOKING UP KEY " + index + " IN RANGE " + array.ToString () + ", the result was " + theNumber);
 				} else {
 					throw new Error ("Can't look up " + index.ToString () + " in the range " + array.ToString());
 				}
 
 			} else if (array.getReturnValueType () == ReturnValueType.ARRAY) {
+				//Console.WriteLine ("LOOKING UP KEY " + index + " IN ARRAY " + array.ToString ());
+
 				if (array.ArrayValue.ContainsKey (index)) {
 					val = array.ArrayValue [index];
 				} else {

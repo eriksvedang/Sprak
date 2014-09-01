@@ -1140,6 +1140,7 @@ namespace ProgrammingLanguageNr1.tests
                      sum += @
                   end
                   print(sum)
+                  print([1,2,3,4,5,6,7,8,9,1,2,3,4,5,6,7,8,9,1,2,3,4,5,6,7,8,9,1,2,3,4,5,6,7,8,9,1,2,3,4,5,6,7,8,9,1,2,3,4,5,6,7,8,9])
                  "
 			);
 
@@ -1154,6 +1155,30 @@ namespace ProgrammingLanguageNr1.tests
 			Assert.AreEqual(0, program.getRuntimeErrorHandler().getErrors().Count);
 
 			Assert.AreEqual("5050", program.Output[0]);
+		}
+
+		[Test()]
+		public void HugeLoop ()
+		{
+			StringReader programString = new StringReader(
+				@"var xs = [1,2,3,4,5]
+                  loop from 1 to 2000
+					 print(@)
+                  end
+                 "
+			);
+
+			DefaultSprakRunner program = new DefaultSprakRunner(programString);
+			program.run();
+
+			program.printOutputToConsole ();
+			program.getCompileTimeErrorHandler ().printErrorsToConsole ();
+			program.getRuntimeErrorHandler ().printErrorsToConsole ();
+
+			Assert.AreEqual(0, program.getCompileTimeErrorHandler().getErrors().Count);
+			Assert.AreEqual(0, program.getRuntimeErrorHandler().getErrors().Count);
+
+			Assert.AreEqual(2000, program.Output.Count);
 		}
 	}
 }

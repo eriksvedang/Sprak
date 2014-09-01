@@ -1,3 +1,5 @@
+#define MEMORY_LOG
+
 using System;
 using System.Diagnostics;
 using System.Text;
@@ -25,6 +27,9 @@ namespace ProgrammingLanguageNr1
             m_returnType = type;
 			if(m_returnType == ReturnValueType.ARRAY) {
 				m_arrayValue = new SortedDictionary<ReturnValue, ReturnValue>();
+				#if MEMORY_LOG
+				Console.WriteLine("Created array with " + m_arrayValue.Count + " items");
+				#endif
 			}
         }
 
@@ -46,6 +51,9 @@ namespace ProgrammingLanguageNr1
 	                    ReturnValue rv = new ReturnValue(SystemTypeToReturnValueType(t), element);
 						m_arrayValue.Add(new ReturnValue(i++), rv);
 	                }
+					#if MEMORY_LOG
+					Console.WriteLine("Created array with " + m_arrayValue.Count + " items");
+					#endif
 	            }
 	            break;
 			case ReturnValueType.RANGE:
@@ -188,6 +196,9 @@ namespace ProgrammingLanguageNr1
 			set {
 				m_arrayValue = value;
 				m_returnType = ReturnValueType.ARRAY;
+				#if MEMORY_LOG
+				Console.WriteLine("Asigned array ref with " + m_arrayValue.Count + " items");
+				#endif
 			}
 			get {
 				if(m_returnType == ReturnValueType.ARRAY) {
@@ -246,6 +257,9 @@ namespace ProgrammingLanguageNr1
                     List<object> o = new List<object>();
                     foreach (ReturnValue r in m_arrayValue.Values)
                         o.Add(r.Unpack());
+					#if MEMORY_LOG
+					Console.WriteLine("Unpacked and created array with " + o.Count + " items");
+					#endif
                     return o.ToArray();
                 default:
                     throw new Exception("Unpack failed!");
@@ -281,6 +295,7 @@ namespace ProgrammingLanguageNr1
 				StringBuilder s = new StringBuilder();
 				s.Append("[");
 				int count = m_arrayValue.Count;
+				int emergencyBreak = 0;
 				//Console.WriteLine ("Keys in array: " + string.Join (", ", m_arrayValue.Keys.Select (k => "Key " + k.ToString () + " of type " + k.m_returnType).ToArray()));
 				foreach(var key in m_arrayValue.Keys) {
 					//Console.WriteLine ("- Looking up key " + key);
@@ -288,6 +303,11 @@ namespace ProgrammingLanguageNr1
 					count--;
 					if(count > 0) {
 						s.Append(", ");
+					}
+					emergencyBreak++;
+					if (emergencyBreak > 10) {
+						s.Append ("...");
+						break;
 					}
 				}
 				s.Append("]");
