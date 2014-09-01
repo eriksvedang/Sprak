@@ -46,7 +46,7 @@ namespace ProgrammingLanguageNr1
 
             FunctionDocumentation functionDoc_getIndexes =
                 new FunctionDocumentation("Create a new array that contains the indexes of another array", new string[] { "The array with indexes" });
-            result.Add(new FunctionDefinition("array", "getIndexes", new string[] { "array" }, new string[] { "a" }, new ExternalFunctionCreator.OnFunctionCall(API_createArrayOfArrayIndexes), functionDoc_getIndexes));
+            result.Add(new FunctionDefinition("array", "getIndexes", new string[] { "array" }, new string[] { "a" }, new ExternalFunctionCreator.OnFunctionCall(API_createArrayOrRangeOfIndexes), functionDoc_getIndexes));
 
             FunctionDocumentation functionDoc_removeElement =
                 new FunctionDocumentation("Remove an element from an array", new string[] { "The array to remove an element from", "The position in the array to remove (starts at 0)" });
@@ -261,16 +261,27 @@ namespace ProgrammingLanguageNr1
 			return new ReturnValue(args[0].getReturnValueType().ToString());
 		}
 
-        private static ReturnValue API_createArrayOfArrayIndexes(ReturnValue[] args)
+        private static ReturnValue API_createArrayOrRangeOfIndexes(ReturnValue[] args)
         {
-			SortedDictionary<ReturnValue, ReturnValue> originalArray = args[0].ArrayValue;
-			SortedDictionary<ReturnValue, ReturnValue> newArray = new SortedDictionary<ReturnValue, ReturnValue>();
-			int i = 0;
-			foreach(var index in originalArray.Keys) {
-				newArray.Add(new ReturnValue(i), index);
-				i++;
-			}		
-			return new ReturnValue(newArray);
+			if (args [0].getReturnValueType () == ReturnValueType.ARRAY) {
+				SortedDictionary<ReturnValue, ReturnValue> originalArray = args [0].ArrayValue;
+				SortedDictionary<ReturnValue, ReturnValue> newArray = new SortedDictionary<ReturnValue, ReturnValue> ();
+				int i = 0;
+				foreach (var index in originalArray.Keys) {
+					newArray.Add (new ReturnValue (i), index);
+					i++;
+				}		
+				return new ReturnValue (newArray);
+			}
+			else if(args [0].getReturnValueType () == ReturnValueType.RANGE) {
+				Range r = args [0].RangeValue;
+				Range indexRange = new Range (0, r.end - r.start + 1, 1);
+				Console.WriteLine ("GetIndexes created index range: " + indexRange);
+				return new ReturnValue (indexRange);
+			}
+			else {
+				throw new Error("Can't convert " + args[0].ToString() + " to an array in GetIndexes()");
+			}
 		}
 
         private static ReturnValue API_removeElement(ReturnValue[] args)
@@ -283,8 +294,18 @@ namespace ProgrammingLanguageNr1
 
         private static ReturnValue API_count(ReturnValue[] args)
         {
-			SortedDictionary<ReturnValue, ReturnValue> array = args[0].ArrayValue;
-			return new ReturnValue((float)array.Count);
+			if (args [0].getReturnValueType () == ReturnValueType.ARRAY) {
+				SortedDictionary<ReturnValue, ReturnValue> array = args[0].ArrayValue;
+				return new ReturnValue((float)array.Count);
+			}
+			else if(args [0].getReturnValueType () == ReturnValueType.RANGE) {
+				Range r = args [0].RangeValue;
+				int length = r.end - r.start;
+				return new ReturnValue ((float)length);
+			}
+			else {
+				throw new Error("Can't convert " + args[0].ToString() + " to an array in GetIndexes()");
+			}
 		}
 
         private static ReturnValue API_allocate(ReturnValue[] args)
@@ -308,24 +329,33 @@ namespace ProgrammingLanguageNr1
         {
 			int start = (int)args[0].NumberValue;
 			int end = (int)args[1].NumberValue;
-			
-			SortedDictionary<ReturnValue, ReturnValue> array = new SortedDictionary<ReturnValue, ReturnValue>();
-			
-			int step = 0;
-			if(start < end) { 
-				step = 1;
-				end++;
+
+			if (Math.Abs (start - end) > 50) {
+				// Create a range
+				int step = start < end ? 1 : -1;
+				var range = new ReturnValue(new Range (start, end, step));
+				//Console.WriteLine ("Created a range: " + range.ToString ());
+				return range;
 			} else {
-				step = -1;
-				end--;
-			}		
-			int index = 0;
-			for(int nr = start; nr != end; nr += step) {
-				//Console.WriteLine("nr: " + nr);
-				array[new ReturnValue(index)] = new ReturnValue((float)nr);
-				index++;
+				// Create a normal array
+				SortedDictionary<ReturnValue, ReturnValue> array = new SortedDictionary<ReturnValue, ReturnValue> ();
+			
+				int step = 0;
+				if (start < end) { 
+					step = 1;
+					end++;
+				} else {
+					step = -1;
+					end--;
+				}		
+				int index = 0;
+				for (int nr = start; nr != end; nr += step) {
+					//Console.WriteLine("nr: " + nr);
+					array [new ReturnValue (index)] = new ReturnValue ((float)nr);
+					index++;
+				}
+				return new ReturnValue (array);
 			}
-			return new ReturnValue(array);
 		}
 
         private static ReturnValue API_toArray(ReturnValue[] args)
@@ -400,11 +430,14 @@ namespace ProgrammingLanguageNr1
                 {
                     stacksize = m_interpreter.stackSize > stacksize ? m_interpreter.stackSize : stacksize;
                     executions++;
-                    if (executions >= pMaxNrOfExecutions)
-                    {
-                        Console.WriteLine("\nHit maximum execution count limit!");
-                        break;
-                    }
+					if (executions >= pMaxNrOfExecutions) {
+						Console.WriteLine ("\nHit maximum execution count limit!");
+						break;
+					} else if (m_runtimeErrorHandler.getErrors ().Count > 0) {
+						Console.WriteLine ("\nRuntime error occured!");
+						Console.WriteLine ("Stack: " + m_interpreter.DumpStack ());
+						break;
+					}
                 }
 
                 Console.WriteLine("\nCompleted " + executions + " executions");

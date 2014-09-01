@@ -10,7 +10,7 @@ namespace ProgrammingLanguageNr1
 {
     public enum ReturnValueType
     {
-        NUMBER, VOID, STRING, BOOL, ARRAY, UNKNOWN_TYPE
+        NUMBER, VOID, STRING, BOOL, ARRAY, RANGE, UNKNOWN_TYPE
     }
 	
 	public class ReturnValue : IComparable<ReturnValue>
@@ -27,40 +27,45 @@ namespace ProgrammingLanguageNr1
 				m_arrayValue = new SortedDictionary<ReturnValue, ReturnValue>();
 			}
         }
+
         public ReturnValue(ReturnValueType type, object pData)
         {
             m_returnType = type;
             switch (m_returnType)
             {
-                case ReturnValueType.STRING: m_stringValue = (string)pData; break;
-                case ReturnValueType.NUMBER: m_numberValue = pData.GetType() == typeof(float) ? (float)pData : Convert.ToSingle(pData); break;
-                case ReturnValueType.BOOL: m_boolValue = (bool)pData; break;
-                case ReturnValueType.ARRAY:
-                {
+            case ReturnValueType.STRING: m_stringValue = (string)pData; break;
+            case ReturnValueType.NUMBER: m_numberValue = pData.GetType() == typeof(float) ? (float)pData : Convert.ToSingle(pData); break;
+            case ReturnValueType.BOOL: m_boolValue = (bool)pData; break;
+            case ReturnValueType.ARRAY:
+	            {
 					m_arrayValue = new SortedDictionary<ReturnValue, ReturnValue>();
-                    int i = 0;
-                    foreach(object element in (pData as IEnumerable))
-                    {
-                        Type t = element.GetType();
-                        ReturnValue rv = new ReturnValue(SystemTypeToReturnValueType(t), element);
+	                int i = 0;
+	                foreach(object element in (pData as IEnumerable))
+	                {
+	                    Type t = element.GetType();
+	                    ReturnValue rv = new ReturnValue(SystemTypeToReturnValueType(t), element);
 						m_arrayValue.Add(new ReturnValue(i++), rv);
-                    }
-                }
-                break;
+	                }
+	            }
+	            break;
+			case ReturnValueType.RANGE:
+				m_range = (Range)pData;
+				break;
                 default:
                     throw new Exception("Boxing error");
             }
             
         }
-		
+
 		public object GetValueAsObject()
         {
             switch (m_returnType)
             {
-                case ReturnValueType.STRING: return m_stringValue;
-                case ReturnValueType.NUMBER: return m_numberValue;
-                case ReturnValueType.BOOL: return m_boolValue;
-                case ReturnValueType.ARRAY: return m_arrayValue;
+            case ReturnValueType.STRING: return m_stringValue;
+            case ReturnValueType.NUMBER: return m_numberValue;
+            case ReturnValueType.BOOL: return m_boolValue;
+            case ReturnValueType.ARRAY: return m_arrayValue;
+			case ReturnValueType.RANGE: return m_range;
 			default: return null;
 			}
 		}
@@ -88,6 +93,12 @@ namespace ProgrammingLanguageNr1
 			this.ArrayValue = arrayValue;
 			m_returnType = ReturnValueType.ARRAY;
 		}
+
+		public ReturnValue (Range pRange)
+		{
+			this.m_range = pRange;
+			m_returnType = ReturnValueType.RANGE;
+		}
 		
 		public void setType(ReturnValueType newType) {
 			m_returnType = newType;
@@ -95,37 +106,29 @@ namespace ProgrammingLanguageNr1
 				m_arrayValue = new SortedDictionary<ReturnValue, ReturnValue>();
 			}
 		}
-		
+				
 		public float NumberValue {
 			set {
 				m_numberValue = value;
 				m_returnType = ReturnValueType.NUMBER;
 			}
 			get {
-                if (m_returnType == ReturnValueType.STRING)
-                {
+				if (m_returnType == ReturnValueType.STRING) {
 					float numberValue;
-		            try
-		            {
-		                numberValue = (float)Convert.ToDouble(m_stringValue, CultureInfo.InvariantCulture);
-		            }
-		            catch (FormatException)
-		            {
-		                numberValue = 0.0f;
+					try {
+						numberValue = (float)Convert.ToDouble (m_stringValue, CultureInfo.InvariantCulture);
+					} catch (FormatException) {
+						numberValue = 0.0f;
 						//throw new Error(fe.Message);
-            		}
+					}
 					return numberValue;
-                }
-				else if (m_returnType == ReturnValueType.BOOL)
-                {
-                   	return m_boolValue ? 1.0f : -1.0f;
-                }
-				else if (m_returnType == ReturnValueType.ARRAY)
-                {
-                   	float firstNumber = 0.0f;
-					// Todo: return the actual first number in the array
-					return firstNumber;
-                }
+				} else if (m_returnType == ReturnValueType.BOOL) {
+					return m_boolValue ? 1.0f : -1.0f;
+				} else if (m_returnType == ReturnValueType.ARRAY) {
+					throw new Error ("Can't convert the array " + this.ToString () + " to a number");
+				} else if (m_returnType == ReturnValueType.RANGE) {
+					throw new Error ("Can't convert the range " + this.ToString () + " to an array");
+				}
 				return m_numberValue;
 			}
 		}
@@ -139,6 +142,20 @@ namespace ProgrammingLanguageNr1
 				return ToString();
 			}
 		}
+
+		public Range RangeValue {
+			set {
+				m_range = value;
+				m_returnType = ReturnValueType.RANGE;
+			}
+			get {
+				if (m_returnType == ReturnValueType.RANGE) {
+					return m_range;
+				} else {
+					throw new Error ("Can't convert " + this.ToString () + " to a range");
+				}
+			}
+		}
 		
 		public bool BoolValue {
 			set {
@@ -148,6 +165,9 @@ namespace ProgrammingLanguageNr1
 			get {
 				if(m_returnType == ReturnValueType.ARRAY) {
 					return m_arrayValue.Count > 0;
+				}
+				else if(m_returnType == ReturnValueType.RANGE) {
+					throw new Error ("Can't convert the range " + this.ToString () + " to a bool");
 				}
 				else if(m_returnType == ReturnValueType.BOOL) {
 					return m_boolValue;
@@ -172,6 +192,10 @@ namespace ProgrammingLanguageNr1
 			get {
 				if(m_returnType == ReturnValueType.ARRAY) {
 					return m_arrayValue;
+				}
+				else if(m_returnType == ReturnValueType.RANGE) {
+					throw new Exception ("Can't convert the range " + this.ToString () + " to an array");
+					//TODO: should be a normal Sprak Error!
 				}
 				else if(m_returnType == ReturnValueType.BOOL) {
 					var array = new SortedDictionary<ReturnValue, ReturnValue>();
@@ -198,6 +222,7 @@ namespace ProgrammingLanguageNr1
 				}
 			}
 		}
+
 		
 		public void setVoid() { m_returnType = ReturnValueType.VOID; }
 		
@@ -230,19 +255,21 @@ namespace ProgrammingLanguageNr1
         public override string ToString()
         {
             switch (this.m_returnType)
-            { 
-                case ReturnValueType.NUMBER:
-                    return m_numberValue.ToString(CultureInfo.InvariantCulture);
-                case ReturnValueType.STRING:
-                    return m_stringValue.ToString();
-                case ReturnValueType.VOID:
-                    return "void";
-				case ReturnValueType.UNKNOWN_TYPE:
-                    return "unknown_type";
-				case ReturnValueType.BOOL:
-					return m_boolValue ? "true" : "false";
-				case ReturnValueType.ARRAY:
-					return makeArrayString();
+        	{ 
+            case ReturnValueType.NUMBER:
+                return m_numberValue.ToString(CultureInfo.InvariantCulture);
+            case ReturnValueType.STRING:
+                return m_stringValue.ToString();
+            case ReturnValueType.VOID:
+                return "void";
+			case ReturnValueType.UNKNOWN_TYPE:
+                return "unknown_type";
+			case ReturnValueType.BOOL:
+				return m_boolValue ? "true" : "false";
+			case ReturnValueType.ARRAY:
+				return makeArrayString();
+			case ReturnValueType.RANGE:
+				return m_range.ToString ();
                 default:
                     throw new Exception("Type " + this.m_returnType + " not implemented!");
             }
@@ -294,20 +321,22 @@ namespace ProgrammingLanguageNr1
         {
             switch (name.ToLower())
             {
-                case "number":
-                    return ReturnValueType.NUMBER;
-                case "string":
-                    return ReturnValueType.STRING;
-                case "void":
-                    return ReturnValueType.VOID;
-				case "bool":
-					return ReturnValueType.BOOL;
-				case "array":
-					return ReturnValueType.ARRAY;
-				case "var":
-					return ReturnValueType.UNKNOWN_TYPE;
-                default:
-                    throw new Exception("ReturnValue can't handle built in type with name " + name);
+            case "number":
+                return ReturnValueType.NUMBER;
+            case "string":
+                return ReturnValueType.STRING;
+            case "void":
+                return ReturnValueType.VOID;
+			case "bool":
+				return ReturnValueType.BOOL;
+			case "array":
+				return ReturnValueType.ARRAY;
+			case "range":
+				return ReturnValueType.RANGE;
+			case "var":
+				return ReturnValueType.UNKNOWN_TYPE;
+            default:
+                throw new Exception("ReturnValue can't handle built in type with name " + name);
             }
         }
 
@@ -342,6 +371,7 @@ namespace ProgrammingLanguageNr1
 		string m_stringValue = "";
 		bool m_boolValue = false;
 		SortedDictionary<ReturnValue, ReturnValue> m_arrayValue = null;
+		Range m_range;
 	}
 }
 

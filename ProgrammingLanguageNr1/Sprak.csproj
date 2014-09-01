@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Build" ToolsVersion="3.5" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -71,6 +71,7 @@
     <Compile Include="src\2. Parse and make AST\AST_ArrayEndSignal.cs" />
     <Compile Include="src\5. Run\MemorySpaceNodeListCache.cs" />
     <Compile Include="src\2. Parse and make AST\AST_MethodCall.cs" />
+    <Compile Include="src\5. Run\Range.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

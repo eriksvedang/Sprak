@@ -1048,6 +1048,7 @@ namespace ProgrammingLanguageNr1.tests
 
 			Assert.AreEqual("[10, 20, 30]", program.Output[0]);
 			Assert.AreEqual(0, program.getCompileTimeErrorHandler().getErrors().Count);
+			Assert.AreEqual(0, program.getRuntimeErrorHandler().getErrors().Count);
 		}
 
 		[Test()]
@@ -1071,14 +1072,12 @@ namespace ProgrammingLanguageNr1.tests
 			Assert.AreEqual("[10, 20, 30, 40, 50]", program.Output[0]);
 
 			Assert.AreEqual(0, program.getCompileTimeErrorHandler().getErrors().Count);
+			Assert.AreEqual(0, program.getRuntimeErrorHandler().getErrors().Count);
 		}
 
 		[Test()]
 		public void ListWithStringKeys ()
 		{
-			Console.WriteLine (new ReturnValue ("hej1").GetHashCode ());
-			Console.WriteLine (new ReturnValue ("hej2").GetHashCode ());
-
 			StringReader programString = new StringReader(
 				@"array stuff = []
                   stuff['apa'] = 100
@@ -1100,11 +1099,61 @@ namespace ProgrammingLanguageNr1.tests
 			program.getRuntimeErrorHandler ().printErrorsToConsole ();
 
 			Assert.AreEqual(0, program.getCompileTimeErrorHandler().getErrors().Count);
+			Assert.AreEqual(0, program.getRuntimeErrorHandler().getErrors().Count);
 
 			Assert.AreEqual("400", program.Output[0]);
 			Assert.AreEqual("100", program.Output[1]);
-			//Assert.AreEqual("[100, 200, 300]", program.Output[1]);
+		}
 
+		[Test()]
+		public void PrintRangeType ()
+		{
+			StringReader programString = new StringReader(
+				@"var xs = from 1 to 1000
+                  print(xs)
+			      print(from 100 to -50)
+                  print(from 10 to 5)
+                 "
+			);
+
+			DefaultSprakRunner program = new DefaultSprakRunner(programString);
+			program.run();
+
+			program.printOutputToConsole ();
+			program.getCompileTimeErrorHandler ().printErrorsToConsole ();
+			program.getRuntimeErrorHandler ().printErrorsToConsole ();
+
+			Assert.AreEqual("(from 1 to 1000)", program.Output[0]);
+			Assert.AreEqual("(from 100 to -50)", program.Output[1]);
+			Assert.AreEqual("[10, 9, 8, 7, 6, 5]", program.Output[2]);
+
+			Assert.AreEqual(0, program.getCompileTimeErrorHandler().getErrors().Count);
+			Assert.AreEqual(0, program.getRuntimeErrorHandler().getErrors().Count);
+		}
+
+		[Test()]
+		public void UseRangeTypeInLoop ()
+		{
+			StringReader programString = new StringReader(
+				@"number sum = 0
+                  loop from 1 to 100
+                     sum += @
+                  end
+                  print(sum)
+                 "
+			);
+
+			DefaultSprakRunner program = new DefaultSprakRunner(programString);
+			program.run();
+
+			program.printOutputToConsole ();
+			program.getCompileTimeErrorHandler ().printErrorsToConsole ();
+			program.getRuntimeErrorHandler ().printErrorsToConsole ();
+
+			Assert.AreEqual(0, program.getCompileTimeErrorHandler().getErrors().Count);
+			Assert.AreEqual(0, program.getRuntimeErrorHandler().getErrors().Count);
+
+			Assert.AreEqual("5050", program.Output[0]);
 		}
 	}
 }

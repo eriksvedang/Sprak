@@ -518,7 +518,7 @@ namespace ProgrammingLanguageNr1
 
 			return operandTree;
 		}
-		
+				
 		private AST arrayCreation() 
 		{
 #if WRITE_DEBUG_INFO
@@ -1065,15 +1065,14 @@ Console.WriteLine("Popping out from ifElse branch");
 				loopBlockStatements.addChild(loopIndexAssignment);
 				
 				// match
-				//match(Token.TokenType.PARANTHESIS_LEFT);
 				AST arrayExpression = expression();
-				//match(Token.TokenType.PARANTHESIS_RIGHT);
 				
 				// __array__ (is a copy of the array to loop over)
-				AST_VariableDeclaration loopArrayDeclaration 
-				= new AST_VariableDeclaration(new Token(Token.TokenType.VAR_DECLARATION, "<VAR_DECL>"),
-			                                            ReturnValueType.ARRAY,
-			                                            "__array__");
+				AST_VariableDeclaration loopArrayDeclaration = new AST_VariableDeclaration(
+					new Token(Token.TokenType.VAR_DECLARATION, "<VAR_DECL>"), 
+					ReturnValueType.UNKNOWN_TYPE,
+				    "__array__");
+
 				loopBlockStatements.addChild(loopArrayDeclaration);
 				
 				AST_Assignment loopArrayAssignment = 
@@ -1092,20 +1091,19 @@ Console.WriteLine("Popping out from ifElse branch");
 				
 				// __indexes__ (holds all the indexes in the array, since it works like a SortedDictionary)
 				// __indexes = getIndexes(__array__)
-				AST_VariableDeclaration indexesDeclaration 
-				= new AST_VariableDeclaration(new Token(Token.TokenType.VAR_DECLARATION, "<VAR_DECL>"),
-			                                            ReturnValueType.ARRAY,
-			                                            "__indexes__");
+				AST_VariableDeclaration indexesDeclaration = new AST_VariableDeclaration(
+					new Token(Token.TokenType.VAR_DECLARATION, "<VAR_DECL>"),
+					ReturnValueType.UNKNOWN_TYPE,
+                    "__indexes__");
+
 				loopBlockStatements.addChild(indexesDeclaration);
 				
-				AST_FunctionCall getArrayIndexes = new AST_FunctionCall(new Token(Token.TokenType.FUNCTION_CALL,
-				                                                                  "getIndexes"));
+				AST_FunctionCall getArrayIndexes = new AST_FunctionCall(new Token(Token.TokenType.FUNCTION_CALL, "getIndexes"));
 				AST argumentList = new AST(new Token(Token.TokenType.NODE_GROUP, "<ARGUMENT_LIST>"));
 				argumentList.addChild(new Token(Token.TokenType.NAME, "__array__"));
 				getArrayIndexes.addChild(argumentList);
 				                                                                  
-				AST_Assignment indexesAssignment = 
-				new AST_Assignment(new Token(Token.TokenType.ASSIGNMENT, "="), "__indexes__");
+				AST_Assignment indexesAssignment = new AST_Assignment(new Token(Token.TokenType.ASSIGNMENT, "="), "__indexes__");
 				indexesAssignment.addChild(getArrayIndexes);
 				loopBlockStatements.addChild(indexesAssignment);
 			}

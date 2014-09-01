@@ -30,6 +30,9 @@ namespace ProgrammingLanguageNr1
         private ReturnValue print(ReturnValue[] parameters)
         {
             ReturnValue parameter0 = parameters[0];
+			if (parameter0 == null) {
+				throw new Exception ("Parameter0 is null!");
+			}
             m_output.Add(parameter0.ToString());
             return new ReturnValue(); // void
         }

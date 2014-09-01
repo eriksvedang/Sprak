@@ -358,7 +358,15 @@ namespace ProgrammingLanguageNr1
 
 		void CallExternalFunction(string pFunctionName, ReturnValue[] pParameters)
 		{
-			//Console.WriteLine("Calling external function " + functionName);
+//			Console.WriteLine("Calling external function " + pFunctionName + " with parameters:");
+//			foreach (var p in pParameters) {
+//				if (p == null) {
+//					Console.WriteLine ("null");
+//				} else {
+//					Console.WriteLine ("" + p);
+//				}
+//			}
+
 			ExternalFunctionCreator.OnFunctionCall fc = m_externalFunctionCreator.externalFunctions[pFunctionName];
 			ReturnValue rv = fc(pParameters);
 			if (rv.getReturnValueType() != ReturnValueType.VOID) {
@@ -521,16 +529,33 @@ namespace ProgrammingLanguageNr1
 			ReturnValue array = m_currentScope.getValue(CurrentNode.getTokenString());
 			ReturnValue val = null;
 
-			//Console.WriteLine ("LOOKING UP KEY " + index + " IN ARRAY " + array.ToString ());
+			Console.WriteLine ("LOOKING UP KEY " + index + " IN ARRAY " + array.ToString ());
 
-			if(array.ArrayValue.ContainsKey(index)) {
-				val = array.ArrayValue[index];
+			if (array.getReturnValueType () == ReturnValueType.RANGE) {
+
+				if (index.getReturnValueType () == ReturnValueType.NUMBER) {
+					Range r = array.RangeValue;
+					int length = Math.Abs (r.end - r.start);
+					int i = r.step * (int)index.NumberValue;
+					int theNumber = r.start + i;
+					//TODO: do range checking
+					val = new ReturnValue ((float)theNumber);
+				} else {
+					throw new Error ("Can't look up " + index.ToString () + " in the range " + array.ToString());
+				}
+
+			} else if (array.getReturnValueType () == ReturnValueType.ARRAY) {
+				if (array.ArrayValue.ContainsKey (index)) {
+					val = array.ArrayValue [index];
+				} else {
+					//val = new ReturnValue(0f);
+					throw new Error ("Can't find the index '" + index + "' (" + index.getReturnValueType () + ") in the array '" + CurrentNode.getTokenString () + "'", Error.ErrorType.RUNTIME, CurrentNode.getToken ().LineNr, CurrentNode.getToken ().LinePosition);
+				}
+			} else {
+				throw new Error ("Can't convert " + array.ToString () + " to an array");
 			}
-			else {
-				//val = new ReturnValue(0f);
-				throw new Error ("Can't find the index '" + index + "' (" + index.getReturnValueType() + ") in the array '" + CurrentNode.getTokenString () + "'", Error.ErrorType.RUNTIME, CurrentNode.getToken ().LineNr, CurrentNode.getToken ().LinePosition);
-			}
-			PushValue(val);
+
+			PushValue (val);
 		}
 
 		void PushValueFromToken ()
@@ -558,9 +583,7 @@ namespace ProgrammingLanguageNr1
 		
 		private ReturnValue ConvertToType(ReturnValue valueToConvert, ReturnValueType type) {
 #if WRITE_CONVERT_INFO
-			Console.WriteLine("Converting from " + valueToConvert.getReturnValueType() +
-			                  " (" + valueToConvert.ToString() + ")" +
-			              	  " to " + type);
+			Console.WriteLine("Converting " + valueToConvert + " from type " + valueToConvert.getReturnValueType() + " to the type " + type);
 #endif
 			ReturnValue result = null;
 			
@@ -572,19 +595,19 @@ namespace ProgrammingLanguageNr1
 				type = valueToConvert.getReturnValueType();
 			}
 			
-			if(type == ReturnValueType.ARRAY) {
-				result = new ReturnValue(valueToConvert.ArrayValue);
+			if (type == ReturnValueType.ARRAY) {
+				result = new ReturnValue (valueToConvert.ArrayValue);
+			} else if (type == ReturnValueType.BOOL) {
+				result = new ReturnValue (valueToConvert.BoolValue);
+			} else if (type == ReturnValueType.NUMBER) {
+				result = new ReturnValue (valueToConvert.NumberValue);
+			} else if (type == ReturnValueType.STRING) {
+				result = new ReturnValue (valueToConvert.StringValue);
+			} else if (type == ReturnValueType.RANGE) {
+				result = new ReturnValue (valueToConvert.RangeValue);
+			} else {
+				throw new Error ("Failed to convert value " + valueToConvert);
 			}
-			else if(type == ReturnValueType.BOOL) {
-				result = new ReturnValue(valueToConvert.BoolValue);
-			}
-			else if(type == ReturnValueType.NUMBER) {
-				result = new ReturnValue(valueToConvert.NumberValue);
-			}
-			else if(type == ReturnValueType.STRING) {
-				result = new ReturnValue(valueToConvert.StringValue);
-			}
-
 #if WRITE_CONVERT_INFO
 			Console.WriteLine("Result: " + result.ToString());
 #endif
