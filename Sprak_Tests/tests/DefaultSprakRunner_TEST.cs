@@ -1032,6 +1032,80 @@ namespace ProgrammingLanguageNr1.tests
 			Assert.AreEqual ("id = 105, functionName = foo, args = [6, 7, [8, 9]]", s_output[0]);
 			Assert.AreEqual(0, program.getCompileTimeErrorHandler().getErrors().Count);
 		}
+			
+		[Test()]
+		public void SimpleArrayPrint ()
+		{
+			StringReader programString = new StringReader(
+				@"var l = [10, 20, 30]
+				  print(l)"
+			);
+
+			DefaultSprakRunner program = new DefaultSprakRunner(programString);
+			program.run();
+
+			program.printOutputToConsole ();
+
+			Assert.AreEqual("[10, 20, 30]", program.Output[0]);
+			Assert.AreEqual(0, program.getCompileTimeErrorHandler().getErrors().Count);
+		}
+
+		[Test()]
+		public void ArrayWithNumbers ()
+		{
+			StringReader programString = new StringReader(
+				@"array stuff = []
+                  stuff[2] = 20
+				  stuff[4] = 40
+                  stuff['BAM'] = 50
+                  stuff[3] = 30
+                  stuff[1] = 10
+                  print(stuff)"
+			);
+
+			DefaultSprakRunner program = new DefaultSprakRunner(programString);
+			program.run();
+
+			program.printOutputToConsole ();
+
+			Assert.AreEqual("[10, 20, 30, 40, 50]", program.Output[0]);
+
+			Assert.AreEqual(0, program.getCompileTimeErrorHandler().getErrors().Count);
+		}
+
+		[Test()]
+		public void ListWithStringKeys ()
+		{
+			Console.WriteLine (new ReturnValue ("hej1").GetHashCode ());
+			Console.WriteLine (new ReturnValue ("hej2").GetHashCode ());
+
+			StringReader programString = new StringReader(
+				@"array stuff = []
+                  stuff['apa'] = 100
+                  stuff['kossa'] = 200
+                  stuff['fisk'] = 300
+			      stuff[0] = 500
+                  stuff[10] = 400                  
+                  print(stuff[10])
+                  print(stuff['apa'])
+                  print(stuff)
+                 "
+			);
+
+			DefaultSprakRunner program = new DefaultSprakRunner(programString);
+			program.run();
+
+			program.printOutputToConsole ();
+			program.getCompileTimeErrorHandler ().printErrorsToConsole ();
+			program.getRuntimeErrorHandler ().printErrorsToConsole ();
+
+			Assert.AreEqual(0, program.getCompileTimeErrorHandler().getErrors().Count);
+
+			Assert.AreEqual("400", program.Output[0]);
+			Assert.AreEqual("100", program.Output[1]);
+			//Assert.AreEqual("[100, 200, 300]", program.Output[1]);
+
+		}
 	}
 }
 

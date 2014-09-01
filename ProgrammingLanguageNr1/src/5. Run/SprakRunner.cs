@@ -99,7 +99,7 @@ namespace ProgrammingLanguageNr1
             m_ast = Parse(m_tokens);
 			if(m_compileTimeErrorHandler.getErrors().Count > 0) { m_compileTimeErrorHandler.printErrorsToConsole(); return; }
 
-			PaintAST(m_ast);
+			//PaintAST(m_ast);
 
 			AddLocalVariables(m_ast, variableDefinitions);
 			ExternalFunctionCreator externalFunctionCreator = AddExternalFunctions(functionDefinitions, m_ast);
@@ -263,11 +263,11 @@ namespace ProgrammingLanguageNr1
 
         private static ReturnValue API_createArrayOfArrayIndexes(ReturnValue[] args)
         {
-			SortedDictionary<int, ReturnValue> originalArray = args[0].ArrayValue;
-			SortedDictionary<int, ReturnValue> newArray = new SortedDictionary<int, ReturnValue>();
+			SortedDictionary<ReturnValue, ReturnValue> originalArray = args[0].ArrayValue;
+			SortedDictionary<ReturnValue, ReturnValue> newArray = new SortedDictionary<ReturnValue, ReturnValue>();
 			int i = 0;
-			foreach(int index in originalArray.Keys) {
-				newArray.Add(i, new ReturnValue((float)index));
+			foreach(var index in originalArray.Keys) {
+				newArray.Add(new ReturnValue(i), index);
 				i++;
 			}		
 			return new ReturnValue(newArray);
@@ -275,24 +275,24 @@ namespace ProgrammingLanguageNr1
 
         private static ReturnValue API_removeElement(ReturnValue[] args)
         {
-			SortedDictionary<int, ReturnValue> array = args[0].ArrayValue;
-			int index = (int)args[1].NumberValue;
+			SortedDictionary<ReturnValue, ReturnValue> array = args[0].ArrayValue;
+			ReturnValue index = args[1];
 			array.Remove(index);
 			return new ReturnValue();
 		}
 
         private static ReturnValue API_count(ReturnValue[] args)
         {
-			SortedDictionary<int, ReturnValue> array = args[0].ArrayValue;
+			SortedDictionary<ReturnValue, ReturnValue> array = args[0].ArrayValue;
 			return new ReturnValue((float)array.Count);
 		}
 
         private static ReturnValue API_allocate(ReturnValue[] args)
         {
 			int size = (int)args[0].NumberValue;
-			SortedDictionary<int, ReturnValue> array = new SortedDictionary<int, ReturnValue>();
+			SortedDictionary<ReturnValue, ReturnValue> array = new SortedDictionary<ReturnValue, ReturnValue>();
 			for(int i  = 0; i < size; i++) {
-				array.Add(i, new ReturnValue(ReturnValueType.NUMBER));
+				array.Add(new ReturnValue(i), new ReturnValue(ReturnValueType.NUMBER));
 			}
 			return new ReturnValue(array);
 		}
@@ -309,7 +309,7 @@ namespace ProgrammingLanguageNr1
 			int start = (int)args[0].NumberValue;
 			int end = (int)args[1].NumberValue;
 			
-			SortedDictionary<int, ReturnValue> array = new SortedDictionary<int, ReturnValue>();
+			SortedDictionary<ReturnValue, ReturnValue> array = new SortedDictionary<ReturnValue, ReturnValue>();
 			
 			int step = 0;
 			if(start < end) { 
@@ -322,7 +322,7 @@ namespace ProgrammingLanguageNr1
 			int index = 0;
 			for(int nr = start; nr != end; nr += step) {
 				//Console.WriteLine("nr: " + nr);
-				array[index] = new ReturnValue((float)nr);
+				array[new ReturnValue(index)] = new ReturnValue((float)nr);
 				index++;
 			}
 			return new ReturnValue(array);

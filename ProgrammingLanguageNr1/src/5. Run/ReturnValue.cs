@@ -4,6 +4,7 @@ using System.Text;
 using System.Collections.Generic;
 using System.Collections;
 using System.Globalization;
+using System.Linq;
 
 namespace ProgrammingLanguageNr1
 {
@@ -12,7 +13,7 @@ namespace ProgrammingLanguageNr1
         NUMBER, VOID, STRING, BOOL, ARRAY, UNKNOWN_TYPE
     }
 	
-	public class ReturnValue
+	public class ReturnValue : IComparable<ReturnValue>
 	{	
 		public ReturnValue()
         {
@@ -23,7 +24,7 @@ namespace ProgrammingLanguageNr1
         {
             m_returnType = type;
 			if(m_returnType == ReturnValueType.ARRAY) {
-				m_arrayValue = new SortedDictionary<int, ReturnValue>();
+				m_arrayValue = new SortedDictionary<ReturnValue, ReturnValue>();
 			}
         }
         public ReturnValue(ReturnValueType type, object pData)
@@ -36,13 +37,13 @@ namespace ProgrammingLanguageNr1
                 case ReturnValueType.BOOL: m_boolValue = (bool)pData; break;
                 case ReturnValueType.ARRAY:
                 {
-                    m_arrayValue = new SortedDictionary<int, ReturnValue>();
+					m_arrayValue = new SortedDictionary<ReturnValue, ReturnValue>();
                     int i = 0;
                     foreach(object element in (pData as IEnumerable))
                     {
                         Type t = element.GetType();
                         ReturnValue rv = new ReturnValue(SystemTypeToReturnValueType(t), element);
-                        m_arrayValue.Add(i++, rv);
+						m_arrayValue.Add(new ReturnValue(i++), rv);
                     }
                 }
                 break;
@@ -82,7 +83,7 @@ namespace ProgrammingLanguageNr1
 			m_returnType = ReturnValueType.BOOL;
 		}
 		
-		public ReturnValue (SortedDictionary<int, ReturnValue> arrayValue)
+		public ReturnValue (SortedDictionary<ReturnValue, ReturnValue> arrayValue)
 		{
 			this.ArrayValue = arrayValue;
 			m_returnType = ReturnValueType.ARRAY;
@@ -91,7 +92,7 @@ namespace ProgrammingLanguageNr1
 		public void setType(ReturnValueType newType) {
 			m_returnType = newType;
 			if(m_returnType == ReturnValueType.ARRAY && m_arrayValue == null) {
-				m_arrayValue = new SortedDictionary<int, ReturnValue>();
+				m_arrayValue = new SortedDictionary<ReturnValue, ReturnValue>();
 			}
 		}
 		
@@ -163,7 +164,7 @@ namespace ProgrammingLanguageNr1
 			}
 		}
 		
-		public SortedDictionary<int, ReturnValue> ArrayValue {
+		public SortedDictionary<ReturnValue, ReturnValue> ArrayValue {
 			set {
 				m_arrayValue = value;
 				m_returnType = ReturnValueType.ARRAY;
@@ -173,26 +174,26 @@ namespace ProgrammingLanguageNr1
 					return m_arrayValue;
 				}
 				else if(m_returnType == ReturnValueType.BOOL) {
-					SortedDictionary<int, ReturnValue> array = new SortedDictionary<int, ReturnValue>();
-					array.Add(0, new ReturnValue(m_boolValue));
+					var array = new SortedDictionary<ReturnValue, ReturnValue>();
+					array.Add(new ReturnValue(0.0f), new ReturnValue(m_boolValue));
 					return array;
 				}
 				else if(m_returnType == ReturnValueType.STRING) {
 					int len = m_stringValue.Length;
-					SortedDictionary<int, ReturnValue> array = new SortedDictionary<int, ReturnValue>();
+					var array = new SortedDictionary<ReturnValue, ReturnValue>();
 					for(int i = 0; i < len; i++) {
 						string s = Convert.ToString(m_stringValue[i]);
-						array.Add(i, new ReturnValue(s));
+						array.Add(new ReturnValue(i), new ReturnValue(s));
 					}
 					return array;
 				}
 				else if(m_returnType == ReturnValueType.NUMBER) {
-					SortedDictionary<int, ReturnValue> array = new SortedDictionary<int, ReturnValue>();
-					array.Add(0, new ReturnValue(m_numberValue));
+					var array = new SortedDictionary<ReturnValue, ReturnValue>();
+					array.Add(new ReturnValue(0.0f), new ReturnValue(m_numberValue));
 					return array;
 				}
 				else {
-					SortedDictionary<int, ReturnValue> array = new SortedDictionary<int, ReturnValue>();
+					var array = new SortedDictionary<ReturnValue, ReturnValue>();
 					return array;
 				}
 			}
@@ -253,7 +254,9 @@ namespace ProgrammingLanguageNr1
 				StringBuilder s = new StringBuilder();
 				s.Append("[");
 				int count = m_arrayValue.Count;
-				foreach(int key in m_arrayValue.Keys) {
+				//Console.WriteLine ("Keys in array: " + string.Join (", ", m_arrayValue.Keys.Select (k => "Key " + k.ToString () + " of type " + k.m_returnType).ToArray()));
+				foreach(var key in m_arrayValue.Keys) {
+					//Console.WriteLine ("- Looking up key " + key);
 					s.Append(/*key + ":" + */m_arrayValue[key]);
 					count--;
 					if(count > 0) {
@@ -267,6 +270,7 @@ namespace ProgrammingLanguageNr1
 				return "";
 			}
 		}
+
         public static ReturnValueType SystemTypeToReturnValueType(Type t)
         {
             if (t == typeof(void))
@@ -285,6 +289,7 @@ namespace ProgrammingLanguageNr1
                     throw new Exception("ReturnValue can't handle built in type with name " + t.Name);
             }
         }
+
         public static ReturnValueType getReturnValueTypeFromString(string name)
         {
             switch (name.ToLower())
@@ -306,11 +311,37 @@ namespace ProgrammingLanguageNr1
             }
         }
 
+		public override int GetHashCode ()
+		{
+			if (this.m_returnType == ReturnValueType.NUMBER) {
+				return (int)(this.NumberValue);
+			} else if (this.m_returnType == ReturnValueType.BOOL) {
+				if (this.BoolValue) {
+					return 9998;
+				} else {
+					return 9999;
+				}
+			} else if (this.m_returnType == ReturnValueType.STRING) {
+				int stringHash =  10000 + this.StringValue.GetHashCode () % 10000;
+				//Console.WriteLine ("String hash of " + this.ToString () + " = " + stringHash);
+				return stringHash;
+			} else {
+				return 20000 + base.GetHashCode () % 10000;
+			}
+		}
+
+		public int CompareTo(ReturnValue pOther)
+		{
+			int diff = this.GetHashCode () - pOther.GetHashCode ();
+			//Console.WriteLine ("Comparing " + this.ToString () + " with " + pOther.ToString () + ", diff = " + diff);
+			return diff;
+		}
+
 		ReturnValueType m_returnType = ReturnValueType.VOID;
 		float m_numberValue = 0.0f;
 		string m_stringValue = "";
 		bool m_boolValue = false;
-		SortedDictionary<int, ReturnValue> m_arrayValue = null;
+		SortedDictionary<ReturnValue, ReturnValue> m_arrayValue = null;
 	}
 }
 

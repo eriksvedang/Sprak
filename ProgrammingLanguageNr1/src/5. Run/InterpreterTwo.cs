@@ -493,14 +493,14 @@ namespace ProgrammingLanguageNr1
 			}
 			else if( rhs.getReturnValueType() != ReturnValueType.STRING && 
 					 lhs.getReturnValueType() != ReturnValueType.STRING) {
-				SortedDictionary<int, ReturnValue> newArray = new SortedDictionary<int, ReturnValue>();
+				SortedDictionary<ReturnValue, ReturnValue> newArray = new SortedDictionary<ReturnValue, ReturnValue>();
 				//int totalLength = lhs.ArrayValue.Count + rhs.ArrayValue.Count;
 				//ReturnValue[] array = new ReturnValue[totalLength];
 				for(int i = 0; i < lhs.ArrayValue.Count; i++) {
-					newArray.Add(i, lhs.ArrayValue[i]);
+					newArray.Add(new ReturnValue(i), lhs.ArrayValue[new ReturnValue(i)]);
 				}
 				for(int i = 0; i < rhs.ArrayValue.Count; i++) {
-					newArray.Add(i + lhs.ArrayValue.Count, rhs.ArrayValue[i]);
+					newArray.Add(new ReturnValue(i + lhs.ArrayValue.Count), rhs.ArrayValue[new ReturnValue(i)]);
 				}
 				return new ReturnValue(newArray);
 			}
@@ -519,13 +519,16 @@ namespace ProgrammingLanguageNr1
 		{
 			ReturnValue index = PopValue();
 			ReturnValue array = m_currentScope.getValue(CurrentNode.getTokenString());
-			int i = (int)index.NumberValue;
 			ReturnValue val = null;
-			if(array.ArrayValue.ContainsKey(i)) {
-				val = array.ArrayValue[i];
+
+			//Console.WriteLine ("LOOKING UP KEY " + index + " IN ARRAY " + array.ToString ());
+
+			if(array.ArrayValue.ContainsKey(index)) {
+				val = array.ArrayValue[index];
 			}
 			else {
-				val = new ReturnValue(0f);
+				//val = new ReturnValue(0f);
+				throw new Error ("Can't find the index '" + index + "' (" + index.getReturnValueType() + ") in the array '" + CurrentNode.getTokenString () + "'", Error.ErrorType.RUNTIME, CurrentNode.getToken ().LineNr, CurrentNode.getToken ().LinePosition);
 			}
 			PushValue(val);
 		}
@@ -600,18 +603,18 @@ namespace ProgrammingLanguageNr1
 		private void AssignmentToArrayElementSignal() {
 			string variableName = (CurrentNode as AST_Assignment).VariableName;
 			ReturnValue valueToSet = PopValue();
-			int i = (int)PopValue().NumberValue;
+			ReturnValue index = PopValue();
 			
 			ReturnValue rv = m_currentScope.getValue(variableName);
 			rv.setType(ReturnValueType.ARRAY);
 			
-			SortedDictionary<int, ReturnValue> array = rv.ArrayValue;
+			SortedDictionary<ReturnValue, ReturnValue> array = rv.ArrayValue;
 
-			if(array.ContainsKey(i)) {
-				array[i] = valueToSet;
+			if(array.ContainsKey(index)) {
+				array[index] = valueToSet;
 			}
 			else {
-				array.Add(i, valueToSet);
+				array.Add(index, valueToSet);
 			}
 		}
 
@@ -619,14 +622,14 @@ namespace ProgrammingLanguageNr1
 		{
 			// pop the right number of values and add them to a new ReturnValue of array type
 			AST_ArrayEndSignal arrayEndSignal = CurrentNode as AST_ArrayEndSignal;
-			SortedDictionary<int, ReturnValue> array = new SortedDictionary<int, ReturnValue>();
+			SortedDictionary<ReturnValue, ReturnValue> array = new SortedDictionary<ReturnValue, ReturnValue>();
 			ReturnValue[] values = new ReturnValue[arrayEndSignal.ArraySize];
 			for(int i = 0; i < arrayEndSignal.ArraySize; i++) {
 				values[i] = PopValue();
 			}
 			//for(int i = 0; i < arrayEndSignal.ArraySize; i++) {
 			for(int i = arrayEndSignal.ArraySize - 1; i >= 0; i--) {
-				array.Add(arrayEndSignal.ArraySize - i - 1, values[i]);
+				array.Add(new ReturnValue(arrayEndSignal.ArraySize - i - 1), values[i]);
 			}
 			PushValue(new ReturnValue(array));
 		}
