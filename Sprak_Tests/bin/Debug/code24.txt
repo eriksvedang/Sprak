@@ -2,7 +2,7 @@ number a = 10
 number b = 15
 number c
 
-if(1)
+if(true)
 	number a = 30
 	b = 20
 	number c = 100

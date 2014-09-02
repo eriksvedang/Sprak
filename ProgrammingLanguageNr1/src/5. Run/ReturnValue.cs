@@ -121,23 +121,27 @@ namespace ProgrammingLanguageNr1
 				m_returnType = ReturnValueType.NUMBER;
 			}
 			get {
-				if (m_returnType == ReturnValueType.STRING) {
-					float numberValue;
-					try {
-						numberValue = (float)Convert.ToDouble (m_stringValue, CultureInfo.InvariantCulture);
-					} catch (FormatException) {
-						numberValue = 0.0f;
-						//throw new Error(fe.Message);
-					}
-					return numberValue;
+				if (m_returnType == ReturnValueType.NUMBER) {
+					return m_numberValue;
+				}
+				else if (m_returnType == ReturnValueType.STRING) {
+					throw new Error ("Can't convert the string " + this.ToString () + " to a number");
+//					float numberValue;
+//					try {
+//						numberValue = (float)Convert.ToDouble (m_stringValue, CultureInfo.InvariantCulture);
+//					} catch (FormatException) {
+//						numberValue = 0.0f;
+//						//throw new Error(fe.Message);
+//					}
+//					return numberValue;
 				} else if (m_returnType == ReturnValueType.BOOL) {
-					return m_boolValue ? 1.0f : -1.0f;
+					throw new Error ("Can't convert the bool " + this.ToString () + " to a number");
 				} else if (m_returnType == ReturnValueType.ARRAY) {
 					throw new Error ("Can't convert the array " + this.ToString () + " to a number");
 				} else if (m_returnType == ReturnValueType.RANGE) {
 					throw new Error ("Can't convert the range " + this.ToString () + " to an array");
 				}
-				return m_numberValue;
+				throw new Error ("Can't convert " + this.ToString () + " to a number");
 			}
 		}
 		

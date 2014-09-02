@@ -10,10 +10,14 @@ namespace SprakProfiling
     {
         static void Main(string[] args)
         {
-			string filename = "../Program1";
+			string filename = ""; //"../Program1";
 			
-			if(args.Length > 0) {
-				filename = args[0];
+			if (args.Length > 0) {
+				filename = args [0];
+			} else {
+				Console.ForegroundColor = ConsoleColor.Red;
+				Console.WriteLine ("No program file given");
+				return;
 			}
 			
             TextReader tr = File.OpenText(filename);
@@ -25,28 +29,35 @@ namespace SprakProfiling
 
             SprakRunner runner = new SprakRunner(tr, functionDefinitions);
 			bool success = runner.Start();
-			if(success) {
-				while(runner.Step() == InterpreterTwo.Status.OK) {
+			if (success) {
+				InterpreterTwo.Status status = InterpreterTwo.Status.OK;
+				while (true) {
+					status = runner.Step ();
+					if (status == InterpreterTwo.Status.ERROR) {
+						Console.ForegroundColor = ConsoleColor.Red;
+						Console.WriteLine ("Runtime error:");
+						Console.ForegroundColor = ConsoleColor.White;
+						runner.getCompileTimeErrorHandler ().printErrorsToConsole ();
+					}
+					else if (status == InterpreterTwo.Status.FINISHED) {
+						return;
+					}
 				}
+			} else {
+				Console.ForegroundColor = ConsoleColor.Red;
+				Console.WriteLine ("Compile errors:");
+				Console.ForegroundColor = ConsoleColor.White;
+				runner.getCompileTimeErrorHandler ().printErrorsToConsole ();
+				return;
 			}
-			
-			Console.WriteLine("OUTPUT: ");
-			foreach(string s in m_output) {
-				Console.WriteLine(s);
-			}
-			
-			//runner.printTree(true);
 
-            //Console.In.ReadLine();
         }
 		
 		private static ReturnValue print(ReturnValue[] parameters)
         {
             ReturnValue parameter0 = parameters[0];
-            m_output.Add(parameter0.ToString());
+			Console.WriteLine (parameter0);
             return new ReturnValue(); // void
         }
-		
-		static List<string> m_output = new List<string>();
     }
 }

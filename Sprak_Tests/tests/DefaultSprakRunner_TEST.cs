@@ -288,6 +288,7 @@ namespace ProgrammingLanguageNr1.tests
             DefaultSprakRunner program = new DefaultSprakRunner(programString);
             program.run();
             program.printOutputToConsole();
+			program.getRuntimeErrorHandler ().printErrorsToConsole ();
 			
             Assert.AreEqual(0, program.getCompileTimeErrorHandler().getErrors().Count);
 			Assert.AreEqual("3", program.Output[0]);

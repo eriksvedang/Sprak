@@ -52,6 +52,10 @@ namespace ProgrammingLanguageNr1
                 new FunctionDocumentation("Remove an element from an array", new string[] { "The array to remove an element from", "The position in the array to remove (starts at 0)" });
             result.Add(new FunctionDefinition("void", "removeElement", new string[] { "array", "number" }, new string[] { "array", "position" }, new ExternalFunctionCreator.OnFunctionCall(API_removeElement), functionDoc_removeElement));
 
+			FunctionDocumentation functionDoc_append =
+				new FunctionDocumentation("Add an element to the end of an array", new string[] { "The array to add an element to", "The element to add" });
+			result.Add(new FunctionDefinition("void", "append", new string[] { "array", "var" }, new string[] { "array", "elem" }, new ExternalFunctionCreator.OnFunctionCall(API_append), functionDoc_append));
+
             FunctionDocumentation functionDoc_type =
                 new FunctionDocumentation("Get the type of something (returns a string)", new string[] { "The value to get the type of" });
             result.Add(new FunctionDefinition("string", "type", new string[] { "var" }, new string[] { "value" }, new ExternalFunctionCreator.OnFunctionCall(API_type), functionDoc_type));
@@ -276,7 +280,7 @@ namespace ProgrammingLanguageNr1
 			else if(args [0].getReturnValueType () == ReturnValueType.RANGE) {
 				Range r = args [0].RangeValue;
 				Range indexRange = new Range (0, Math.Abs(r.end - r.start) + 1, 1);
-				Console.WriteLine ("GetIndexes created index range: " + indexRange);
+				//Console.WriteLine ("GetIndexes created index range: " + indexRange);
 				return new ReturnValue (indexRange);
 			}
 			else {
@@ -290,6 +294,25 @@ namespace ProgrammingLanguageNr1
 			ReturnValue index = args[1];
 			array.Remove(index);
 			return new ReturnValue();
+		}
+
+		private static ReturnValue API_append(ReturnValue[] args)
+		{
+			SortedDictionary<ReturnValue, ReturnValue> array = args[0].ArrayValue;
+			ReturnValue val = args [1];
+
+			// Slow but correct way of doing it:
+//			int maxArrayIndex = -1;
+//			foreach (var key in array.Keys) {
+//				if (key.getReturnValueType () == ReturnValueType.NUMBER &&
+//				   maxArrayIndex < key.NumberValue) {
+//					maxArrayIndex = (int)key.NumberValue;
+//				}
+//			}
+			int maxArrayIndex = array.Count; // TODO: this is a bug if the array contains sparse indexes or stuff like that
+
+			array.Add (new ReturnValue(maxArrayIndex + 1), val);
+			return new ReturnValue(); // void
 		}
 
         private static ReturnValue API_count(ReturnValue[] args)

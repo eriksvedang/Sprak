@@ -9,7 +9,7 @@
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>SprakProfiling</RootNamespace>
-    <AssemblyName>SprakProfiling</AssemblyName>
+    <AssemblyName>Sprak</AssemblyName>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
   </PropertyGroup>

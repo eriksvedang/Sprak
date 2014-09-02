@@ -1,0 +1,11 @@
+
+var stuff = []
+
+loop i in from 1 to 100
+    loop j in from 1 to 100
+        append(stuff, [i,j])
+    end
+end
+
+print(stuff)
+print("count: " + count(stuff))

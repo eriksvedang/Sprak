@@ -319,7 +319,12 @@ namespace ProgrammingLanguageNr1
 
             AST subNode = null;
 
-            if (r.NumberValue > 0.0f)
+			if (r.getReturnValueType () != ReturnValueType.BOOL) {
+				var token = ifnode.getToken ();
+				throw new Error ("Can't use value " + r + " of type " + r.getPrettyReturnValueType () + " in if-statement", Error.ErrorType.RUNTIME, token.LineNr, token.LinePosition);
+			}
+
+			if (r.BoolValue)
             {
                 subNode = ifnode.getChild(1);
             }
@@ -500,26 +505,28 @@ namespace ProgrammingLanguageNr1
 		
 			ReturnValue rhs = PopValue();
 			ReturnValue lhs = PopValue();
+
+			var rightValueType = rhs.getReturnValueType ();
+			var leftValueType = lhs.getReturnValueType ();
 				
-			if( rhs.getReturnValueType() == ReturnValueType.NUMBER && 
-				lhs.getReturnValueType() == ReturnValueType.NUMBER) {
-				return new ReturnValue(rhs.NumberValue + lhs.NumberValue);
-			}
-			else if( rhs.getReturnValueType() != ReturnValueType.STRING && 
-					 lhs.getReturnValueType() != ReturnValueType.STRING) {
+			if (rightValueType == ReturnValueType.NUMBER && leftValueType == ReturnValueType.NUMBER) {
+				return new ReturnValue (rhs.NumberValue + lhs.NumberValue);
+			} else if (rightValueType == ReturnValueType.STRING || leftValueType == ReturnValueType.STRING) {
+				return new ReturnValue (lhs.ToString () + rhs.ToString ());
+			} else if (rightValueType == ReturnValueType.ARRAY || leftValueType == ReturnValueType.ARRAY) {
 				SortedDictionary<ReturnValue, ReturnValue> newArray = new SortedDictionary<ReturnValue, ReturnValue>();
-				//int totalLength = lhs.ArrayValue.Count + rhs.ArrayValue.Count;
-				//ReturnValue[] array = new ReturnValue[totalLength];
 				for(int i = 0; i < lhs.ArrayValue.Count; i++) {
 					newArray.Add(new ReturnValue(i), lhs.ArrayValue[new ReturnValue(i)]);
 				}
 				for(int i = 0; i < rhs.ArrayValue.Count; i++) {
 					newArray.Add(new ReturnValue(i + lhs.ArrayValue.Count), rhs.ArrayValue[new ReturnValue(i)]);
 				}
-				return new ReturnValue(newArray);
+				var a = new ReturnValue (newArray);
+				Console.WriteLine ("Created new array by concatenation: " + a.ToString ());
+				return a;
 			}
 			else {
-				return new ReturnValue(lhs.ToString() + rhs.ToString());
+				throw new Error ("Can't add " + lhs + " to " + rhs);
 			}		
 		}
 

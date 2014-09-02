@@ -10,3 +10,7 @@
 /Users/erik/Projects/ElseHeartbreak/github/Sprak/SprakProfiling/obj/Debug/SprakProfiling.exe.mdb
 /Users/erik/Projects/ElseHeartbreak/github/Sprak/SprakProfiling/bin/Debug/ProgrammingLanguageNr1.dll
 /Users/erik/Projects/ElseHeartbreak/github/Sprak/SprakProfiling/bin/Debug/ProgrammingLanguageNr1.dll.mdb
+/Users/erik/Documents/Miman/github/Sprak/SprakProfiling/bin/Debug/Sprak.exe.mdb
+/Users/erik/Documents/Miman/github/Sprak/SprakProfiling/bin/Debug/Sprak.exe
+/Users/erik/Documents/Miman/github/Sprak/SprakProfiling/obj/Debug/Sprak.exe
+/Users/erik/Documents/Miman/github/Sprak/SprakProfiling/obj/Debug/Sprak.exe.mdb
