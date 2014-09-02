@@ -249,7 +249,7 @@ namespace ProgrammingLanguageNr1
 				)
 			{
 				Token operatorToken = match(Token.TokenType.OPERATOR);
-				Console.WriteLine ("Matched operator token " + operatorToken.getTokenString() + " at line " + operatorToken.LineNr + " and pos " + operatorToken.LinePosition);
+				//Console.WriteLine ("Matched operator token " + operatorToken.getTokenString() + " at line " + operatorToken.LineNr + " and pos " + operatorToken.LinePosition);
 
 				AST rhs = booleanExpression();
 				checkLeftHandSide(lhs, operatorToken);
@@ -372,8 +372,8 @@ namespace ProgrammingLanguageNr1
 
 				// <ID>
 				argumentList.addChild (lhs); // use whatever is on the left side of the dot in the function (method rather) call (.)
-				Console.WriteLine ("Method call ID: ");
-				(new ASTPainter()).PaintAST(lhs);
+				//Console.WriteLine ("Method call ID: ");
+				//(new ASTPainter()).PaintAST(lhs);
 
 				// <FunctionName>
 				Token functionNameToken = new TokenWithValue (
@@ -387,11 +387,11 @@ namespace ProgrammingLanguageNr1
 
 				// <args>
 				AST_ArrayEndSignal argsArray = new AST_ArrayEndSignal(new Token(Token.TokenType.ARRAY_END_SIGNAL, "<ARRAY>"));
-				Console.WriteLine ("Inner args:");
-				foreach (var child in innerArgumentList.getChildren()) {
-					Console.WriteLine (child.getTokenString ());
-					argsArray.addChild (child);
-				}
+//				Console.WriteLine ("Inner args:");
+//				foreach (var child in innerArgumentList.getChildren()) {
+//					Console.WriteLine (child.getTokenString ());
+//					argsArray.addChild (child);
+//				}
 				argsArray.ArraySize = innerArgumentList.getChildren().Count; // DAMNIT DON'T FORGET THIS ONE
 				argumentList.addChild (argsArray); // send the arguments as an array to RemoteFunctionCall
 
@@ -1067,7 +1067,7 @@ Console.WriteLine("Popping out from ifElse branch");
 				loopBlockStatements.addChild(loopIndexAssignment);
 
 				Token savePoint = lookAhead(1); // will backtrack from here if matching loopVariable + loopRangeExpression fails
-				Console.WriteLine("Created save point at token " + savePoint);
+				//Console.WriteLine("Created save point at token " + savePoint);
 				
 				Token loopVariable = null;
 				AST loopRangeExpression = null; // what the loop will loop through
@@ -1076,24 +1076,24 @@ Console.WriteLine("Popping out from ifElse branch");
 					loopVariable = match (Token.TokenType.NAME);
 					match (Token.TokenType.IN);
 					try {
-						Console.WriteLine ("Found a potential loop variable " + loopVariable.getTokenString() + ", trying to match loop range expression with a loop variable");
+						//Console.WriteLine ("Found a potential loop variable " + loopVariable.getTokenString() + ", trying to match loop range expression with a loop variable");
 						loopRangeExpression = expression();
 						if(loopRangeExpression == null) {
-							Console.WriteLine ("null! Failed to match statement after loop variable, will backtrack and assume this loop does not use a loop variable");
+							//Console.WriteLine ("null! Failed to match statement after loop variable, will backtrack and assume this loop does not use a loop variable");
 							backtrackToToken (savePoint);
 						} else {
 							loopVariableName = loopVariable.getTokenString();
-							Console.WriteLine("Success, loop variable is called: " + loopVariableName);
+							//Console.WriteLine("Success, loop variable is called: " + loopVariableName);
 						}
 					}
 					catch(Error e) {
-						Console.WriteLine ("Failed to match statement after loop variable, will backtrack and assume this loop does not use a loop variable");
+						//Console.WriteLine ("Failed to match statement after loop variable, will backtrack and assume this loop does not use a loop variable");
 						backtrackToToken (savePoint);
 					}
 				}
 
 				if (loopRangeExpression == null) {
-					Console.WriteLine ("There is no loop variable, trying to match a bare loop range expression");
+					//Console.WriteLine ("There is no loop variable, trying to match a bare loop range expression");
 					loopRangeExpression = expression();
 				}
 
@@ -1101,8 +1101,8 @@ Console.WriteLine("Popping out from ifElse branch");
 					throw new Error ("Failed to match the expression after 'loop'", Error.ErrorType.SYNTAX, loopTree.getToken ().LineNr, loopTree.getToken ().LinePosition);
 				}
 
-				Console.WriteLine ("Loop range/array expression: ");
-				(new ASTPainter ()).PaintAST (loopRangeExpression);
+				//Console.WriteLine ("Loop range/array expression: ");
+				//(new ASTPainter ()).PaintAST (loopRangeExpression);
 				
 				// __array__ (is a copy of the array to loop over)
 				AST_VariableDeclaration loopArrayDeclaration = new AST_VariableDeclaration(
