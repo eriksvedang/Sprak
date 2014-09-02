@@ -1,4 +1,4 @@
-#define MEMORY_LOG
+//#define MEMORY_LOG
 
 using System;
 using System.Diagnostics;

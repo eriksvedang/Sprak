@@ -1042,6 +1042,8 @@ Console.WriteLine("Popping out from ifElse branch");
 			AST loopBlockStatements = new AST(new Token(Token.TokenType.STATEMENT_LIST, "<LOOP_BLOCK_STATEMENTS>"));
 
 			AST_LoopNode loopTree = new AST_LoopNode(match(Token.TokenType.LOOP));
+
+			string loopVariableName = "@"; // default name if no name is specified directly after 'loop' keyword
 			
 			bool isForeachLoop = false;
 			if(lookAheadType(1) != Token.TokenType.NEW_LINE)
@@ -1063,9 +1065,44 @@ Console.WriteLine("Popping out from ifElse branch");
 				loopIndexAssignment.addChild(new AST(new TokenWithValue(Token.TokenType.NUMBER, "-1", new ReturnValue(-1.0f))));
 				
 				loopBlockStatements.addChild(loopIndexAssignment);
+
+				Token savePoint = lookAhead(1); // will backtrack from here if matching loopVariable + loopRangeExpression fails
+				Console.WriteLine("Created save point at token " + savePoint);
 				
-				// match
-				AST arrayExpression = expression();
+				Token loopVariable = null;
+				AST loopRangeExpression = null; // what the loop will loop through
+
+				if (lookAheadType (1) == Token.TokenType.NAME && lookAheadType(2) == Token.TokenType.IN) {
+					loopVariable = match (Token.TokenType.NAME);
+					match (Token.TokenType.IN);
+					try {
+						Console.WriteLine ("Found a potential loop variable " + loopVariable.getTokenString() + ", trying to match loop range expression with a loop variable");
+						loopRangeExpression = expression();
+						if(loopRangeExpression == null) {
+							Console.WriteLine ("null! Failed to match statement after loop variable, will backtrack and assume this loop does not use a loop variable");
+							backtrackToToken (savePoint);
+						} else {
+							loopVariableName = loopVariable.getTokenString();
+							Console.WriteLine("Success, loop variable is called: " + loopVariableName);
+						}
+					}
+					catch(Error e) {
+						Console.WriteLine ("Failed to match statement after loop variable, will backtrack and assume this loop does not use a loop variable");
+						backtrackToToken (savePoint);
+					}
+				}
+
+				if (loopRangeExpression == null) {
+					Console.WriteLine ("There is no loop variable, trying to match a bare loop range expression");
+					loopRangeExpression = expression();
+				}
+
+				if (loopRangeExpression == null) {
+					throw new Error ("Failed to match the expression after 'loop'", Error.ErrorType.SYNTAX, loopTree.getToken ().LineNr, loopTree.getToken ().LinePosition);
+				}
+
+				Console.WriteLine ("Loop range/array expression: ");
+				(new ASTPainter ()).PaintAST (loopRangeExpression);
 				
 				// __array__ (is a copy of the array to loop over)
 				AST_VariableDeclaration loopArrayDeclaration = new AST_VariableDeclaration(
@@ -1078,8 +1115,8 @@ Console.WriteLine("Popping out from ifElse branch");
 				AST_Assignment loopArrayAssignment = 
 					new AST_Assignment(new Token(Token.TokenType.ASSIGNMENT, "="), "__array__");
 				
-				if(arrayExpression != null) {
-					loopArrayAssignment.addChild(arrayExpression);
+				if(loopRangeExpression != null) {
+					loopArrayAssignment.addChild(loopRangeExpression);
 				}
 				else {
 					throw new Error("Can't understand array expression in loop", Error.ErrorType.SYNTAX, 
@@ -1133,7 +1170,7 @@ Console.WriteLine("Popping out from ifElse branch");
 			match(Token.TokenType.BLOCK_END);
 			
 			if(isForeachLoop) {
-				loopBody.addChildFirst(foreachStuff());
+				loopBody.addChildFirst(foreachStuff(loopVariableName));
 			}			
 			
 			loopTree.addChild(loopBody);        
@@ -1146,7 +1183,7 @@ Console.WriteLine("Popping out from ifElse branch");
             return loopBlock;
         }
 				                       
-		private AST foreachStuff() {
+		private AST foreachStuff(string pLoopVariableName) {
 			AST statementList = new AST(new Token(Token.TokenType.STATEMENT_LIST, "<FOREACH_STATEMENTS>"));
 			
 			// increase __index__
@@ -1172,11 +1209,9 @@ Console.WriteLine("Popping out from ifElse branch");
 			breakStatement.addChild(new Token(Token.TokenType.BREAK, "break"));
 			statementList.addChild(breakStatement);
 			
-			// @ variable
+			// Loop variable
 			AST_VariableDeclaration declarationTree = 
-				new AST_VariableDeclaration(new Token(Token.TokenType.VAR_DECLARATION, "<VAR_DECL>"),
-				                            ReturnValueType.UNKNOWN_TYPE,
-				                            "@");
+				new AST_VariableDeclaration(new Token(Token.TokenType.VAR_DECLARATION, "<VAR_DECL>"), ReturnValueType.UNKNOWN_TYPE, pLoopVariableName);
 			statementList.addChild(declarationTree);
 			
 			AST arrayIndexLookup = new AST(new Token(Token.TokenType.ARRAY_LOOKUP, "__indexes__"));
@@ -1186,7 +1221,7 @@ Console.WriteLine("Popping out from ifElse branch");
 			arrayValueLookup.addChild(arrayIndexLookup);
 			
 			AST_Assignment assignmentTree = 
-				new AST_Assignment(new Token(Token.TokenType.ASSIGNMENT, "="), "@");
+				new AST_Assignment(new Token(Token.TokenType.ASSIGNMENT, "="), pLoopVariableName);
 			assignmentTree.addChild(arrayValueLookup);
 			statementList.addChild(assignmentTree);		
 			
@@ -1238,6 +1273,21 @@ Console.WriteLine("Popping out from ifElse branch");
 			
 			m_lookahead[m_lookaheadIndex] = nextToken;
 			m_lookaheadIndex = (m_lookaheadIndex + 1) % k;
+		}
+
+		public void backtrackToToken(Token pToken) {
+			m_nextTokenIndex = 0;
+			m_lookaheadIndex = 0;
+
+			for (int i = 0; i < k; i++) {
+				consumeCurrentToken();
+			}
+
+			while (lookAhead(1) != pToken) {
+				consumeCurrentToken ();
+			}
+
+			Console.WriteLine ("Found token");
 		}
 		
 		public Token lookAhead(int i) {

@@ -120,5 +120,7 @@ namespace ProgrammingLanguageNr1.tests
 			Assert.AreEqual(Token.TokenType.EOF, tokens[1].getTokenType());
 			Assert.AreEqual("can't", tokens[0].getTokenString());
 		}
+
+
 	}
 }

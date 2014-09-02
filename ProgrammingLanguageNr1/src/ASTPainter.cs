@@ -46,6 +46,10 @@ namespace ProgrammingLanguageNr1
 
         public void PaintAST(AST pRoot)
         {
+			if (pRoot == null) {
+				throw new Exception ("Can't paint pRoot since it's null");
+			}
+
             _root = pRoot;
             //build a list of all nodes
             List<AST> tmpAllNodes = new List<AST>();
@@ -164,6 +168,11 @@ namespace ProgrammingLanguageNr1
         }
         private void BuildNodeList(AST pCurrentList, List<AST> pList)
         {
+			if (pCurrentList == null) {
+				Console.WriteLine ("Can't paint node, will return");
+				return;
+			}
+
             pList.Add(pCurrentList);
             foreach(AST a in pCurrentList.getChildren())
             {

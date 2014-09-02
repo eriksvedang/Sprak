@@ -39,6 +39,7 @@ namespace ProgrammingLanguageNr1
 			ASSIGNMENT_TO_ARRAY,
             IF,
             LOOP,
+			IN, // for loops
 			LOOP_BLOCK,
 			LOOP_INCREMENT,
 			GOTO_BEGINNING_OF_LOOP,
@@ -91,6 +92,26 @@ namespace ProgrammingLanguageNr1
 		public override string ToString ()
 		{
 			return getTokenType () + " " + getTokenString ();
+		}
+
+		public override bool Equals (object obj)
+		{
+			if (obj is Token) {
+				Token other = obj as Token;
+
+				if (this.getTokenString () == "") {
+					return m_tokenType == other.getTokenType ();
+				} else {
+					return m_tokenString == other.getTokenString ();
+				}
+			}
+
+			return false;
+		}
+
+		public override int GetHashCode ()
+		{
+			return base.GetHashCode ();
 		}
 		
 		protected TokenType m_tokenType;

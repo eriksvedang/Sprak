@@ -326,6 +326,10 @@ namespace ProgrammingLanguageNr1
             {
                 tokenType = Token.TokenType.LOOP;
             }
+			else if (ts == "in")
+			{
+				tokenType = Token.TokenType.IN;
+			}
             else if (ts == "break")
             {
                 tokenType = Token.TokenType.BREAK;

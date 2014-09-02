@@ -289,6 +289,37 @@ namespace ProgrammingLanguageNr1.tests
             //Console.WriteLine("Tree: " + parser.getAST().getTreeAsString());
         }
 
+		[Test()]
+		public void Backtrack ()
+		{
+			StringReader programString = new StringReader(
+				"a b c d e f g h"
+			);
+
+			Tokenizer tokenizer = new Tokenizer(s_errorHandler, true);
+			List<Token> tokens = tokenizer.process(programString);
+
+			tokens.ForEach (t => Console.WriteLine(t.getTokenType().ToString() + ", " + t.getTokenString()));
+
+			Assert.AreEqual(9, tokens.Count);
+
+			Parser parser = new Parser(tokens, s_errorHandler);
+
+			Assert.AreEqual ("a", parser.lookAhead (1).getTokenString ());
+			parser.consumeCurrentToken ();
+			Assert.AreEqual ("b", parser.lookAhead (1).getTokenString ());
+			parser.consumeCurrentToken ();
+			parser.consumeCurrentToken ();
+			parser.consumeCurrentToken ();
+			Assert.AreEqual ("e", parser.lookAhead (1).getTokenString ());
+			var savePoint = parser.lookAhead(1);
+			Assert.AreEqual ("e", savePoint.getTokenString());
+			parser.consumeCurrentToken ();
+			parser.consumeCurrentToken ();
+			Assert.AreEqual ("g", parser.lookAhead (1).getTokenString ());
+			parser.backtrackToToken (savePoint);
+			Assert.AreEqual ("e", parser.lookAhead (1).getTokenString ());
+		}
 	}
 }
 

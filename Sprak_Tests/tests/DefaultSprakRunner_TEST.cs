@@ -568,7 +568,7 @@ namespace ProgrammingLanguageNr1.tests
 			program.getCompileTimeErrorHandler().printErrorsToConsole();
 			
             Assert.AreEqual(0, program.getCompileTimeErrorHandler().getErrors().Count);
-			Assert.AreEqual("a: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]", program.Output[0]);
+			Assert.AreEqual("a: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]", program.Output[0]);
         }
 		
 		[Test()]
@@ -1161,8 +1161,7 @@ namespace ProgrammingLanguageNr1.tests
 		public void HugeLoop ()
 		{
 			StringReader programString = new StringReader(
-				@"var xs = [1,2,3,4,5]
-                  loop from 1 to 2000
+				@"loop from 1 to 2000
 					 print(@)
                   end
                  "
@@ -1179,6 +1178,87 @@ namespace ProgrammingLanguageNr1.tests
 			Assert.AreEqual(0, program.getRuntimeErrorHandler().getErrors().Count);
 
 			Assert.AreEqual(2000, program.Output.Count);
+		}
+
+		[Test()]
+		public void LoopBackwards ()
+		{
+			StringReader programString = new StringReader(
+				@"loop from 200 to 10
+					 print(@)
+                  end
+                 "
+			);
+
+			DefaultSprakRunner program = new DefaultSprakRunner(programString);
+			program.run();
+
+			program.printOutputToConsole ();
+			program.getCompileTimeErrorHandler ().printErrorsToConsole ();
+			program.getRuntimeErrorHandler ().printErrorsToConsole ();
+
+			Assert.AreEqual(0, program.getCompileTimeErrorHandler().getErrors().Count);
+			Assert.AreEqual(0, program.getRuntimeErrorHandler().getErrors().Count);
+
+			Assert.AreEqual(191, program.Output.Count);
+			Assert.AreEqual("200", program.Output[0]);
+			Assert.AreEqual("10", program.Output[190]);
+		}
+
+
+		[Test()]
+		public void NamedLoopVariable ()
+		{
+			StringReader programString = new StringReader(
+				@"loop a in [10,20,30]
+					 print(a)
+                  end
+                 "
+			);
+
+			DefaultSprakRunner program = new DefaultSprakRunner(programString);
+			program.run();
+
+			program.printOutputToConsole ();
+			program.getCompileTimeErrorHandler ().printErrorsToConsole ();
+			program.getRuntimeErrorHandler ().printErrorsToConsole ();
+
+			Assert.AreEqual(0, program.getCompileTimeErrorHandler().getErrors().Count);
+			Assert.AreEqual(0, program.getRuntimeErrorHandler().getErrors().Count);
+
+			Assert.AreEqual(3, program.Output.Count);
+			Assert.AreEqual("10", program.Output[0]);
+			Assert.AreEqual("20", program.Output[1]);
+			Assert.AreEqual("30", program.Output[2]);
+		}
+
+		[Test()]
+		public void NamedLoopVariableTrickySituation ()
+		{
+			StringReader programString = new StringReader(
+				@"var x = [5,6]
+                  var y = [7,8]
+                  loop x + y
+					 print(@)
+                  end
+                 "
+			);
+
+			DefaultSprakRunner program = new DefaultSprakRunner(programString);
+			program.run();
+
+			program.printOutputToConsole ();
+			program.getCompileTimeErrorHandler ().printErrorsToConsole ();
+			program.getRuntimeErrorHandler ().printErrorsToConsole ();
+
+			Assert.AreEqual(0, program.getCompileTimeErrorHandler().getErrors().Count);
+			Assert.AreEqual(0, program.getRuntimeErrorHandler().getErrors().Count);
+
+			Assert.AreEqual(4, program.Output.Count);
+			Assert.AreEqual("5", program.Output[0]);
+			Assert.AreEqual("6", program.Output[1]);
+			Assert.AreEqual("7", program.Output[2]);
+			Assert.AreEqual("8", program.Output[3]);
 		}
 	}
 }
