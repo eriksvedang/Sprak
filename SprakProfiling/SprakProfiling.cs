@@ -28,29 +28,7 @@ namespace SprakProfiling
             };
 
             SprakRunner runner = new SprakRunner(tr, functionDefinitions);
-			bool success = runner.Start();
-			if (success) {
-				InterpreterTwo.Status status = InterpreterTwo.Status.OK;
-				while (true) {
-					status = runner.Step ();
-					if (status == InterpreterTwo.Status.ERROR) {
-						Console.ForegroundColor = ConsoleColor.Red;
-						Console.WriteLine ("Runtime error:");
-						Console.ForegroundColor = ConsoleColor.White;
-						runner.getCompileTimeErrorHandler ().printErrorsToConsole ();
-					}
-					else if (status == InterpreterTwo.Status.FINISHED) {
-						return;
-					}
-				}
-			} else {
-				Console.ForegroundColor = ConsoleColor.Red;
-				Console.WriteLine ("Compile errors:");
-				Console.ForegroundColor = ConsoleColor.White;
-				runner.getCompileTimeErrorHandler ().printErrorsToConsole ();
-				return;
-			}
-
+			runner.run ();
         }
 		
 		private static ReturnValue print(ReturnValue[] parameters)

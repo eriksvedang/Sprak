@@ -64,6 +64,12 @@ namespace ProgrammingLanguageNr1
         private void PushNewScope(Scope newScope, string nameOfNewMemorySpace, AST startNode) {
 			Debug.Assert(newScope != null);
 			Debug.Assert(startNode != null);
+
+			if (m_memorySpaceStack.Count > 100) {
+				var token = startNode.getToken ();
+				throw new Error ("Stack overflow!", Error.ErrorType.RUNTIME, token.LineNr, token.LinePosition);
+			}
+
             m_currentScope = newScope;
             m_memorySpaceStack.Push(m_currentMemorySpace);
             m_currentMemorySpace = new MemorySpace(nameOfNewMemorySpace, startNode, m_currentScope, m_memorySpaceNodeListCache);
@@ -747,11 +753,12 @@ namespace ProgrammingLanguageNr1
         public string DumpStack()
         {
             System.Text.StringBuilder b = new System.Text.StringBuilder();
-			b.Append ("STACK:");
+			b.Append ("[");
             foreach (MemorySpace s in m_memorySpaceStack)
             {
 				b.Append(" " + s.getName());
             }
+			b.Append (" ]");
             return b.ToString();
         }
         

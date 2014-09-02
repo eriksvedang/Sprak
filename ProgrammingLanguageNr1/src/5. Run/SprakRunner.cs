@@ -457,7 +457,8 @@ namespace ProgrammingLanguageNr1
 						Console.WriteLine ("\nHit maximum execution count limit!");
 						break;
 					} else if (m_runtimeErrorHandler.getErrors ().Count > 0) {
-						Console.WriteLine ("\nRuntime error occured!");
+						Console.WriteLine ("\nRuntime error occured:");
+						m_runtimeErrorHandler.printErrorsToConsole ();
 						Console.WriteLine ("Stack: " + m_interpreter.DumpStack ());
 						break;
 					}
@@ -528,6 +529,7 @@ namespace ProgrammingLanguageNr1
 	            }
 			}
 			catch(Error sprakError) {
+				Console.Write ("Caught sprak error in SprakRunner Step(): " + sprakError);
 				m_runtimeErrorHandler.errorOccured(sprakError);
 				return InterpreterTwo.Status.ERROR;
 			}

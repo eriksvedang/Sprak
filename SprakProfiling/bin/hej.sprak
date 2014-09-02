@@ -1,11 +1,18 @@
 
-var stuff = []
+number foo(number x)
+    return foo(x)
+end
+
+foo(100)
+
+var sum = 0
 
 loop i in from 1 to 100
-    loop j in from 1 to 100
-        append(stuff, [i,j])
+    loop j in from 1 to 10
+        loop k in from 1 to 10
+            sum += k
+        end
     end
 end
 
-print(stuff)
-print("count: " + count(stuff))
+print("Sum = " + sum)
