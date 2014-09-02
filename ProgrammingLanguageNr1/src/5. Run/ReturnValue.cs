@@ -241,6 +241,29 @@ namespace ProgrammingLanguageNr1
 		}
 		
 		public ReturnValueType getReturnValueType() { return m_returnType; }
+
+		public string getPrettyReturnValueType ()
+		{
+			switch (this.m_returnType)
+			{
+			case ReturnValueType.STRING:
+				return "string";
+			case ReturnValueType.NUMBER:
+				return "number";
+			case ReturnValueType.BOOL:
+				return "bool";
+			case ReturnValueType.ARRAY:
+				return "array";
+			case ReturnValueType.VOID:
+				return "void";
+			case ReturnValueType.RANGE:
+				return "range";
+			case ReturnValueType.UNKNOWN_TYPE:
+				return "unknown";
+			default:
+				throw new Exception("Case missed!");
+			}
+		}
         
         public object Unpack()
         {

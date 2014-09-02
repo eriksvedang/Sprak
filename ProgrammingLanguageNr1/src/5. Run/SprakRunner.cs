@@ -463,14 +463,17 @@ namespace ProgrammingLanguageNr1
 			}
         }
 
-		public void ResetAtFunction(string functionName, ReturnValue[] args) 
+		/// <summary>
+		/// Returns true if the function existed
+		/// </summary>
+		public bool ResetAtFunction(string functionName, ReturnValue[] args) 
 		{
 			if (m_interpreter == null) {
 				//throw new Exception("Interpreter is null!");
-				return;
+				return false;
 			}
 			Reset ();
-			m_interpreter.SetProgramToExecuteFunction (functionName, args);
+			return m_interpreter.SetProgramToExecuteFunction (functionName, args);
 		}
 
         public bool Start()

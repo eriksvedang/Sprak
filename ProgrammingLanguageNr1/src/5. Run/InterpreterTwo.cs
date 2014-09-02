@@ -118,7 +118,11 @@ namespace ProgrammingLanguageNr1
 			}
         }
 
-		public void SetProgramToExecuteFunction (string functionName, ReturnValue[] args)
+		/// <summary>
+		/// Sets the program to execute function.
+		/// Returns true if the program had the function.
+		/// </summary>
+		public bool SetProgramToExecuteFunction (string functionName, ReturnValue[] args)
 		{
 			//Console.WriteLine ("Will execute '" + functionName + "' in global scope '" + m_globalScope + "'");
 
@@ -126,7 +130,7 @@ namespace ProgrammingLanguageNr1
 			//Console.WriteLine("Found function symbol: " + functionSymbol.ToString());
 
 			if(functionSymbol == null) {
-				throw new Error("Can't find function '" + functionName + "' in program");
+				return false;
 			}
 
 			if (IsFunctionExternal(functionName)) {
@@ -160,6 +164,8 @@ namespace ProgrammingLanguageNr1
 					throw new Error(functionName + " has got no function definition node!");
 				}
 			}
+
+			return true; // all went well (starting the function)
 		}
 			
 		public ReturnValue GetGlobalVariableValue(string pName) 
@@ -641,9 +647,13 @@ namespace ProgrammingLanguageNr1
 			string variableName = (CurrentNode as AST_Assignment).VariableName;
 			ReturnValue valueToSet = PopValue();
 			ReturnValue index = PopValue();
-			
+
 			ReturnValue rv = m_currentScope.getValue(variableName);
-			rv.setType(ReturnValueType.ARRAY);
+
+			if (rv.getReturnValueType () != ReturnValueType.ARRAY) {
+				var token = (CurrentNode as AST_Assignment).getToken();
+				throw new Error ("Can't assign to the variable '" + variableName + "' since it's of the type " + rv.getPrettyReturnValueType(), Error.ErrorType.RUNTIME, token.LineNr, token.LinePosition);
+			}
 			
 			SortedDictionary<ReturnValue, ReturnValue> array = rv.ArrayValue;
 
