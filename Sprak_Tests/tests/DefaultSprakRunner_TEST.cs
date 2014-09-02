@@ -566,6 +566,7 @@ namespace ProgrammingLanguageNr1.tests
             program.run();
             program.printOutputToConsole();
 			program.getCompileTimeErrorHandler().printErrorsToConsole();
+			program.getRuntimeErrorHandler().printErrorsToConsole();
 			
             Assert.AreEqual(0, program.getCompileTimeErrorHandler().getErrors().Count);
 			Assert.AreEqual("a: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]", program.Output[0]);

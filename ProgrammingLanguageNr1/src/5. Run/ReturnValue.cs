@@ -208,9 +208,7 @@ namespace ProgrammingLanguageNr1
 					throw new Error ("Can't convert the range " + this.ToString () + " to an array");
 				}
 				else if(m_returnType == ReturnValueType.BOOL) {
-					var array = new SortedDictionary<ReturnValue, ReturnValue>();
-					array.Add(new ReturnValue(0.0f), new ReturnValue(m_boolValue));
-					return array;
+					throw new Error ("Can't convert the bool " + this.ToString () + " to an array");
 				}
 				else if(m_returnType == ReturnValueType.STRING) {
 					int len = m_stringValue.Length;
@@ -222,13 +220,10 @@ namespace ProgrammingLanguageNr1
 					return array;
 				}
 				else if(m_returnType == ReturnValueType.NUMBER) {
-					var array = new SortedDictionary<ReturnValue, ReturnValue>();
-					array.Add(new ReturnValue(0.0f), new ReturnValue(m_numberValue));
-					return array;
+					throw new Error ("Can't convert the number " + this.ToString () + " to an array");
 				}
 				else {
-					var array = new SortedDictionary<ReturnValue, ReturnValue>();
-					return array;
+					throw new Error ("Can't convert " + this.ToString () + " to an array");
 				}
 			}
 		}
