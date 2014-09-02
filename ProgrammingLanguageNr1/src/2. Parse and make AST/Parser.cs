@@ -387,11 +387,11 @@ namespace ProgrammingLanguageNr1
 
 				// <args>
 				AST_ArrayEndSignal argsArray = new AST_ArrayEndSignal(new Token(Token.TokenType.ARRAY_END_SIGNAL, "<ARRAY>"));
-//				Console.WriteLine ("Inner args:");
-//				foreach (var child in innerArgumentList.getChildren()) {
-//					Console.WriteLine (child.getTokenString ());
-//					argsArray.addChild (child);
-//				}
+				//Console.WriteLine ("Inner args:");
+				foreach (var child in innerArgumentList.getChildren()) {
+					//Console.WriteLine (child.getTokenString ());
+					argsArray.addChild (child);
+				}
 				argsArray.ArraySize = innerArgumentList.getChildren().Count; // DAMNIT DON'T FORGET THIS ONE
 				argumentList.addChild (argsArray); // send the arguments as an array to RemoteFunctionCall
 
