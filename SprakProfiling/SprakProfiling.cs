@@ -28,7 +28,7 @@ namespace SprakProfiling
             };
 
             SprakRunner runner = new SprakRunner(tr, functionDefinitions);
-			runner.run ();
+			runner.run (int.MaxValue);
         }
 		
 		private static ReturnValue print(ReturnValue[] parameters)

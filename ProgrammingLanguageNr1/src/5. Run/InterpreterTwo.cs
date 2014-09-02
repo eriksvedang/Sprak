@@ -62,8 +62,10 @@ namespace ProgrammingLanguageNr1
         }
 
         private void PushNewScope(Scope newScope, string nameOfNewMemorySpace, AST startNode) {
+			#if DEBUG
 			Debug.Assert(newScope != null);
 			Debug.Assert(startNode != null);
+			#endif
 
 			if (m_memorySpaceStack.Count > 100) {
 				var token = startNode.getToken ();
@@ -180,7 +182,9 @@ namespace ProgrammingLanguageNr1
 		}
 
         private bool ExecuteNextStatement() {
+			#if DEBUG
             Debug.Assert(m_currentMemorySpace != null);
+			#endif
 
             while (!m_currentMemorySpace.Next())
             {
@@ -318,10 +322,14 @@ namespace ProgrammingLanguageNr1
         private void EvaluateIf()
         {
             AST_IfNode ifnode = CurrentNode as AST_IfNode;
+			#if DEBUG
             Debug.Assert(ifnode != null);
+			#endif
 
             ReturnValue r = PopValue();
+			#if DEBUG
             Debug.Assert(r != null);
+			#endif
 
             AST subNode = null;
 
@@ -361,7 +369,9 @@ namespace ProgrammingLanguageNr1
         {
             get
             {
+				#if DEBUG
                 Debug.Assert(m_currentMemorySpace != null);
+				#endif
                 return m_currentMemorySpace.CurrentNode;
             }
         }
@@ -709,7 +719,9 @@ namespace ProgrammingLanguageNr1
 		static int loopBlockCounter = 0;
 		private void LoopBlock() {
 			AST_LoopBlockNode loopBlockNode = CurrentNode as AST_LoopBlockNode;
+			#if DEBUG
 			Debug.Assert(loopBlockNode != null);			
+			#endif
 			PushNewScope(loopBlockNode.getScope(), "LoopBlock_memorySpace" + loopBlockCounter++, loopBlockNode.getChild(0));
 		}
 		
@@ -717,7 +729,9 @@ namespace ProgrammingLanguageNr1
         private void Loop()
         {
 			AST_LoopNode loopNode = CurrentNode as AST_LoopNode;
+			#if DEBUG
 			Debug.Assert(loopNode != null);
+			#endif
 			PushNewScope(loopNode.getScope(), "Loop_memorySpace" + loopCounter++, loopNode.getChild(0));
         }
 

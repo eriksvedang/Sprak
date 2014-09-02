@@ -12,3 +12,15 @@ ProgrammingLanguageNr1.dll
 GameTypes.dll
 Sprak_Tests.dll
 ProgrammingLanguageNr1/obj/Debug/Sprak.csproj.FilesWrittenAbsolute.txt
+
+Sprak_Tests/obj/Release/Sprak_Tests.csproj.FilesWrittenAbsolute.txt
+
+SprakProfiling/obj/Release/SprakProfiling.csproj.FilesWrittenAbsolute.txt
+
+SprakProfiling/bin/Release/out.mlpd
+
+*.mlpd
+
+SprakProfiling/bin/Debug/out.mlpd
+
+Sprak_Tests/bin/Release/nunit.framework.dll
