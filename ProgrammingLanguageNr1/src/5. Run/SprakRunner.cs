@@ -275,7 +275,7 @@ namespace ProgrammingLanguageNr1
 			}
 			else if(args [0].getReturnValueType () == ReturnValueType.RANGE) {
 				Range r = args [0].RangeValue;
-				Range indexRange = new Range (0, r.end - r.start + 1, 1);
+				Range indexRange = new Range (0, Math.Abs(r.end - r.start) + 1, 1);
 				Console.WriteLine ("GetIndexes created index range: " + indexRange);
 				return new ReturnValue (indexRange);
 			}

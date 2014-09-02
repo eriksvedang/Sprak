@@ -1260,6 +1260,32 @@ namespace ProgrammingLanguageNr1.tests
 			Assert.AreEqual("7", program.Output[2]);
 			Assert.AreEqual("8", program.Output[3]);
 		}
+
+		[Test()]
+		public void LookupIndexInRange ()
+		{
+			StringReader programString = new StringReader(
+				@"var r = from 10 to 100
+                  print(r[0])
+                  print(r[90])
+                  print(r[91])
+                 "
+			);
+
+			DefaultSprakRunner program = new DefaultSprakRunner(programString);
+			program.run();
+
+			program.printOutputToConsole ();
+			program.getCompileTimeErrorHandler ().printErrorsToConsole ();
+			program.getRuntimeErrorHandler ().printErrorsToConsole ();
+
+			Assert.AreEqual(0, program.getCompileTimeErrorHandler().getErrors().Count);
+			Assert.AreEqual(1, program.getRuntimeErrorHandler().getErrors().Count);
+
+			Assert.AreEqual(2, program.Output.Count);
+			Assert.AreEqual("10", program.Output[0]);
+			Assert.AreEqual("100", program.Output[1]);
+		}
 	}
 }
 

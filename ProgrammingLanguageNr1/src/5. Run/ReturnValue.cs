@@ -205,8 +205,7 @@ namespace ProgrammingLanguageNr1
 					return m_arrayValue;
 				}
 				else if(m_returnType == ReturnValueType.RANGE) {
-					throw new Exception ("Can't convert the range " + this.ToString () + " to an array");
-					//TODO: should be a normal Sprak Error!
+					throw new Error ("Can't convert the range " + this.ToString () + " to an array");
 				}
 				else if(m_returnType == ReturnValueType.BOOL) {
 					var array = new SortedDictionary<ReturnValue, ReturnValue>();

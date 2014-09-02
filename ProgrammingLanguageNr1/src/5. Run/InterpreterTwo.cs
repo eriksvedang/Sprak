@@ -532,11 +532,24 @@ namespace ProgrammingLanguageNr1
 			if (array.getReturnValueType () == ReturnValueType.RANGE) {
 
 				if (index.getReturnValueType () == ReturnValueType.NUMBER) {
-					Range r = array.RangeValue;
-					int length = Math.Abs (r.end - r.start);
-					int i = r.step * (int)index.NumberValue;
-					int theNumber = r.start + i;
-					//TODO: do range checking
+					Range range = array.RangeValue;
+					int i = range.step * (int)index.NumberValue;
+					int theNumber = range.start + i;
+					int lowerBound = 0;
+					int upperBound = 0;
+					if (range.step > 0) {
+						lowerBound = range.start;
+						upperBound = range.end;
+					} else {
+						lowerBound = range.end;
+						upperBound = range.start;
+					}
+					if (theNumber < lowerBound) {
+						throw new Error ("Index " + index.ToString () + " is outside the range " + array.ToString());
+					}
+					else if (theNumber > upperBound) {
+						throw new Error ("Index " + index.ToString () + " is outside the range " + array.ToString());
+					}
 					val = new ReturnValue ((float)theNumber);
 					//Console.WriteLine ("LOOKING UP KEY " + index + " IN RANGE " + array.ToString () + ", the result was " + theNumber);
 				} else {
