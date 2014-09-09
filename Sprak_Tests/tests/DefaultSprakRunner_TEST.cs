@@ -1235,6 +1235,33 @@ namespace ProgrammingLanguageNr1.tests
 		}
 
 		[Test()]
+		public void NamedLoopVariableWithRange ()
+		{
+			StringReader programString = new StringReader(
+				@"loop a from 10 to 13
+					 print(a)
+                  end
+                 "
+			);
+
+			DefaultSprakRunner program = new DefaultSprakRunner(programString);
+			program.run();
+
+			program.printOutputToConsole ();
+			program.getCompileTimeErrorHandler ().printErrorsToConsole ();
+			program.getRuntimeErrorHandler ().printErrorsToConsole ();
+
+			Assert.AreEqual(0, program.getCompileTimeErrorHandler().getErrors().Count);
+			Assert.AreEqual(0, program.getRuntimeErrorHandler().getErrors().Count);
+
+			Assert.AreEqual(4, program.Output.Count);
+			Assert.AreEqual("10", program.Output[0]);
+			Assert.AreEqual("11", program.Output[1]);
+			Assert.AreEqual("12", program.Output[2]);
+			Assert.AreEqual("13", program.Output[3]);
+		}
+
+		[Test()]
 		public void NamedLoopVariableTrickySituation ()
 		{
 			StringReader programString = new StringReader(

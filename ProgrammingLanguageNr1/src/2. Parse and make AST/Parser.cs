@@ -1072,9 +1072,18 @@ Console.WriteLine("Popping out from ifElse branch");
 				Token loopVariable = null;
 				AST loopRangeExpression = null; // what the loop will loop through
 
-				if (lookAheadType (1) == Token.TokenType.NAME && lookAheadType(2) == Token.TokenType.IN) {
+				if ((lookAheadType (1) == Token.TokenType.NAME && lookAheadType(2) == Token.TokenType.IN) ||
+					(lookAheadType (1) == Token.TokenType.NAME && lookAheadType(2) == Token.TokenType.FROM)) 
+				{
 					loopVariable = match (Token.TokenType.NAME);
-					match (Token.TokenType.IN);
+
+					if(lookAheadType(1) == Token.TokenType.IN) {
+						match (Token.TokenType.IN);
+					}
+					else if(lookAheadType(1) == Token.TokenType.FROM) {
+						// proceed
+					}
+
 					try {
 						//Console.WriteLine ("Found a potential loop variable " + loopVariable.getTokenString() + ", trying to match loop range expression with a loop variable");
 						loopRangeExpression = expression();
