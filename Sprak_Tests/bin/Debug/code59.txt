@@ -1,2 +1,2 @@
 array a = from 1 to 5
-print(count(a))
+print(Count(a))

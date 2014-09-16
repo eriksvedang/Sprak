@@ -11,9 +11,9 @@ namespace ProgrammingLanguageNr1
         private static List<FunctionDefinition> __CreateBuiltInFunctionDefinitions()
         {
             List<FunctionDefinition> result = new List<FunctionDefinition>();
-            FunctionDocumentation functionDoc_count =
+            FunctionDocumentation functionDoc_Count =
         new FunctionDocumentation("Count the number of elements in an array", new string[] { "The array" });
-            result.Add(new FunctionDefinition("number", "count", new string[] { "array" }, new string[] { "a" }, new ExternalFunctionCreator.OnFunctionCall(API_count), functionDoc_count));
+            result.Add(new FunctionDefinition("number", "Count", new string[] { "array" }, new string[] { "a" }, new ExternalFunctionCreator.OnFunctionCall(API_count), functionDoc_Count));
 
 			// Need an add-function???!
 //			FunctionDocumentation functionDoc_add =
@@ -50,7 +50,7 @@ namespace ProgrammingLanguageNr1
 
             FunctionDocumentation functionDoc_RemoveElement =
                 new FunctionDocumentation("Remove an element from an array", new string[] { "The array to remove an element from", "The position in the array to remove (starts at 0)" });
-            result.Add(new FunctionDefinition("void", "RemoveElement", new string[] { "array", "number" }, new string[] { "array", "position" }, new ExternalFunctionCreator.OnFunctionCall(API_removeElement), functionDoc_RemoveElement));
+            result.Add(new FunctionDefinition("void", "Remove", new string[] { "array", "number" }, new string[] { "array", "position" }, new ExternalFunctionCreator.OnFunctionCall(API_removeElement), functionDoc_RemoveElement));
 
 			FunctionDocumentation functionDoc_Append =
 				new FunctionDocumentation("Add an element to the end of an array", new string[] { "The array to add an element to", "The element to add" });

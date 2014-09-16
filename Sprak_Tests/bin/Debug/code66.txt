@@ -6,13 +6,13 @@ end
 
 number indexOfLastElement(array a)
 	array indexes = GetIndexes(a)
-	return indexes[count(indexes) - 1]
+	return indexes[Count(indexes) - 1]
 end
 
-void remove(array a, string s)
-	loop GetIndexes(a)
-		if(a[@] == s)
-			RemoveElement(a, @)
+void MyRemove(array a, string s)
+	loop i in GetIndexes(a)
+		if(a[i] == s)
+			Remove(a, i)
 		end
 	end
 end
@@ -26,8 +26,8 @@ add(a, "heather")
 add(a, "sinnet")
 add(a, "fredag")
 
-remove(a, "erik")
-remove(a, "sinnet")
+MyRemove(a, "erik")
+MyRemove(a, "sinnet")
 
 loop a
 	print(@)

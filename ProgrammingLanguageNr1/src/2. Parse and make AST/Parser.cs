@@ -1204,7 +1204,7 @@ Console.WriteLine("Popping out from ifElse branch");
 			statementList.addChild(assignmentNode);   
 			
 			// if(__index__ >= count(__indexes__)) { break }
-			AST_FunctionCall lengthOfArray = new AST_FunctionCall(new Token(Token.TokenType.FUNCTION_CALL, "count"));
+			AST_FunctionCall lengthOfArray = new AST_FunctionCall(new Token(Token.TokenType.FUNCTION_CALL, "Count"));
 			AST argumentList = new AST(new Token(Token.TokenType.NODE_GROUP, "<ARGUMENT_LIST>"));
 			argumentList.addChild(new Token(Token.TokenType.NAME, "__indexes__"));
 			lengthOfArray.addChild(argumentList);
