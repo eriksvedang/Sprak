@@ -1020,7 +1020,7 @@ Console.WriteLine("Popping out from ifElse branch");
 					                         	Error.ErrorType.SYNTAX,
 					                            	fromToken.LineNr, fromToken.LinePosition + 3 ); }
 				
-				AST_FunctionCall callRangeFunction = new AST_FunctionCall(new Token(Token.TokenType.FUNCTION_CALL, "range"));
+				AST_FunctionCall callRangeFunction = new AST_FunctionCall(new Token(Token.TokenType.FUNCTION_CALL, "Range"));
 				AST argumentList = new AST(new Token(Token.TokenType.NODE_GROUP, "<ARGUMENT_LIST>"));
 				argumentList.addChild(minValue);
 				argumentList.addChild(maxValue);
@@ -1144,7 +1144,7 @@ Console.WriteLine("Popping out from ifElse branch");
 
 				loopBlockStatements.addChild(indexesDeclaration);
 				
-				AST_FunctionCall getArrayIndexes = new AST_FunctionCall(new Token(Token.TokenType.FUNCTION_CALL, "getIndexes"));
+				AST_FunctionCall getArrayIndexes = new AST_FunctionCall(new Token(Token.TokenType.FUNCTION_CALL, "GetIndexes"));
 				AST argumentList = new AST(new Token(Token.TokenType.NODE_GROUP, "<ARGUMENT_LIST>"));
 				argumentList.addChild(new Token(Token.TokenType.NAME, "__array__"));
 				getArrayIndexes.addChild(argumentList);

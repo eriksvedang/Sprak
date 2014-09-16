@@ -587,18 +587,6 @@ namespace ProgrammingLanguageNr1.tests
         }
 		
 		[Test()]
-        public void ExplicitConversions()
-        {
-            TextReader programString = File.OpenText("code64.txt");
-            DefaultSprakRunner program = new DefaultSprakRunner(programString);
-            program.run();
-            program.printOutputToConsole();
-			program.getCompileTimeErrorHandler().printErrorsToConsole();
-			
-            Assert.AreEqual(0, program.getCompileTimeErrorHandler().getErrors().Count);
-        }
-		
-		[Test()]
         public void MakingSomeListFunctions()
         {
             TextReader programString = File.OpenText("code66.txt");

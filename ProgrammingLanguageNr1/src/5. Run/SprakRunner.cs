@@ -20,53 +20,57 @@ namespace ProgrammingLanguageNr1
 //				new FunctionDocumentation("Add an element to the end of the array", new string[] { "The element" });
 //			result.Add(new FunctionDefinition("array", "add", new string[] { "var" }, new string[] { "element" }, new ExternalFunctionCreator.OnFunctionCall(API_add), functionDoc_add));
 
-            FunctionDocumentation functionDoc_allocate =
-                new FunctionDocumentation("Create a new array with X number of elements", new string[] { "How many elements the array should hold" });
-            result.Add(new FunctionDefinition("number", "allocate", new string[] { "number" }, new string[] { "X" }, new ExternalFunctionCreator.OnFunctionCall(API_allocate), functionDoc_allocate));
+//            FunctionDocumentation functionDoc_allocate =
+//                new FunctionDocumentation("Create a new array with X number of elements", new string[] { "How many elements the array should hold" });
+//            result.Add(new FunctionDefinition("number", "allocate", new string[] { "number" }, new string[] { "X" }, new ExternalFunctionCreator.OnFunctionCall(API_allocate), functionDoc_allocate));
 
-            FunctionDocumentation functionDoc_range =
-                new FunctionDocumentation("Create a new array that contains a range of numbers", new string[] { "The start value of the range", "The end value of the range" });
-            result.Add(new FunctionDefinition("number", "range", new string[] { "number", "number" }, new string[] { "min", "max" }, new ExternalFunctionCreator.OnFunctionCall(API_range), functionDoc_range));
+            FunctionDocumentation functionDoc_Range =
+				new FunctionDocumentation("Create a range of numbers from 'min' to (and including) 'max'", new string[] { "The start value of the range", "The end value of the range" });
+            result.Add(new FunctionDefinition("number", "Range", new string[] { "number", "number" }, new string[] { "min", "max" }, new ExternalFunctionCreator.OnFunctionCall(API_range), functionDoc_Range));
 
-            FunctionDocumentation functionDoc_toArray =
-                new FunctionDocumentation("Convert something to an array", new string[] { "The value to convert" });
-            result.Add(new FunctionDefinition("array", "toArray", new string[] { "var" }, new string[] { "value" }, new ExternalFunctionCreator.OnFunctionCall(API_toArray), functionDoc_toArray));
+//            FunctionDocumentation functionDoc_toArray =
+//                new FunctionDocumentation("Convert something to an array", new string[] { "The value to convert" });
+//            result.Add(new FunctionDefinition("array", "toArray", new string[] { "var" }, new string[] { "value" }, new ExternalFunctionCreator.OnFunctionCall(API_toArray), functionDoc_toArray));
+//
+//            FunctionDocumentation functionDoc_toNumber =
+//                new FunctionDocumentation("Convert something to a number", new string[] { "The value to convert" });
+//            result.Add(new FunctionDefinition("number", "toNumber", new string[] { "var" }, new string[] { "value" }, new ExternalFunctionCreator.OnFunctionCall(API_toNumber), functionDoc_toNumber));
+//
+//            FunctionDocumentation functionDoc_toString =
+//                new FunctionDocumentation("Convert something to a string", new string[] { "The value to convert" });
+//            result.Add(new FunctionDefinition("string", "toString", new string[] { "var" }, new string[] { "value" }, new ExternalFunctionCreator.OnFunctionCall(API_toString), functionDoc_toString));
+//
+//            FunctionDocumentation functionDoc_toBool =
+//                new FunctionDocumentation("Convert something to a bool", new string[] { "The value to convert" });
+//            result.Add(new FunctionDefinition("bool", "toBool", new string[] { "var" }, new string[] { "value" }, new ExternalFunctionCreator.OnFunctionCall(API_toBool), functionDoc_toBool));
 
-            FunctionDocumentation functionDoc_toNumber =
-                new FunctionDocumentation("Convert something to a number", new string[] { "The value to convert" });
-            result.Add(new FunctionDefinition("number", "toNumber", new string[] { "var" }, new string[] { "value" }, new ExternalFunctionCreator.OnFunctionCall(API_toNumber), functionDoc_toNumber));
-
-            FunctionDocumentation functionDoc_toString =
-                new FunctionDocumentation("Convert something to a string", new string[] { "The value to convert" });
-            result.Add(new FunctionDefinition("string", "toString", new string[] { "var" }, new string[] { "value" }, new ExternalFunctionCreator.OnFunctionCall(API_toString), functionDoc_toString));
-
-            FunctionDocumentation functionDoc_toBool =
-                new FunctionDocumentation("Convert something to a bool", new string[] { "The value to convert" });
-            result.Add(new FunctionDefinition("bool", "toBool", new string[] { "var" }, new string[] { "value" }, new ExternalFunctionCreator.OnFunctionCall(API_toBool), functionDoc_toBool));
-
-            FunctionDocumentation functionDoc_getIndexes =
+            FunctionDocumentation functionDoc_GetIndexes =
                 new FunctionDocumentation("Create a new array that contains the indexes of another array", new string[] { "The array with indexes" });
-            result.Add(new FunctionDefinition("array", "getIndexes", new string[] { "array" }, new string[] { "a" }, new ExternalFunctionCreator.OnFunctionCall(API_createArrayOrRangeOfIndexes), functionDoc_getIndexes));
+            result.Add(new FunctionDefinition("array", "GetIndexes", new string[] { "array" }, new string[] { "a" }, new ExternalFunctionCreator.OnFunctionCall(API_createArrayOrRangeOfIndexes), functionDoc_GetIndexes));
 
-            FunctionDocumentation functionDoc_removeElement =
+            FunctionDocumentation functionDoc_RemoveElement =
                 new FunctionDocumentation("Remove an element from an array", new string[] { "The array to remove an element from", "The position in the array to remove (starts at 0)" });
-            result.Add(new FunctionDefinition("void", "removeElement", new string[] { "array", "number" }, new string[] { "array", "position" }, new ExternalFunctionCreator.OnFunctionCall(API_removeElement), functionDoc_removeElement));
+            result.Add(new FunctionDefinition("void", "RemoveElement", new string[] { "array", "number" }, new string[] { "array", "position" }, new ExternalFunctionCreator.OnFunctionCall(API_removeElement), functionDoc_RemoveElement));
 
-			FunctionDocumentation functionDoc_append =
+			FunctionDocumentation functionDoc_Append =
 				new FunctionDocumentation("Add an element to the end of an array", new string[] { "The array to add an element to", "The element to add" });
-			result.Add(new FunctionDefinition("void", "append", new string[] { "array", "var" }, new string[] { "array", "elem" }, new ExternalFunctionCreator.OnFunctionCall(API_append), functionDoc_append));
+			result.Add(new FunctionDefinition("void", "Append", new string[] { "array", "var" }, new string[] { "array", "elem" }, new ExternalFunctionCreator.OnFunctionCall(API_append), functionDoc_Append));
 
-            FunctionDocumentation functionDoc_type =
-                new FunctionDocumentation("Get the type of something (returns a string)", new string[] { "The value to get the type of" });
-            result.Add(new FunctionDefinition("string", "type", new string[] { "var" }, new string[] { "value" }, new ExternalFunctionCreator.OnFunctionCall(API_type), functionDoc_type));
+//            FunctionDocumentation functionDoc_type =
+//                new FunctionDocumentation("Get the type of something (returns a string)", new string[] { "The value to get the type of" });
+//            result.Add(new FunctionDefinition("string", "type", new string[] { "var" }, new string[] { "value" }, new ExternalFunctionCreator.OnFunctionCall(API_type), functionDoc_type));
 
-			FunctionDocumentation functionDoc_round =
+			FunctionDocumentation functionDoc_Round =
 				new FunctionDocumentation("Round a number to the nearest integer", new string[] { "The number to round" });
-			result.Add(new FunctionDefinition("number", "round", new string[] { "var" }, new string[] { "x" }, new ExternalFunctionCreator.OnFunctionCall(API_round), functionDoc_round));
+			result.Add(new FunctionDefinition("number", "Round", new string[] { "var" }, new string[] { "x" }, new ExternalFunctionCreator.OnFunctionCall(API_round), functionDoc_Round));
 
-			FunctionDocumentation functionDoc_int =
+			FunctionDocumentation functionDoc_Int =
 				new FunctionDocumentation("Remove the decimals of a float", new string[] { "The number to convert to an integer" });
-			result.Add(new FunctionDefinition("number", "int", new string[] { "var" }, new string[] { "x" }, new ExternalFunctionCreator.OnFunctionCall(API_int), functionDoc_int));
+			result.Add(new FunctionDefinition("number", "Int", new string[] { "var" }, new string[] { "x" }, new ExternalFunctionCreator.OnFunctionCall(API_int), functionDoc_Int));
+
+			FunctionDocumentation functionDoc_Mod =
+				new FunctionDocumentation("Remove the decimals of a float", new string[] { "Get the remainder of x / y" });
+			result.Add(new FunctionDefinition("number", "Mod", new string[] { "var", "var" }, new string[] { "x", "y" }, new ExternalFunctionCreator.OnFunctionCall(API_mod), functionDoc_Mod));
 
             return result;
         }
@@ -409,6 +413,11 @@ namespace ProgrammingLanguageNr1
 		private static ReturnValue API_int(ReturnValue[] args)
 		{
 			return new ReturnValue((int)args[0].NumberValue);
+		}
+
+		private static ReturnValue API_mod(ReturnValue[] args)
+		{
+			return new ReturnValue((int)args[0].NumberValue % (int)args[1].NumberValue);
 		}
 		
 		private Scope CreateScopeTree(AST ast)

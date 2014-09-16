@@ -5,14 +5,14 @@ void add(array a, string s)
 end
 
 number indexOfLastElement(array a)
-	array indexes = getIndexes(a)
+	array indexes = GetIndexes(a)
 	return indexes[count(indexes) - 1]
 end
 
 void remove(array a, string s)
-	loop getIndexes(a)
+	loop GetIndexes(a)
 		if(a[@] == s)
-			removeElement(a, @)
+			RemoveElement(a, @)
 		end
 	end
 end
