@@ -574,15 +574,14 @@ namespace ProgrammingLanguageNr1
 						upperBound = range.start;
 					}
 					if (theNumber < lowerBound) {
-						throw new Error ("Index " + index.ToString () + " is outside the range " + array.ToString());
-					}
-					else if (theNumber > upperBound) {
-						throw new Error ("Index " + index.ToString () + " is outside the range " + array.ToString());
+						throw new Error ("Index " + index.ToString () + " is outside the range " + array.ToString ());
+					} else if (theNumber > upperBound) {
+						throw new Error ("Index " + index.ToString () + " is outside the range " + array.ToString ());
 					}
 					val = new ReturnValue ((float)theNumber);
 					//Console.WriteLine ("LOOKING UP KEY " + index + " IN RANGE " + array.ToString () + ", the result was " + theNumber);
 				} else {
-					throw new Error ("Can't look up " + index.ToString () + " in the range " + array.ToString());
+					throw new Error ("Can't look up " + index.ToString () + " in the range " + array.ToString ());
 				}
 
 			} else if (array.getReturnValueType () == ReturnValueType.ARRAY) {
@@ -594,8 +593,17 @@ namespace ProgrammingLanguageNr1
 					//val = new ReturnValue(0f);
 					throw new Error ("Can't find the index '" + index + "' (" + index.getReturnValueType () + ") in the array '" + CurrentNode.getTokenString () + "'", Error.ErrorType.RUNTIME, CurrentNode.getToken ().LineNr, CurrentNode.getToken ().LinePosition);
 				}
+			} else if (array.getReturnValueType () == ReturnValueType.STRING) {
+				string s = array.StringValue;
+				int i = (int)index.NumberValue;
+				if (i >= 0 && i < s.Length) {
+					val = new ReturnValue (s [i].ToString());
+				} else {
+					//val = new ReturnValue(0f);
+					throw new Error ("The index '" + i + "' (" + index.getReturnValueType () + ") is outside the bounds of the string '" + CurrentNode.getTokenString () + "'", Error.ErrorType.RUNTIME, CurrentNode.getToken ().LineNr, CurrentNode.getToken ().LinePosition);
+				}
 			} else {
-				throw new Error ("Can't convert " + array.ToString () + " to an array");
+				throw new Error ("Can't convert " + array.ToString () + " to an array (for lookup)");
 			}
 
 			PushValue (val);

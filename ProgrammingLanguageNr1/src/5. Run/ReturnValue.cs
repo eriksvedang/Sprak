@@ -225,7 +225,7 @@ namespace ProgrammingLanguageNr1
 					throw new Error ("Can't convert the number " + this.ToString () + " to an array");
 				}
 				else {
-					throw new Error ("Can't convert " + this.ToString () + " to an array");
+					throw new Error ("Can't convert the " + this.getPrettyReturnValueType() + " '" + this.ToString () + "' to an array");
 				}
 			}
 		}

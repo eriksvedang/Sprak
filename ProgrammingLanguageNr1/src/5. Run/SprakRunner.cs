@@ -280,11 +280,13 @@ namespace ProgrammingLanguageNr1
 					i++;
 				}		
 				return new ReturnValue (newArray);
-			}
-			else if(args [0].getReturnValueType () == ReturnValueType.RANGE) {
+			} else if (args [0].getReturnValueType () == ReturnValueType.RANGE) {
 				Range r = args [0].RangeValue;
-				Range indexRange = new Range (0, Math.Abs(r.end - r.start) + 1, 1);
+				Range indexRange = new Range (0, Math.Abs (r.end - r.start) + 1, 1);
 				//Console.WriteLine ("GetIndexes created index range: " + indexRange);
+				return new ReturnValue (indexRange);
+			} else if (args [0].getReturnValueType () == ReturnValueType.STRING) {
+				var indexRange = new Range (0, args [0].StringValue.Length, 1);
 				return new ReturnValue (indexRange);
 			}
 			else {
@@ -330,8 +332,11 @@ namespace ProgrammingLanguageNr1
 				int length = r.end - r.start;
 				return new ReturnValue ((float)length);
 			}
+			else if(args [0].getReturnValueType () == ReturnValueType.STRING) {
+				return new ReturnValue(args [0].StringValue.Length);
+			}
 			else {
-				throw new Error("Can't convert " + args[0].ToString() + " to an array in GetIndexes()");
+				throw new Error("Can't convert " + args[0].ToString() + " to an array in Count()");
 			}
 		}
 
