@@ -270,7 +270,10 @@ namespace ProgrammingLanguageNr1
         {
             // Function name:
             string functionName = tree.getTokenString();
-            FunctionSymbol function = (FunctionSymbol)m_currentScope.resolve(functionName);
+
+			var sym = m_currentScope.resolve (functionName);
+
+			FunctionSymbol function = sym as FunctionSymbol;
 
             if (function == null)
             {
