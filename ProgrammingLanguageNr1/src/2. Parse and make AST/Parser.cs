@@ -689,8 +689,13 @@ namespace ProgrammingLanguageNr1
             AST expr;
 
 			try {
-                match(Token.TokenType.IF);
+                Token ifToken = match(Token.TokenType.IF);
                 expr = expression(); // child 0
+
+				if (expr == null) {
+					throw new Error("The if statement is missing an expression after the 'if'", Error.ErrorType.SYNTAX, ifToken.LineNr, ifToken.LinePosition);
+				}
+
 				match(Token.TokenType.NEW_LINE);
 				trueChild = statementList(false); // child 1
 
@@ -714,26 +719,41 @@ Console.WriteLine("Popping out from ifElse branch");
 					Console.WriteLine("else block");
 #endif
 					match(Token.TokenType.ELSE);
-					match(Token.TokenType.NEW_LINE);
+
+					if(lookAhead(1).getTokenType() == Token.TokenType.NEW_LINE) {
+						match(Token.TokenType.NEW_LINE);
+					} else {
+						throw new Error("The else statement is missing a line break after it", Error.ErrorType.SYNTAX, ifToken.LineNr, ifToken.LinePosition);
+					}
+
 					falseChild = statementList(false); // child 2
-					match(Token.TokenType.BLOCK_END);
+
+					if(lookAhead(1).getTokenType() == Token.TokenType.BLOCK_END) {
+						match(Token.TokenType.BLOCK_END);
+					} else {
+						throw new Error("The if statement is missing a following 'end'", Error.ErrorType.SYNTAX, ifToken.LineNr, ifToken.LinePosition);
+					}
 				}
 				else {
 #if WRITE_DEBUG_INFO
 					Console.WriteLine("no else block");
 #endif
-					match(Token.TokenType.BLOCK_END);
+					if(lookAhead(1).getTokenType() == Token.TokenType.BLOCK_END) {
+						match(Token.TokenType.BLOCK_END);
+					} else {
+						throw new Error("The if statement is missing a following 'end'", Error.ErrorType.SYNTAX, ifToken.LineNr, ifToken.LinePosition);
+					}
 				}
 			}
 			catch(Error e) {
 				// The error caught here will probably be from the match() function.
 				// Since that means we're missing some part of the if-statement we can give a better 
 				// error message by throwing a new one.
-				throw new Error("Something is wrong with the IF-statement", Error.ErrorType.SYNTAX, e.getLineNr(), e.getLinePosition());
+				throw e; // new Error("Something is wrong with the IF-statement", Error.ErrorType.SYNTAX, e.getLineNr(), e.getLinePosition());
 			}
 			
             ifThenElseTree = new AST_IfNode(new Token(Token.TokenType.IF, "if", lookAhead(1).LineNr, lookAhead(1).LinePosition));
-            ifThenElseTree.addChild(expr);
+			ifThenElseTree.addChild (expr);
 
             ifThenElseTree.addChild(trueChild);
             if (falseChild != null)

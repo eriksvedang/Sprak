@@ -1324,6 +1324,67 @@ namespace ProgrammingLanguageNr1.tests
 			Assert.AreEqual(0, program.getCompileTimeErrorHandler().getErrors().Count);
 			Assert.AreEqual(1, program.getRuntimeErrorHandler().getErrors().Count);
 		}
+
+		[Test()]
+		public void CallBuiltInFunctionWithTooFewArgs ()
+		{
+			StringReader programString = new StringReader(
+				@"print()
+                 "
+			);
+
+			DefaultSprakRunner program = new DefaultSprakRunner(programString);
+			program.run();
+
+			program.printOutputToConsole ();
+			program.getCompileTimeErrorHandler ().printErrorsToConsole ();
+			program.getRuntimeErrorHandler ().printErrorsToConsole ();
+
+			Assert.AreEqual(1, program.getCompileTimeErrorHandler().getErrors().Count);
+			Assert.AreEqual(0, program.getRuntimeErrorHandler().getErrors().Count);
+		}
+
+
+		[Test()]
+		public void ErrorMessageWhenMissingEndInIf ()
+		{
+			StringReader programString = new StringReader(
+				@"if true
+                      print(42)
+                 "
+			);
+
+			DefaultSprakRunner program = new DefaultSprakRunner(programString);
+			program.run();
+
+			program.printOutputToConsole ();
+			program.getCompileTimeErrorHandler ().printErrorsToConsole ();
+			program.getRuntimeErrorHandler ().printErrorsToConsole ();
+
+			Assert.AreEqual(1, program.getCompileTimeErrorHandler().getErrors().Count);
+			Assert.AreEqual(0, program.getRuntimeErrorHandler().getErrors().Count);
+		}
+
+		[Test()]
+		public void ErrorMessageWhenMissingExpressionInIf ()
+		{
+			StringReader programString = new StringReader(
+				@"if 
+                      print(42)
+                  end
+                 "
+			);
+
+			DefaultSprakRunner program = new DefaultSprakRunner(programString);
+			program.run();
+
+			program.printOutputToConsole ();
+			program.getCompileTimeErrorHandler ().printErrorsToConsole ();
+			program.getRuntimeErrorHandler ().printErrorsToConsole ();
+
+			Assert.AreEqual(2, program.getCompileTimeErrorHandler().getErrors().Count);
+			Assert.AreEqual(0, program.getRuntimeErrorHandler().getErrors().Count);
+		}
 	}
 }
 
