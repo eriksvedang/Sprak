@@ -1385,6 +1385,39 @@ namespace ProgrammingLanguageNr1.tests
 			Assert.AreEqual(2, program.getCompileTimeErrorHandler().getErrors().Count);
 			Assert.AreEqual(0, program.getRuntimeErrorHandler().getErrors().Count);
 		}
+
+		[Test()]
+		public void Profiling ()
+		{
+			StringReader programString = new StringReader(
+				@"void Foo()
+                  end
+                  
+                  Foo()
+                  Foo()
+                  Foo()
+                  Foo()
+                  Foo()
+                 "
+			);
+
+			DefaultSprakRunner program = new DefaultSprakRunner(programString);
+			program.run();
+
+			program.printOutputToConsole ();
+			program.getCompileTimeErrorHandler ().printErrorsToConsole ();
+			program.getRuntimeErrorHandler ().printErrorsToConsole ();
+
+			Assert.AreEqual(0, program.getCompileTimeErrorHandler().getErrors().Count);
+			Assert.AreEqual(0, program.getRuntimeErrorHandler().getErrors().Count);
+			Assert.AreEqual(0, program.Output.Count);
+
+			foreach (var item in program.sprakRunner.GetProfileData()) {
+				Console.WriteLine (item.Key + " => " + item.Value);
+			}
+
+			Assert.AreEqual(5, program.sprakRunner.GetProfileData()["Foo"].calls);
+		}
 	}
 }
 

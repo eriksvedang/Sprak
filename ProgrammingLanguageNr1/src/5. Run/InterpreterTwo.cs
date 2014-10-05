@@ -3,6 +3,8 @@
 //#define WRITE_CONVERT_INFO
 //#define LOG_SCOPES
 
+#define BUILT_IN_PROFILING
+
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -17,7 +19,7 @@ namespace ProgrammingLanguageNr1
             FINISHED
         }
 
-        public InterpreterTwo(AST ast, Scope globalScope, ErrorHandler errorHandler, ExternalFunctionCreator externalFunctionCreator)
+		public InterpreterTwo(AST ast, Scope globalScope, ErrorHandler errorHandler, ExternalFunctionCreator externalFunctionCreator)
         {
 			#if WRITE_DEBUG_INFO
             	Console.WriteLine("\nCreated Interpreter!!");
@@ -33,6 +35,10 @@ namespace ProgrammingLanguageNr1
 
         public void Reset()
         {
+			#if BUILT_IN_PROFILING
+			m_profileData.Clear ();
+			#endif
+
 			m_globalMemorySpace = new MemorySpace("globals", m_ast.getChild (0), m_globalScope, m_memorySpaceNodeListCache);
 			m_currentMemorySpace = m_globalMemorySpace;
 
@@ -405,6 +411,18 @@ namespace ProgrammingLanguageNr1
         {
 			AST_FunctionDefinitionNode functionDefinitionNode = (CurrentNode as AST_FunctionCall).FunctionDefinitionRef;
             string functionName = functionDefinitionNode.getChild(1).getTokenString();
+
+			#if BUILT_IN_PROFILING
+			ProfileData data = null;
+			if (m_profileData.TryGetValue (functionName, out data)) {
+				data.calls++;
+			} else {
+				m_profileData.Add (functionName, new ProfileData () {
+					calls = 1,
+					totalTime = 0f,
+				});
+			}
+			#endif
 
             int nrOfParameters = functionDefinitionNode.getChild(2).getChildren().Count;
             ReturnValue[] parameters = new ReturnValue[nrOfParameters];
@@ -817,6 +835,16 @@ namespace ProgrammingLanguageNr1
             return m_valueStack.Count == 0;
         }
 
+		// Profiling
+		public Dictionary<string, ProfileData> profileData {
+			get {
+				return m_profileData;
+			}
+		}
+		public bool profilingOn = true;
+		Dictionary<string, ProfileData> m_profileData = new Dictionary<string, ProfileData> ();
+
+		// Members
         AST m_ast;
         ExternalFunctionCreator m_externalFunctionCreator;
         ErrorHandler m_errorHandler;
@@ -829,4 +857,10 @@ namespace ProgrammingLanguageNr1
 		MemorySpaceNodeListCache m_memorySpaceNodeListCache = new MemorySpaceNodeListCache();
 		int m_topLevelDepth = 0; // the stack depth at wich the program starts and ends, normally 0 but can be 1 if jumping into a function
     }
+}
+
+
+public class ProfileData {
+	public int calls;
+	public float totalTime;
 }

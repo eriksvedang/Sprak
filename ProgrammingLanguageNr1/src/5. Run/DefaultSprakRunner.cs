@@ -78,7 +78,13 @@ namespace ProgrammingLanguageNr1
 			return m_sprakRunner.RunFunction (functionName, args);
 		}
 
+		public SprakRunner sprakRunner {
+			get {
+				return m_sprakRunner;
+			}
+		}
+
         List<string> m_output = new List<string>();
-        SprakRunner m_sprakRunner;        
+		SprakRunner m_sprakRunner;        
 	}
 }

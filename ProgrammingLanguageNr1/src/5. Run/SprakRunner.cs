@@ -574,6 +574,10 @@ namespace ProgrammingLanguageNr1
 			}
 		}
 
+		public Dictionary<string, ProfileData> GetProfileData() {
+			return m_interpreter.profileData;
+		}
+
 		public ErrorHandler getCompileTimeErrorHandler() { return m_compileTimeErrorHandler; }
 		public ErrorHandler getRuntimeErrorHandler() { return m_runtimeErrorHandler; }
 		private AST m_ast;
