@@ -102,21 +102,27 @@ namespace ProgrammingLanguageNr1
 			m_runtimeErrorHandler = new ErrorHandler();
             m_tokens = Tokenize(stream);
 
-			//PrintTokens ();
+			try {
+				//PrintTokens ();
 
-            m_ast = Parse(m_tokens);
-			if(m_compileTimeErrorHandler.getErrors().Count > 0) { m_compileTimeErrorHandler.printErrorsToConsole(); return; }
+	            m_ast = Parse(m_tokens);
+				if(m_compileTimeErrorHandler.getErrors().Count > 0) { m_compileTimeErrorHandler.printErrorsToConsole(); return; }
 
-			//PaintAST(m_ast);
+				//PaintAST(m_ast);
 
-			AddLocalVariables(m_ast, variableDefinitions);
-			ExternalFunctionCreator externalFunctionCreator = AddExternalFunctions(functionDefinitions, m_ast);
-			Scope globalScope = CreateScopeTree(m_ast);
-			
-			if(m_compileTimeErrorHandler.getErrors().Count > 0) { m_compileTimeErrorHandler.printErrorsToConsole(); return; }
-			
-			m_interpreter = new InterpreterTwo(m_ast, globalScope, m_runtimeErrorHandler, externalFunctionCreator);
-            m_started = false; 
+				AddLocalVariables(m_ast, variableDefinitions);
+				ExternalFunctionCreator externalFunctionCreator = AddExternalFunctions(functionDefinitions, m_ast);
+				Scope globalScope = CreateScopeTree(m_ast);
+				
+				if(m_compileTimeErrorHandler.getErrors().Count > 0) { m_compileTimeErrorHandler.printErrorsToConsole(); return; }
+				
+				m_interpreter = new InterpreterTwo(m_ast, globalScope, m_runtimeErrorHandler, externalFunctionCreator);
+	            m_started = false;
+			}
+			catch(Error e) {
+				m_compileTimeErrorHandler.errorOccured (e);
+				return;
+			}
 		}
 
 		List<Token> Tokenize (TextReader stream)

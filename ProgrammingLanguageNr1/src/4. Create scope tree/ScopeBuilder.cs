@@ -72,8 +72,10 @@ namespace ProgrammingLanguageNr1
             string functionName = tree.getChild(1).getTokenString();
 
             Symbol functionScope = new FunctionSymbol(m_currentScope, functionName, returnType, tree);
+
             m_globalScope.define(functionScope); // all functions are saved in the global scope
-            m_currentScope = (Scope)functionScope;
+            
+			m_currentScope = (Scope)functionScope;
             AST_FunctionDefinitionNode functionCallNode = (AST_FunctionDefinitionNode)(tree);
             functionCallNode.setScope((Scope)functionScope);
 
