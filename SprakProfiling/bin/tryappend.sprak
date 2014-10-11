@@ -1,0 +1,37 @@
+
+array tailArray;
+
+PrintArray(tailArray)
+
+Append(tailArray, "10")
+PrintArray(tailArray)
+
+Append(tailArray, "20")
+PrintArray(tailArray)
+
+Append(tailArray, "30")
+PrintArray(tailArray)
+
+#print(Count(tailArray));
+
+
+Remove(tailArray, 2)
+PrintArray(tailArray)
+
+
+void PrintArray(array a)
+    print(a)
+    print("Count: " + Count(a))
+    loop k in GetIndexes(a)
+       print(k + " => " + a[k])
+    end
+end
+
+
+Remove(tailArray, 10)
+
+#Remove(tailArray, 0);
+#print(Count(tailArray));
+
+
+

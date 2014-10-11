@@ -14,6 +14,7 @@ namespace ProgrammingLanguageNr1
             parameterNames = pParameterNames;
             callback = pCallback;
 			functionDocumentation = pFunctionDocumentation;
+			hideInModifier = false;
         }
 
         public string returnType;
@@ -22,6 +23,7 @@ namespace ProgrammingLanguageNr1
         public string[] parameterNames;
         public ExternalFunctionCreator.OnFunctionCall callback;
 		public FunctionDocumentation functionDocumentation;
+		public bool hideInModifier = false;
     }
 	
 	public struct FunctionDocumentation

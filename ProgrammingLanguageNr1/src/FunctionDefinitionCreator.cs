@@ -132,6 +132,9 @@ namespace ProgrammingLanguageNr1
 						else if (realParamType == typeof(string)) {
 							parameters.Add (sprakArg.StringValue);
 						}
+						else if (realParamType == typeof(object)) {
+							parameters.Add (sprakArg.GetValueAsObject());
+						}
 						else {
 							throw new Error("Can't deal with arg " + i.ToString() + " in function " + shortname);
 						}
@@ -156,7 +159,7 @@ namespace ProgrammingLanguageNr1
 						return new ReturnValue (ReturnValueType.VOID);
 					}
 					else {
-						return new ReturnValue (ReturnValue.SystemTypeToReturnValueType (lambdaMethodInfo.ReturnType), result);
+						return new ReturnValue (ReturnValue.SystemTypeToReturnValueType (result.GetType() /*lambdaMethodInfo.ReturnType*/), result);
 					}
 				});
 

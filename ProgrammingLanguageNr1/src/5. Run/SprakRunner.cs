@@ -304,8 +304,12 @@ namespace ProgrammingLanguageNr1
         {
 			SortedDictionary<ReturnValue, ReturnValue> array = args[0].ArrayValue;
 			ReturnValue index = args[1];
-			array.Remove(index);
-			return new ReturnValue();
+			if (array.ContainsKey (index)) {
+				array.Remove (index);
+				return new ReturnValue ();
+			} else {
+				throw new Error ("Can't remove item with key " + index + " from array");
+			}
 		}
 
 		private static ReturnValue API_append(ReturnValue[] args)
@@ -314,14 +318,14 @@ namespace ProgrammingLanguageNr1
 			ReturnValue val = args [1];
 
 			// Slow but correct way of doing it:
-//			int maxArrayIndex = -1;
-//			foreach (var key in array.Keys) {
-//				if (key.getReturnValueType () == ReturnValueType.NUMBER &&
-//				   maxArrayIndex < key.NumberValue) {
-//					maxArrayIndex = (int)key.NumberValue;
-//				}
-//			}
-			int maxArrayIndex = array.Count; // TODO: this is a bug if the array contains sparse indexes or stuff like that
+			int maxArrayIndex = -1;
+			foreach (var key in array.Keys) {
+				if (key.getReturnValueType () == ReturnValueType.NUMBER &&
+				    maxArrayIndex < key.NumberValue) {
+					maxArrayIndex = (int)key.NumberValue;
+				}
+			}
+			//int maxArrayIndex = array.Count; // TODO: this is a bug if the array contains sparse indexes or stuff like that
 
 			array.Add (new ReturnValue(maxArrayIndex + 1), val);
 			return new ReturnValue(); // void

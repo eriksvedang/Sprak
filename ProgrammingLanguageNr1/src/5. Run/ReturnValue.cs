@@ -47,9 +47,20 @@ namespace ProgrammingLanguageNr1
 	                int i = 0;
 	                foreach(object element in (pData as IEnumerable))
 	                {
-	                    Type t = element.GetType();
-	                    ReturnValue rv = new ReturnValue(SystemTypeToReturnValueType(t), element);
-						m_arrayValue.Add(new ReturnValue(i++), rv);
+//						Console.WriteLine ("Element: " + element + " of type " + element.GetType());
+//	                    Type t = element.GetType();
+//
+//						if (t == typeof(DictionaryEntry)) {
+//							Console.WriteLine ("Entry!");
+//							var entry = (DictionaryEntry)element;
+//							var k = CreateAutomaticReturnValue (entry.Key);
+//							var v = CreateAutomaticReturnValue (entry.Value);
+//							m_arrayValue.Add (k, v);
+//						} else {
+//
+//						}
+
+						m_arrayValue.Add (new ReturnValue (i++), CreateAutomaticReturnValue(element));
 	                }
 					#if MEMORY_LOG
 					Console.WriteLine("Created array with " + m_arrayValue.Count + " items");
@@ -59,11 +70,17 @@ namespace ProgrammingLanguageNr1
 			case ReturnValueType.RANGE:
 				m_range = (Range)pData;
 				break;
-                default:
-                    throw new Exception("Boxing error");
+            
+			default:
+				throw new Exception("Boxing error with type " + type + " and data: " + pData);
             }
             
         }
+
+		public static ReturnValue CreateAutomaticReturnValue(object pData) {
+			var t = SystemTypeToReturnValueType(pData.GetType());
+			return new ReturnValue(t, pData);
+		}
 
 		public object GetValueAsObject()
         {
@@ -339,20 +356,29 @@ namespace ProgrammingLanguageNr1
 
         public static ReturnValueType SystemTypeToReturnValueType(Type t)
         {
-            if (t == typeof(void))
-                return ReturnValueType.VOID;
-            if (t.IsArray)
-                return ReturnValueType.ARRAY;
+			if (t == typeof(void)) {
+				return ReturnValueType.VOID;
+			}
+
+			if (t.IsArray || t == typeof(SortedDictionary<ReturnValue,ReturnValue>)) {
+				return ReturnValueType.ARRAY;
+			}
+
             switch (t.Name.ToLower())
             {
-                case "int":
-                case "int32":
-                case "single": return ReturnValueType.NUMBER;
-                case "string": return ReturnValueType.STRING;
-                case "boolean":
-                case "bool": return ReturnValueType.BOOL; 
-                default:
-                    throw new Exception("ReturnValue can't handle built in type with name " + t.Name);
+			case "int":
+			case "int32":
+			case "single":
+				return ReturnValueType.NUMBER;
+			case "string":
+				return ReturnValueType.STRING;
+			case "boolean":
+			case "bool":
+				return ReturnValueType.BOOL;
+			case "object":
+				return ReturnValueType.UNKNOWN_TYPE;
+            default:
+				throw new Exception("ReturnValue.SystemTypeToReturnValueType can't handle built in type with name " + t.Name);
             }
         }
 
@@ -374,8 +400,10 @@ namespace ProgrammingLanguageNr1
 				return ReturnValueType.RANGE;
 			case "var":
 				return ReturnValueType.UNKNOWN_TYPE;
+			case "unknown_type":
+				return ReturnValueType.UNKNOWN_TYPE;
             default:
-                throw new Exception("ReturnValue can't handle built in type with name " + name);
+				throw new Exception("ReturnValue.getReturnValueTypeFromString can't handle built in type with name " + name);
             }
         }
 
