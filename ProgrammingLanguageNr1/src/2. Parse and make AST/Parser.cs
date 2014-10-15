@@ -533,7 +533,14 @@ namespace ProgrammingLanguageNr1
 			
 			if(lookAheadType(1) != Token.TokenType.BRACKET_RIGHT) {
 				while(true) {
-					arrayTree.addChild(expression());				
+
+					var expr = expression ();
+					if (expr == null) {
+						var token = lookAhead (1);
+						throw new Error("Problem with an expression in the array", Error.ErrorType.SYNTAX, token.LineNr, token.LinePosition);
+					}
+
+					arrayTree.addChild(expr);				
 					length++;
 					
 					if(lookAheadType(1) == Token.TokenType.BRACKET_RIGHT) {
@@ -584,7 +591,7 @@ namespace ProgrammingLanguageNr1
 				operationTree = new AST(new Token(Token.TokenType.OPERATOR, "-"));
 			}
 			else {
-				throw new Exception("Error!");	
+				throw new Error("Invalid operator token");	
 			}
 			
 			operationTree.addChild(new AST(nameToken));

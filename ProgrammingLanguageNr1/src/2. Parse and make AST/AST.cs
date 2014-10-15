@@ -26,8 +26,11 @@ namespace ProgrammingLanguageNr1
 		public bool isNil() { return m_token == null; }
 		
 		public void addChild(AST childTree) {
-			Debug.Assert(childTree != null);
-			if(childTree == null) throw new Exception("Child tree was null!");
+
+			if (childTree == null) {
+				//throw new Exception ("Child tree is null");
+				if(childTree == null) throw new Error("Failed to understand source code", Error.ErrorType.SYNTAX, -1, -1);
+			}
 			
 			allocateListIfNecessary();
 			m_children.Add(childTree);

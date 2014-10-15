@@ -1438,10 +1438,89 @@ namespace ProgrammingLanguageNr1.tests
 			program.getCompileTimeErrorHandler ().printErrorsToConsole ();
 			program.getRuntimeErrorHandler ().printErrorsToConsole ();
 
-			Assert.AreEqual(0, program.getCompileTimeErrorHandler().getErrors().Count);
+			Assert.AreEqual(1, program.getCompileTimeErrorHandler().getErrors().Count);
 			Assert.AreEqual(0, program.getRuntimeErrorHandler().getErrors().Count);
 			Assert.AreEqual(0, program.Output.Count);
 		}
+
+		[Test()]
+		public void MissingQuoteInArrayLiteral ()
+		{
+			StringReader programString = new StringReader(
+				@"var a = ['hej', 'pa , 'dig']
+                 "
+			);
+
+			DefaultSprakRunner program = new DefaultSprakRunner(programString);
+			program.run();
+
+			program.printOutputToConsole ();
+			program.getCompileTimeErrorHandler ().printErrorsToConsole ();
+			program.getRuntimeErrorHandler ().printErrorsToConsole ();
+
+			Assert.AreEqual(1, program.getCompileTimeErrorHandler().getErrors().Count);
+			Assert.AreEqual(0, program.getRuntimeErrorHandler().getErrors().Count);
+			Assert.AreEqual(0, program.Output.Count);
+		}
+
+		[Test()]
+		public void DoubleCommaInArrayLiteral ()
+		{
+			StringReader programString = new StringReader(
+				@"var a = ['hej',, 'pa' , 'dig']
+                 "
+			);
+
+			DefaultSprakRunner program = new DefaultSprakRunner(programString);
+			program.run();
+
+			program.printOutputToConsole ();
+			program.getCompileTimeErrorHandler ().printErrorsToConsole ();
+			program.getRuntimeErrorHandler ().printErrorsToConsole ();
+
+			Assert.AreEqual(1, program.getCompileTimeErrorHandler().getErrors().Count);
+			Assert.AreEqual(0, program.getRuntimeErrorHandler().getErrors().Count);
+			Assert.AreEqual(0, program.Output.Count);
+		}
+
+		[Test()]
+		public void MissingEndOfArrayDeclaration ()
+		{
+			StringReader programString = new StringReader(
+				"var a = ['hej',,"
+			);
+
+			DefaultSprakRunner program = new DefaultSprakRunner(programString);
+			program.run();
+
+			program.printOutputToConsole ();
+			program.getCompileTimeErrorHandler ().printErrorsToConsole ();
+			program.getRuntimeErrorHandler ().printErrorsToConsole ();
+
+			Assert.AreEqual(1, program.getCompileTimeErrorHandler().getErrors().Count);
+			Assert.AreEqual(0, program.getRuntimeErrorHandler().getErrors().Count);
+			Assert.AreEqual(0, program.Output.Count);
+		}
+
+		[Test()]
+		public void MissingArgumentList ()
+		{
+			StringReader programString = new StringReader(
+				"print()"
+			);
+
+			DefaultSprakRunner program = new DefaultSprakRunner(programString);
+			program.run();
+
+			program.printOutputToConsole ();
+			program.getCompileTimeErrorHandler ().printErrorsToConsole ();
+			program.getRuntimeErrorHandler ().printErrorsToConsole ();
+
+			Assert.AreEqual(1, program.getCompileTimeErrorHandler().getErrors().Count);
+			Assert.AreEqual(0, program.getRuntimeErrorHandler().getErrors().Count);
+			Assert.AreEqual(0, program.Output.Count);
+		}
+
 	}
 }
 
