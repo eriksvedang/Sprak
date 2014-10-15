@@ -283,80 +283,81 @@ namespace ProgrammingLanguageNr1
 			} while( isLETTER() || isDIGIT() );
 			
 			Token.TokenType tokenType = Token.TokenType.NAME;
-			string ts = tokenString.ToString();
+			string ts = tokenString.ToString ();
+			string tsLowercase = ts.ToLower();
 
             // Keywords
-			if(ts == "if") 
+			if(tsLowercase == "if") 
             {
 				tokenType = Token.TokenType.IF;
 			}
-			else if(ts == "else") 
+			else if(tsLowercase == "else") 
             {
 				tokenType = Token.TokenType.ELSE;
 			}
-			else if(ts == "return") 
+			else if(tsLowercase == "return") 
             {
 				tokenType = Token.TokenType.RETURN;
 			}
-            else if (ts == "void")
+			else if (tsLowercase == "void")
             {
                 tokenType = Token.TokenType.BUILT_IN_TYPE_NAME;
             }
-            else if (ts == "number")
+			else if (tsLowercase == "number")
             {
                 tokenType = Token.TokenType.BUILT_IN_TYPE_NAME;
             }
-            else if (ts == "string")
+			else if (tsLowercase == "string")
             {
                 tokenType = Token.TokenType.BUILT_IN_TYPE_NAME;
             }
-			else if (ts == "bool")
+			else if (tsLowercase == "bool")
             {
                 tokenType = Token.TokenType.BUILT_IN_TYPE_NAME;
             }
-			else if (ts == "array")
+			else if (tsLowercase == "array")
             {
                 tokenType = Token.TokenType.BUILT_IN_TYPE_NAME;
             }
-			else if (ts == "var")
+			else if (tsLowercase == "var")
             {
                 tokenType = Token.TokenType.BUILT_IN_TYPE_NAME;
             }
-            else if (ts == "loop")
+			else if (tsLowercase == "loop")
             {
                 tokenType = Token.TokenType.LOOP;
             }
-			else if (ts == "in")
+			else if (tsLowercase == "in")
 			{
 				tokenType = Token.TokenType.IN;
 			}
-            else if (ts == "break")
+			else if (tsLowercase == "break")
             {
                 tokenType = Token.TokenType.BREAK;
             }
-			else if (ts == "from")
+			else if (tsLowercase == "from")
             {
                 tokenType = Token.TokenType.FROM;
             }
-			else if (ts == "to")
+			else if (tsLowercase == "to")
             {
                 tokenType = Token.TokenType.TO;
             }
-			else if (ts == "end")
+			else if (tsLowercase == "end")
             {
                 tokenType = Token.TokenType.BLOCK_END;
             }
-			else if (ts == "and")
+			else if (tsLowercase == "and")
 			{
 				tokenType = Token.TokenType.OPERATOR;
 				ts = "&&";
 			}
-			else if (ts == "or")
+			else if (tsLowercase == "or")
 			{
 				tokenType = Token.TokenType.OPERATOR;
 				ts = "||";
 			}
-			else if (ts == "true" || ts == "false")
+			else if (tsLowercase == "true" || tsLowercase == "false")
             {
                 tokenType = Token.TokenType.BOOLEAN_VALUE;
             }
@@ -404,8 +405,9 @@ namespace ProgrammingLanguageNr1
 		void readNextChar() {
 			
 		    int c = m_textReader.Read();
+
 		    if (c > 0) {
-		        m_currentChar = (char)c;
+				m_currentChar = (char)c;
 				m_currentPosition++;
 			}
 		    else {
