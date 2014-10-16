@@ -23,7 +23,7 @@ namespace ProgrammingLanguageNr1
         public string[] parameterNames;
         public ExternalFunctionCreator.OnFunctionCall callback;
 		public FunctionDocumentation functionDocumentation;
-		public bool hideInModifier = false;
+		public bool hideInModifier;
     }
 	
 	public struct FunctionDocumentation

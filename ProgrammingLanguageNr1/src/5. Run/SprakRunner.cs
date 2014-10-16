@@ -49,8 +49,12 @@ namespace ProgrammingLanguageNr1
             result.Add(new FunctionDefinition("array", "GetIndexes", new string[] { "array" }, new string[] { "a" }, new ExternalFunctionCreator.OnFunctionCall(API_createArrayOrRangeOfIndexes), functionDoc_GetIndexes));
 
             FunctionDocumentation functionDoc_RemoveElement =
-                new FunctionDocumentation("Remove an element from an array", new string[] { "The array to remove an element from", "The position in the array to remove (starts at 0)" });
+                new FunctionDocumentation("Remove an element from an array", new string[] { "The array to remove an element from", "The index in the array to remove" });
             result.Add(new FunctionDefinition("void", "Remove", new string[] { "array", "number" }, new string[] { "array", "position" }, new ExternalFunctionCreator.OnFunctionCall(API_removeElement), functionDoc_RemoveElement));
+
+			FunctionDocumentation functionDoc_HasIndex =
+				new FunctionDocumentation("Check if an index is in the array", new string[] { "The array to check in", "The index to check for in the array" });
+			result.Add(new FunctionDefinition("bool", "HasIndex", new string[] { "array", "var" }, new string[] { "array", "key" }, new ExternalFunctionCreator.OnFunctionCall(API_hasKey), functionDoc_HasIndex));
 
 			FunctionDocumentation functionDoc_Append =
 				new FunctionDocumentation("Add an element to the end of an array", new string[] { "The array to add an element to", "The element to add" });
@@ -298,6 +302,13 @@ namespace ProgrammingLanguageNr1
 			else {
 				throw new Error("Can't convert " + args[0].ToString() + " to an array in GetIndexes()");
 			}
+		}
+
+		private static ReturnValue API_hasKey(ReturnValue[] args)
+		{
+			SortedDictionary<ReturnValue, ReturnValue> array = args[0].ArrayValue;
+			ReturnValue index = args[1];
+			return new ReturnValue (array.ContainsKey (index));
 		}
 
         private static ReturnValue API_removeElement(ReturnValue[] args)
