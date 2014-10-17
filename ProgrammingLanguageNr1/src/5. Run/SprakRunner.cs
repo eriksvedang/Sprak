@@ -596,7 +596,11 @@ namespace ProgrammingLanguageNr1
 		}
 
 		public Dictionary<string, ProfileData> GetProfileData() {
-			return m_interpreter.profileData;
+			#if BUILT_IN_PROFILING
+				return m_interpreter.profileData;
+			#else
+				return new Dictionary<string, ProfileData>();
+			#endif
 		}
 
 		public ErrorHandler getCompileTimeErrorHandler() { return m_compileTimeErrorHandler; }

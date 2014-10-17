@@ -3,7 +3,7 @@
 //#define WRITE_CONVERT_INFO
 //#define LOG_SCOPES
 
-#define BUILT_IN_PROFILING
+//#define BUILT_IN_PROFILING
 
 using System;
 using System.Collections.Generic;
@@ -836,6 +836,7 @@ namespace ProgrammingLanguageNr1
         }
 
 		// Profiling
+		#if BUILT_IN_PROFILING
 		public Dictionary<string, ProfileData> profileData {
 			get {
 				return m_profileData;
@@ -843,6 +844,7 @@ namespace ProgrammingLanguageNr1
 		}
 		public bool profilingOn = true;
 		Dictionary<string, ProfileData> m_profileData = new Dictionary<string, ProfileData> ();
+		#endif
 
 		// Members
         AST m_ast;
