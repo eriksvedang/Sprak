@@ -331,7 +331,7 @@ namespace ProgrammingLanguageNr1
 			{
 				tokenType = Token.TokenType.IN;
 			}
-			else if (tsLowercase == "break")
+			else if (ts == "break") // Break is reserved
             {
                 tokenType = Token.TokenType.BREAK;
             }
