@@ -1386,7 +1386,7 @@ namespace ProgrammingLanguageNr1.tests
 			Assert.AreEqual(0, program.getRuntimeErrorHandler().getErrors().Count);
 		}
 
-		[Test()]
+		//[Test()]
 		public void Profiling ()
 		{
 			StringReader programString = new StringReader(
@@ -1521,6 +1521,80 @@ namespace ProgrammingLanguageNr1.tests
 			Assert.AreEqual(0, program.Output.Count);
 		}
 
+
+		[Test()]
+		public void MixedCaseTrueFalse ()
+		{
+			StringReader programString = new StringReader(
+@"if TrUe
+    print(10)
+  end"
+			);
+
+			DefaultSprakRunner program = new DefaultSprakRunner(programString);
+			program.run();
+
+			program.printOutputToConsole ();
+			program.getCompileTimeErrorHandler ().printErrorsToConsole ();
+			program.getRuntimeErrorHandler ().printErrorsToConsole ();
+
+			Assert.AreEqual(0, program.getCompileTimeErrorHandler().getErrors().Count);
+			Assert.AreEqual(0, program.getRuntimeErrorHandler().getErrors().Count);
+			Assert.AreEqual(1, program.Output.Count);
+			Assert.AreEqual("10", program.Output[0]);
+		}
+
+		[Test()]
+		public void ParseMinusOneAsExpression ()
+		{
+			StringReader programString = new StringReader(
+				@"
+var lines = [1,2,3]
+var linesCount = 1
+print(lines[linesCount-1]) #failes
+print(lines[linesCount - 1]) #works
+var l1 = (linesCount-1) #failes
+var l2 = (linesCount - 1) #works
+"
+			);
+
+			DefaultSprakRunner program = new DefaultSprakRunner(programString);
+			program.run();
+
+			program.printOutputToConsole ();
+			program.getCompileTimeErrorHandler ().printErrorsToConsole ();
+			program.getRuntimeErrorHandler ().printErrorsToConsole ();
+
+			Assert.AreEqual(0, program.getCompileTimeErrorHandler().getErrors().Count);
+			Assert.AreEqual(0, program.getRuntimeErrorHandler().getErrors().Count);
+			Assert.AreEqual(2, program.Output.Count);
+			Assert.AreEqual("1", program.Output[0]);
+			Assert.AreEqual("1", program.Output[1]);
+		}
+
+		[Test()]
+		public void PlusEqualsInArray ()
+		{
+			StringReader programString = new StringReader(
+				@"
+array a = [10,20,30]
+a[1] += 5
+print(a)
+"
+			);
+
+			DefaultSprakRunner program = new DefaultSprakRunner(programString);
+			program.run();
+
+			program.printOutputToConsole ();
+			program.getCompileTimeErrorHandler ().printErrorsToConsole ();
+			program.getRuntimeErrorHandler ().printErrorsToConsole ();
+
+			Assert.AreEqual(0, program.getCompileTimeErrorHandler().getErrors().Count);
+			Assert.AreEqual(0, program.getRuntimeErrorHandler().getErrors().Count);
+			Assert.AreEqual(1, program.Output.Count);
+			Assert.AreEqual("[10, 25, 30]", program.Output[0]);
+		}
 	}
 }
 

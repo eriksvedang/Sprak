@@ -501,7 +501,7 @@ namespace ProgrammingLanguageNr1
 			else if (lookAheadType(1) == Token.TokenType.BOOLEAN_VALUE) 
 			{
 				Token operandToken = match(Token.TokenType.BOOLEAN_VALUE);
-				bool boolean = operandToken.getTokenString() == "true" ? true : false;
+				bool boolean = operandToken.getTokenString().ToLower() == "true" ? true : false;
 				operandTree = new AST(new TokenWithValue(operandToken.getTokenType(), 
 				                                         operandToken.getTokenString(),
 				                                         new ReturnValue(boolean)));
