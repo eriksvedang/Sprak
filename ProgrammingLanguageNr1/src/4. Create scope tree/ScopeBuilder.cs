@@ -345,7 +345,7 @@ namespace ProgrammingLanguageNr1
 			
 			if(symbol == null) {
 				m_errorHandler.errorOccured(
-				                            new  Error("Can't find a variable or function called '" + tree.getTokenString() + "'", 
+					new  Error("Can't find variable or function '" + tree.getTokenString() + "' (forgot quotes?)", 
 				                                       Error.ErrorType.SYNTAX, 
 				                                       tree.getToken().LineNr, 
 				                                       tree.getToken().LinePosition));

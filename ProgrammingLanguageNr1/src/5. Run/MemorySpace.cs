@@ -113,7 +113,7 @@ namespace ProgrammingLanguageNr1
             Debug.Assert(name != null);
 
 			if(!m_valuesForStrings.ContainsKey(name)) {
-                throw new Error("Can't find variable with name '" + name + "'");
+				throw new Error("Can't find variable with name '" + name + "' (forgot quotes?)");
 			}
 			
 			return m_valuesForStrings[name];
