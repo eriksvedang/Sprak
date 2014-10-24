@@ -1,9 +1,9 @@
-number f(number n)
-	if(n == 1)
-		return 1
-	else
-		return n + f(n - 1)
-	end
-end
 
-print(f(2000))
+loop from 1 to 3
+    loop x from 1 to 5
+        print(x)
+        if x == 4
+            break
+        end
+    end
+end
