@@ -1595,6 +1595,34 @@ print(a)
 			Assert.AreEqual(1, program.Output.Count);
 			Assert.AreEqual("[10, 25, 30]", program.Output[0]);
 		}
+
+		/*
+		[Test()]
+		public void IfStatementWithNegatedExpression ()
+		{
+			StringReader programString = new StringReader(
+				@"
+if !false
+	print('jupp')
+else
+	print('nope')
+end
+"
+			);
+
+			DefaultSprakRunner program = new DefaultSprakRunner(programString);
+			program.run();
+
+			program.printOutputToConsole ();
+			program.getCompileTimeErrorHandler ().printErrorsToConsole ();
+			program.getRuntimeErrorHandler ().printErrorsToConsole ();
+
+			Assert.AreEqual(0, program.getCompileTimeErrorHandler().getErrors().Count);
+			Assert.AreEqual(0, program.getRuntimeErrorHandler().getErrors().Count);
+			Assert.AreEqual(1, program.Output.Count);
+			Assert.AreEqual("jupp", program.Output[0]);
+		}
+		*/
 	}
 }
 
