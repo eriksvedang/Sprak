@@ -1,0 +1,10 @@
+
+var a
+var sum = 0
+
+loop from 1 to 1000
+  a = [1,2,3,4,5]
+  sum += a[2]
+end
+
+print(sum)

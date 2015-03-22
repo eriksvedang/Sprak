@@ -52,6 +52,10 @@ namespace ProgrammingLanguageNr1
                 new FunctionDocumentation("Remove an element from an array", new string[] { "The array to remove an element from", "The index in the array to remove" });
             result.Add(new FunctionDefinition("void", "Remove", new string[] { "array", "number" }, new string[] { "array", "position" }, new ExternalFunctionCreator.OnFunctionCall(API_removeElement), functionDoc_RemoveElement));
 
+			FunctionDocumentation functionDoc_RemoveAllElements =
+				new FunctionDocumentation("Remove an element from an array", new string[] { "The array to remove an element from", "The index in the array to remove" });
+			result.Add(new FunctionDefinition("void", "RemoveAll", new string[] { "array" }, new string[] { "array" }, new ExternalFunctionCreator.OnFunctionCall(API_removeAllElements), functionDoc_RemoveAllElements));
+
 			FunctionDocumentation functionDoc_HasIndex =
 				new FunctionDocumentation("Check if an index is in the array", new string[] { "The array to check in", "The index to check for in the array" });
 			result.Add(new FunctionDefinition("bool", "HasIndex", new string[] { "array", "var" }, new string[] { "array", "key" }, new ExternalFunctionCreator.OnFunctionCall(API_hasKey), functionDoc_HasIndex));
@@ -321,6 +325,13 @@ namespace ProgrammingLanguageNr1
 			} else {
 				throw new Error ("Can't remove item with key " + index + " from array");
 			}
+		}
+
+		private static ReturnValue API_removeAllElements(ReturnValue[] args)
+		{
+			SortedDictionary<ReturnValue, ReturnValue> array = args[0].ArrayValue;
+			array.Clear ();
+			return new ReturnValue ();
 		}
 
 		private static ReturnValue API_append(ReturnValue[] args)

@@ -1623,6 +1623,73 @@ end
 			Assert.AreEqual("jupp", program.Output[0]);
 		}
 		*/
+
+
+		[Test()]
+		public void EbbesArrayTrouble ()
+		{
+			StringReader programString = new StringReader(
+				@"
+array a
+loop i from 0 to 9
+	a[i] = ['hej', 'svej']
+end
+
+print('count: ' + Count(a))
+
+var a0 = a[0]
+
+print(a0[0])
+print(a0[1])
+"
+			);
+
+			DefaultSprakRunner program = new DefaultSprakRunner(programString);
+			program.run();
+
+			program.printOutputToConsole ();
+			program.getCompileTimeErrorHandler ().printErrorsToConsole ();
+			program.getRuntimeErrorHandler ().printErrorsToConsole ();
+
+			Assert.AreEqual(0, program.getCompileTimeErrorHandler().getErrors().Count);
+			Assert.AreEqual(0, program.getRuntimeErrorHandler().getErrors().Count);
+			Assert.AreEqual(3, program.Output.Count);
+			Assert.AreEqual("count: 10", program.Output[0]);
+			Assert.AreEqual("hej", program.Output[1]);
+			Assert.AreEqual("svej", program.Output[2]);
+		}
+
+		[Test()]
+		public void FalseOrFalse ()
+		{
+			StringReader programString = new StringReader(
+				@"
+bool DontCall()
+  print('Fail!')
+  return false
+end
+
+if false or DontCall()
+  print(10)
+else
+  print(20)
+end
+"
+			);
+
+			DefaultSprakRunner program = new DefaultSprakRunner(programString);
+			program.run();
+
+			program.printOutputToConsole ();
+			program.getCompileTimeErrorHandler ().printErrorsToConsole ();
+			program.getRuntimeErrorHandler ().printErrorsToConsole ();
+
+			Assert.AreEqual(0, program.getCompileTimeErrorHandler().getErrors().Count);
+			Assert.AreEqual(0, program.getRuntimeErrorHandler().getErrors().Count);
+			Assert.AreEqual(1, program.Output.Count);
+			Assert.AreEqual("20", program.Output[0]);
+		}
 	}
+		
 }
 
