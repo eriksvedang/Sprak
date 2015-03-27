@@ -513,6 +513,10 @@ namespace ProgrammingLanguageNr1
 		private ReturnValue equalityTest() {
 			ReturnValue rhs = PopValue();
             ReturnValue lhs = PopValue();
+
+			if (lhs == rhs) {
+				return new ReturnValue (true);
+			}
 			
 			if(rhs.getReturnValueType() == ReturnValueType.NUMBER && 
 			   lhs.getReturnValueType() == ReturnValueType.NUMBER) 
@@ -531,8 +535,18 @@ namespace ProgrammingLanguageNr1
 			{
 				return new ReturnValue(lhs.StringValue.ToLower() == rhs.StringValue.ToLower());
 			}
+
+//			if(rhs.getReturnValueType() == ReturnValueType.ARRAY && 
+//				lhs.getReturnValueType() == ReturnValueType.ARRAY) 
+//			{
+//				if (lhs.ArrayValue.Count != rhs.ArrayValue.Count) {
+//					return new ReturnValue (false);
+//				}
+//			}
 			
-			throw new Error("Can't compare those two things (" + lhs.ToString() + " of type " + lhs.getReturnValueType() + " and " + rhs.ToString() + " of type " + rhs.getReturnValueType() + ")");
+			//throw new Error("Can't compare those two things (" + lhs.ToString() + " of type " + lhs.getReturnValueType() + " and " + rhs.ToString() + " of type " + rhs.getReturnValueType() + ")");
+
+			return new ReturnValue(false);
 		}
 		
 		private ReturnValue AddStuffTogetherHack() {
