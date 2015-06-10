@@ -511,6 +511,12 @@ namespace ProgrammingLanguageNr1
 			{
 				operandTree = negativeExpression();
 			}
+			else if (lookAheadType(1) == Token.TokenType.OPERATOR &&
+			         lookAhead(1).getTokenString() == "+")
+			{
+				match(Token.TokenType.OPERATOR); // discard
+				operandTree = operand();
+			}
 			else if (lookAheadType(1) == Token.TokenType.BRACKET_LEFT) 
 			{
 				operandTree = arrayCreation();

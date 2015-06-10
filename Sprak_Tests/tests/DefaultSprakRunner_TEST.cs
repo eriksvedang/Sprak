@@ -1689,6 +1689,30 @@ end
 			Assert.AreEqual(1, program.Output.Count);
 			Assert.AreEqual("20", program.Output[0]);
 		}
+
+		[Test()]
+		public void AllowPlusSignBeforeNumbers ()
+		{
+			StringReader programString = new StringReader(
+				@"
+var a = +10
+var b = -2
+print(a + b)
+"
+				);
+			
+			DefaultSprakRunner program = new DefaultSprakRunner(programString);
+			program.run();
+			
+			program.printOutputToConsole ();
+			program.getCompileTimeErrorHandler ().printErrorsToConsole ();
+			program.getRuntimeErrorHandler ().printErrorsToConsole ();
+			
+			Assert.AreEqual(0, program.getCompileTimeErrorHandler().getErrors().Count);
+			Assert.AreEqual(0, program.getRuntimeErrorHandler().getErrors().Count);
+			Assert.AreEqual(1, program.Output.Count);
+			Assert.AreEqual("8", program.Output[0]);
+		}
 	}
 		
 }

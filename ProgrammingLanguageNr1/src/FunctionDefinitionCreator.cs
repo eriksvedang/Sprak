@@ -104,6 +104,10 @@ namespace ProgrammingLanguageNr1
 					ParameterInfo[] realParamInfo = lambdaMethodInfo.GetParameters ();
 					List<object> parameters = new List<object> ();
 
+					if(sprakArguments.Count() != realParamInfo.Length) {
+						throw new Error("Should call '" + shortname + "' with " + realParamInfo.Length + " argument" + (realParamInfo.Length == 1 ? "" : "s"));
+					}
+
 					int i = 0;
 					foreach (ReturnValue sprakArg in sprakArguments) {
 						//Console.WriteLine(string.Format("Argument {0} in function {1} is of type {2}", i, shortname, realParamInfo[i].ParameterType));
