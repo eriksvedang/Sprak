@@ -114,7 +114,10 @@ namespace ProgrammingLanguageNr1
 				//PrintTokens ();
 
 	            m_ast = Parse(m_tokens);
-				if(m_compileTimeErrorHandler.getErrors().Count > 0) { m_compileTimeErrorHandler.printErrorsToConsole(); return; }
+				if(m_compileTimeErrorHandler.getErrors().Count > 0) { 
+					m_compileTimeErrorHandler.printErrorsToConsole(); 
+					return; 
+				}
 
 				//PaintAST(m_ast);
 
@@ -122,7 +125,10 @@ namespace ProgrammingLanguageNr1
 				ExternalFunctionCreator externalFunctionCreator = AddExternalFunctions(functionDefinitions, m_ast);
 				Scope globalScope = CreateScopeTree(m_ast);
 				
-				if(m_compileTimeErrorHandler.getErrors().Count > 0) { m_compileTimeErrorHandler.printErrorsToConsole(); return; }
+				if(m_compileTimeErrorHandler.getErrors().Count > 0) { 
+					m_compileTimeErrorHandler.printErrorsToConsole(); 
+					return; 
+				}
 				
 				m_interpreter = new InterpreterTwo(m_ast, globalScope, m_runtimeErrorHandler, externalFunctionCreator);
 	            m_started = false;
