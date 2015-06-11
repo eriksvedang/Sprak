@@ -1017,7 +1017,13 @@ Console.WriteLine("Popping out from ifElse branch");
 			
 			AST parameterTree = new AST(new Token(Token.TokenType.PARAMETER, "<PARAMETER>", lookAhead(1).LineNr, lookAhead(1).LinePosition));
 
-            AST type = new AST(match(Token.TokenType.BUILT_IN_TYPE_NAME));
+			AST type = null;
+
+			if(lookAheadType(1) == Token.TokenType.BUILT_IN_TYPE_NAME) {
+            	type = new AST(match(Token.TokenType.BUILT_IN_TYPE_NAME));
+			} else {
+				type = new AST(new Token(Token.TokenType.BUILT_IN_TYPE_NAME, "var"));
+			}
 			AST name = new AST(match(Token.TokenType.NAME));
 
             AST declaration = new AST_VariableDeclaration(new Token(Token.TokenType.VAR_DECLARATION, "<PARAMETER_DECLARATION>"),

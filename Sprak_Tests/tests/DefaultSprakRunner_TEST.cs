@@ -1784,6 +1784,29 @@ print(a[glork])
 			Assert.AreEqual(0, program.getRuntimeErrorHandler().getErrors().Count);
 			Assert.AreEqual(0, program.Output.Count);
 		}
+
+		[Test()]
+		public void AllowMissingTypesInArgumentDeclaration ()
+		{
+			StringReader programString = new StringReader(
+				@"
+void f(x)
+
+end
+"
+				);
+			
+			DefaultSprakRunner program = new DefaultSprakRunner(programString);
+			program.run();
+			
+			program.printOutputToConsole ();
+			program.getCompileTimeErrorHandler().printErrorsToConsole ();
+			program.getRuntimeErrorHandler().printErrorsToConsole ();
+			
+			Assert.AreEqual(0, program.getCompileTimeErrorHandler().getErrors().Count);
+			Assert.AreEqual(0, program.getRuntimeErrorHandler().getErrors().Count);
+			Assert.AreEqual(0, program.Output.Count);
+		}
 	}
 		
 }
