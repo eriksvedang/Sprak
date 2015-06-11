@@ -172,6 +172,10 @@ namespace ProgrammingLanguageNr1
 			{
 				evaluateReferencesForASSIGNMENT_TO_ARRAY(tree);
 			}
+			else if (tree.getTokenType() == Token.TokenType.ARRAY_LOOKUP) 
+			{
+				evaluateReferencesForARRAY_LOOKUP(tree);
+			}
 			else if (tree.getTokenType() == Token.TokenType.FUNC_DECLARATION) 
 			{
                 evaluateReferencesForFUNC_DECLARATION(tree);
@@ -239,6 +243,22 @@ namespace ProgrammingLanguageNr1
 				                Error.ErrorType.SYNTAX,
 				                tree.getToken().LineNr,
 				                tree.getToken().LinePosition);
+			}
+			
+			evaluateReferencesInAllChildren(tree);
+		}
+
+		private void evaluateReferencesForARRAY_LOOKUP(AST tree)
+		{
+			AST lookup = tree;
+			
+			Symbol variableNameSymbol = m_currentScope.resolve(lookup.getTokenString());
+
+			if(variableNameSymbol == null) {
+				m_errorHandler.errorOccured("Can't lookup in undefined array " + lookup.getTokenString(),
+				                            Error.ErrorType.SYNTAX,
+				                            lookup.getToken().LineNr,
+				                            lookup.getToken().LinePosition);
 			}
 			
 			evaluateReferencesInAllChildren(tree);

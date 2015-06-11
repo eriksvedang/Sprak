@@ -1573,6 +1573,34 @@ var l2 = (linesCount - 1) #works
 		}
 
 		[Test()]
+		public void ParsePlusOneAsExpression ()
+		{
+			StringReader programString = new StringReader(
+				@"
+var lines = [1,2,3]
+var linesCount = 1
+print(lines[linesCount+1]) #failes
+print(lines[linesCount + 1]) #works
+var l1 = (linesCount+1) #failes
+var l2 = (linesCount + 1) #works
+"
+				);
+			
+			DefaultSprakRunner program = new DefaultSprakRunner(programString);
+			program.run();
+			
+			program.printOutputToConsole ();
+			program.getCompileTimeErrorHandler ().printErrorsToConsole ();
+			program.getRuntimeErrorHandler ().printErrorsToConsole ();
+			
+			Assert.AreEqual(0, program.getCompileTimeErrorHandler().getErrors().Count);
+			Assert.AreEqual(0, program.getRuntimeErrorHandler().getErrors().Count);
+			Assert.AreEqual(2, program.Output.Count);
+			Assert.AreEqual("3", program.Output[0]);
+			Assert.AreEqual("3", program.Output[1]);
+		}
+
+		[Test()]
 		public void PlusEqualsInArray ()
 		{
 			StringReader programString = new StringReader(
@@ -1712,6 +1740,49 @@ print(a + b)
 			Assert.AreEqual(0, program.getRuntimeErrorHandler().getErrors().Count);
 			Assert.AreEqual(1, program.Output.Count);
 			Assert.AreEqual("8", program.Output[0]);
+		}
+
+		[Test()]
+		public void CallingFunctionWhenAccessingNonexistingArray ()
+		{
+			StringReader programString = new StringReader(
+				@"
+print(garbage[0])
+"
+				);
+			
+			DefaultSprakRunner program = new DefaultSprakRunner(programString);
+			program.run();
+			
+			program.printOutputToConsole ();
+			program.getCompileTimeErrorHandler().printErrorsToConsole ();
+			program.getRuntimeErrorHandler().printErrorsToConsole ();
+			
+			Assert.AreEqual(1, program.getCompileTimeErrorHandler().getErrors().Count);
+			Assert.AreEqual(0, program.getRuntimeErrorHandler().getErrors().Count);
+			Assert.AreEqual(0, program.Output.Count);
+		}
+
+		[Test()]
+		public void CallingFunctionWhenAccessingArrayWithNonexistingIndex ()
+		{
+			StringReader programString = new StringReader(
+				@"
+array a = []
+print(a[glork])
+"
+				);
+			
+			DefaultSprakRunner program = new DefaultSprakRunner(programString);
+			program.run();
+			
+			program.printOutputToConsole ();
+			program.getCompileTimeErrorHandler().printErrorsToConsole ();
+			program.getRuntimeErrorHandler().printErrorsToConsole ();
+			
+			Assert.AreEqual(1, program.getCompileTimeErrorHandler().getErrors().Count);
+			Assert.AreEqual(0, program.getRuntimeErrorHandler().getErrors().Count);
+			Assert.AreEqual(0, program.Output.Count);
 		}
 	}
 		
