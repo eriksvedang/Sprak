@@ -1807,6 +1807,31 @@ end
 			Assert.AreEqual(0, program.getRuntimeErrorHandler().getErrors().Count);
 			Assert.AreEqual(0, program.Output.Count);
 		}
+
+		[Test()]
+		public void ErrorMessageWhenMessingUpEqualSigns ()
+		{
+			StringReader programString = new StringReader(
+				@"
+var x = 10
+if x = 10
+  Print(10)
+end
+"
+				);
+			
+			DefaultSprakRunner program = new DefaultSprakRunner(programString);
+			program.run();
+			
+			program.printOutputToConsole ();
+			program.getCompileTimeErrorHandler().printErrorsToConsole ();
+			program.getRuntimeErrorHandler().printErrorsToConsole ();
+			
+			Assert.AreEqual(2, program.getCompileTimeErrorHandler().getErrors().Count);
+			Assert.AreEqual("Found assignment (=) in if statement. Use == instead?", program.getCompileTimeErrorHandler().getErrors()[0].Message);
+			Assert.AreEqual(0, program.getRuntimeErrorHandler().getErrors().Count);
+			Assert.AreEqual(0, program.Output.Count);
+		}
 	}
 		
 }

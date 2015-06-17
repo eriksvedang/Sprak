@@ -709,7 +709,13 @@ namespace ProgrammingLanguageNr1
 					throw new Error("The if statement is missing an expression after the 'if'", Error.ErrorType.SYNTAX, ifToken.LineNr, ifToken.LinePosition);
 				}
 
-				match(Token.TokenType.NEW_LINE);
+				if(lookAheadType(1) == Token.TokenType.NEW_LINE) {
+					match(Token.TokenType.NEW_LINE);
+				}
+				else {
+					throw new Error("Found assignment (=) in if statement. Use == instead?", Error.ErrorType.SYNTAX, ifToken.LineNr, ifToken.LinePosition);
+				}
+
 				trueChild = statementList(false); // child 1
 
 				if ((lookAheadType(1) == Token.TokenType.ELSE) && (lookAheadType(2) == Token.TokenType.IF)) {
