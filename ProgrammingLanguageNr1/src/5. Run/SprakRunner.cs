@@ -146,7 +146,7 @@ namespace ProgrammingLanguageNr1
 		}
         
         // Used for the getInput() function
-        public void SwapStackTopValueTo(ReturnValue pValue)
+        public void SwapStackTopValueTo(object pValue)
         {
 			if (m_interpreter == null) {
 				// TODO: this can happen, like when a function resets the code of itself when running
@@ -178,7 +178,7 @@ namespace ProgrammingLanguageNr1
 				
 				AST_VariableDeclaration declarationTree =
 					new AST_VariableDeclaration(token,
-					                            vd.initValue.getReturnValueType(), 
+					                            ReturnValueConversions.SystemTypeToReturnValueType(vd.initValue.GetType()), 
 					                            vd.variableName);
 				
 				if(vd.initValue != null) 
@@ -196,9 +196,9 @@ namespace ProgrammingLanguageNr1
 			}
 		}
 		
-		private AST CreateAssignmentTreeFromInitValue(string pVariableName, ReturnValue pInitValue) {				
+		private AST CreateAssignmentTreeFromInitValue(string pVariableName, object pInitValue) {				
 			Token.TokenType tokenType;
-			switch(pInitValue.getReturnValueType()) {
+			switch(ReturnValueConversions.SystemTypeToReturnValueType(pInitValue.GetType())) {
 				case ReturnValueType.BOOL:
 					tokenType = Token.TokenType.BOOLEAN_VALUE;
 				break;
@@ -222,7 +222,7 @@ namespace ProgrammingLanguageNr1
 			return assignmentTree;
 		}
 		
-		public void ChangeGlobalVariableInitValue(string pName, ReturnValue pReturnValue) {
+		public void ChangeGlobalVariableInitValue(string pName, object pobject) {
 			bool foundVariable = false;
 			AST statementListTree = m_ast.getChild(0);
 			AST globalVarDefs = statementListTree.getChild(0);
@@ -232,7 +232,7 @@ namespace ProgrammingLanguageNr1
 					AST_Assignment assigmentNode = (AST_Assignment)defAndAssignmentNode.getChild(1);
 					if(assigmentNode.VariableName == pName) {
 						defAndAssignmentNode.removeChild(1);
-						defAndAssignmentNode.addChild(CreateAssignmentTreeFromInitValue(pName, pReturnValue));
+						defAndAssignmentNode.addChild(CreateAssignmentTreeFromInitValue(pName, pobject));
 						foundVariable = true;
 						break;
 					}
@@ -243,7 +243,7 @@ namespace ProgrammingLanguageNr1
 			}
 		}
 		
-		public ReturnValue GetGlobalVariableValue(string pName) 
+		public object GetGlobalVariableValue(string pName) 
 		{
 			return m_interpreter.GetGlobalVariableValue(pName);
 		}
@@ -264,151 +264,154 @@ namespace ProgrammingLanguageNr1
             return externalFunctionCreator;
         }
 
-		public ReturnValue RunFunction(string functionName, ReturnValue[] args) 
+		public object RunFunction(string functionName, object[] args) 
 		{
 			m_interpreter.SetProgramToExecuteFunction (functionName, args);
 			run ();
-			return GetFinalReturnValue();
+			return GetFinalobject();
 		}
 
-		public ReturnValue GetFinalReturnValue()
+		public object GetFinalobject()
 		{
 			if (!m_interpreter.ValueStackIsEmpty()) {
-				ReturnValue result = m_interpreter.PopValue();
-				//Console.WriteLine("GetFinalReturnValue: " + result);
+				object result = m_interpreter.PopValue();
+				//Console.WriteLine("GetFinalobject: " + result);
 				return result;
 			} else {
 				// no value left on the stack to pop, might be OK in some circumstances (like calling a void remote fn with the normal RemoteFunctionCall function)
-				//Console.WriteLine("GetFinalReturnValue: Stacksize 0");
-				return new ReturnValue(ReturnValueType.VOID);
+				//Console.WriteLine("GetFinalobject: Stacksize 0");
+				return VoidType.voidType;
 			}
 		}
 
-        private static ReturnValue API_type(ReturnValue[] args)
+        private static object API_type(object[] args)
         {
-			return new ReturnValue(args[0].getReturnValueType().ToString());
+			return ReturnValueConversions.PrettyObjectType(args[0].GetType());
 		}
 
-        private static ReturnValue API_createArrayOrRangeOfIndexes(ReturnValue[] args)
+        private static object API_createArrayOrRangeOfIndexes(object[] args)
         {
-			if (args [0].getReturnValueType () == ReturnValueType.ARRAY) {
-				SortedDictionary<ReturnValue, ReturnValue> originalArray = args [0].ArrayValue;
-				SortedDictionary<ReturnValue, ReturnValue> newArray = new SortedDictionary<ReturnValue, ReturnValue> ();
+			if (args [0].GetType () == typeof(SortedDictionary<object,object>)) {
+				SortedDictionary<object, object> originalArray = args [0] as SortedDictionary<object,object>;
+				SortedDictionary<object, object> newArray = new SortedDictionary<object, object> ();
 				int i = 0;
 				foreach (var index in originalArray.Keys) {
-					newArray.Add (new ReturnValue (i), index);
+					newArray.Add (i, index);
 					i++;
 				}		
-				return new ReturnValue (newArray);
-			} else if (args [0].getReturnValueType () == ReturnValueType.RANGE) {
-				Range r = args [0].RangeValue;
+				return newArray;
+			} 
+			else if (args [0].GetType () == typeof(Range)) {
+				Range r = (Range)args [0];
 				Range indexRange = new Range (0, Math.Abs (r.end - r.start) + 1, 1);
 				//Console.WriteLine ("GetIndexes created index range: " + indexRange);
-				return new ReturnValue (indexRange);
-			} else if (args [0].getReturnValueType () == ReturnValueType.STRING) {
-				var indexRange = new Range (0, args [0].StringValue.Length, 1);
-				return new ReturnValue (indexRange);
+				return indexRange;
+			} 
+			else if (args [0].GetType () == typeof(string)) {
+				string s = (string)args[0];
+				var indexRange = new Range (0, s.Length, 1);
+				return indexRange;
 			}
 			else {
 				throw new Error("Can't convert " + args[0].ToString() + " to an array in GetIndexes()");
 			}
 		}
 
-		private static ReturnValue API_hasKey(ReturnValue[] args)
+		private static object API_hasKey(object[] args)
 		{
-			SortedDictionary<ReturnValue, ReturnValue> array = args[0].ArrayValue;
-			ReturnValue index = args[1];
-			return new ReturnValue (array.ContainsKey (index));
+			SortedDictionary<object, object> array = args[0] as SortedDictionary<object,object>;
+			object index = args[1];
+			return array.ContainsKey (index);
 		}
 
-        private static ReturnValue API_removeElement(ReturnValue[] args)
+        private static object API_removeElement(object[] args)
         {
-			SortedDictionary<ReturnValue, ReturnValue> array = args[0].ArrayValue;
-			ReturnValue index = args[1];
+			SortedDictionary<object, object> array = args[0] as SortedDictionary<object,object>;
+			object index = args[1];
 			if (array.ContainsKey (index)) {
 				array.Remove (index);
-				return new ReturnValue ();
+				return new object ();
 			} else {
 				throw new Error ("Can't remove item with key " + index + " from array");
 			}
 		}
 
-		private static ReturnValue API_removeAllElements(ReturnValue[] args)
+		private static object API_removeAllElements(object[] args)
 		{
-			SortedDictionary<ReturnValue, ReturnValue> array = args[0].ArrayValue;
+			SortedDictionary<object, object> array = args[0] as SortedDictionary<object,object>;
 			array.Clear ();
-			return new ReturnValue ();
+			return new object ();
 		}
 
-		private static ReturnValue API_append(ReturnValue[] args)
+		private static object API_append(object[] args)
 		{
-			SortedDictionary<ReturnValue, ReturnValue> array = args[0].ArrayValue;
-			ReturnValue val = args [1];
+			SortedDictionary<object, object> array = args[0] as SortedDictionary<object,object>;
+			object val = args [1];
 
 			// Slow but correct way of doing it:
 			int maxArrayIndex = -1;
 			foreach (var key in array.Keys) {
-				if (key.getReturnValueType () == ReturnValueType.NUMBER &&
-				    maxArrayIndex < key.NumberValue) {
-					maxArrayIndex = (int)key.NumberValue;
+				if (key.GetType () == typeof(float) &&
+				    maxArrayIndex < (float)key) {
+					maxArrayIndex = (int)(float)key;
 				}
 			}
 			//int maxArrayIndex = array.Count; // TODO: this is a bug if the array contains sparse indexes or stuff like that
 
-			array.Add (new ReturnValue(maxArrayIndex + 1), val);
-			return new ReturnValue(); // void
+			array.Add (maxArrayIndex + 1, val);
+			return VoidType.voidType;
 		}
 
-        private static ReturnValue API_count(ReturnValue[] args)
+        private static object API_count(object[] args)
         {
-			if (args [0].getReturnValueType () == ReturnValueType.ARRAY) {
-				SortedDictionary<ReturnValue, ReturnValue> array = args[0].ArrayValue;
-				return new ReturnValue((float)array.Count);
+			if (args [0].GetType () == typeof(SortedDictionary<object,object>)) {
+				SortedDictionary<object, object> array = args[0] as SortedDictionary<object,object>;
+				return (float)array.Count;
 			}
-			else if(args [0].getReturnValueType () == ReturnValueType.RANGE) {
-				Range r = args [0].RangeValue;
+			else if(args [0].GetType () == typeof(Range)) {
+				Range r = (Range)args [0];
 				int length = r.end - r.start;
-				return new ReturnValue ((float)length);
+				return (float)length;
 			}
-			else if(args [0].getReturnValueType () == ReturnValueType.STRING) {
-				return new ReturnValue(args [0].StringValue.Length);
+			else if(args [0].GetType () == typeof(string)) {
+				return (float)((string)args[0]).Length;
 			}
 			else {
 				throw new Error("Can't convert " + args[0].ToString() + " to an array in Count()");
 			}
 		}
 
-        private static ReturnValue API_allocate(ReturnValue[] args)
+        private static object API_allocate(object[] args)
         {
-			int size = (int)args[0].NumberValue;
-			SortedDictionary<ReturnValue, ReturnValue> array = new SortedDictionary<ReturnValue, ReturnValue>();
+			int size = (int)(float)args[0];
+			SortedDictionary<object, object> array = new SortedDictionary<object, object>();
 			for(int i  = 0; i < size; i++) {
-				array.Add(new ReturnValue(i), new ReturnValue(ReturnValueType.NUMBER));
+				array.Add(i, VoidType.voidType);
 			}
-			return new ReturnValue(array);
+			return array;
 		}
 
-//		private static ReturnValue API_add(ReturnValue[] args)
+//		private static object API_add(object[] args)
 //		{
-//			ReturnValue elem = args [0];
+//			object elem = args [0];
 //
-//			array.Add(i, new ReturnValue(ReturnValueType.NUMBER));
+//			array.Add(i, new object(ReturnValueType.NUMBER));
 //		}
 
-        private static ReturnValue API_range(ReturnValue[] args)
+        private static object API_range(object[] args)
         {
-			int start = (int)args[0].NumberValue;
-			int end = (int)args[1].NumberValue;
+			int start = (int)(float)args[0];
+			int end = (int)(float)args[1];
 
 			if (Math.Abs (start - end) > 50) {
 				// Create a range
 				int step = start < end ? 1 : -1;
-				var range = new ReturnValue(new Range (start, end, step));
+				var range = new Range (start, end, step);
 				//Console.WriteLine ("Created a range: " + range.ToString ());
 				return range;
 			} else {
 				// Create a normal array
-				SortedDictionary<ReturnValue, ReturnValue> array = new SortedDictionary<ReturnValue, ReturnValue> ();
+				SortedDictionary<object, object> array = new SortedDictionary<object, object> ();
 			
 				int step = 0;
 				if (start < end) { 
@@ -421,46 +424,46 @@ namespace ProgrammingLanguageNr1
 				int index = 0;
 				for (int nr = start; nr != end; nr += step) {
 					//Console.WriteLine("nr: " + nr);
-					array [new ReturnValue (index)] = new ReturnValue ((float)nr);
+					array [index] = (float)nr;
 					index++;
 				}
-				return new ReturnValue (array);
+				return array;
 			}
 		}
 
-        private static ReturnValue API_toArray(ReturnValue[] args)
+        private static object API_toArray(object[] args)
         {
-			return new ReturnValue(args[0].ArrayValue);
+			throw new Error("Conversion not implemented yet.");
 		}
 
-        private static ReturnValue API_toNumber(ReturnValue[] args)
+        private static object API_toNumber(object[] args)
         {
-			return new ReturnValue(args[0].NumberValue);
+			throw new Error("Conversion not implemented yet.");
 		}
 
-        private static ReturnValue API_toString(ReturnValue[] args)
+        private static object API_toString(object[] args)
         {
-			return new ReturnValue(args[0].StringValue);
+			throw new Error("Conversion not implemented yet.");
 		}
 
-        private static ReturnValue API_toBool(ReturnValue[] args)
+        private static object API_toBool(object[] args)
         {
-			return new ReturnValue(args[0].BoolValue);
+			throw new Error("Conversion not implemented yet.");
 		}
 
-		private static ReturnValue API_round(ReturnValue[] args)
+		private static object API_round(object[] args)
 		{
-			return new ReturnValue((float)Math.Round(args[0].NumberValue));
+			return (float)Math.Round((float)args[0]);
 		}
 
-		private static ReturnValue API_int(ReturnValue[] args)
+		private static object API_int(object[] args)
 		{
-			return new ReturnValue((int)args[0].NumberValue);
+			return (float)(int)(float)args[0];
 		}
 
-		private static ReturnValue API_mod(ReturnValue[] args)
+		private static object API_mod(object[] args)
 		{
-			return new ReturnValue((int)args[0].NumberValue % (int)args[1].NumberValue);
+			return (float)(int)(float)args[0] % (int)(float)args[1];
 		}
 		
 		private Scope CreateScopeTree(AST ast)
@@ -542,7 +545,7 @@ namespace ProgrammingLanguageNr1
 		/// <summary>
 		/// Returns true if the function existed
 		/// </summary>
-		public bool ResetAtFunction(string functionName, ReturnValue[] args) 
+		public bool ResetAtFunction(string functionName, object[] args) 
 		{
 			if (m_interpreter == null) {
 				//throw new Exception("Interpreter is null!");

@@ -27,33 +27,32 @@ namespace ProgrammingLanguageNr1
 			}
 		}
 
-        private ReturnValue print(ReturnValue[] parameters)
+        private object print(object[] parameters)
         {
-            ReturnValue parameter0 = parameters[0];
+            object parameter0 = parameters[0];
 			if (parameter0 == null) {
 				throw new Exception ("Parameter0 is null!");
 			}
-            m_output.Add(parameter0.ToString());
-            return new ReturnValue(); // void
+			m_output.Add(ReturnValueConversions.PrettyStringRepresenation(parameter0));
+			return VoidType.voidType;
         }
 
-        private ReturnValue sqrt(ReturnValue[] parameters)
+        private object sqrt(object[] parameters)
         {
-            ReturnValue parameter0 = parameters[0];
-            if (parameter0.getReturnValueType() == ReturnValueType.NUMBER)
+            object parameter0 = parameters[0];
+            if (parameter0.GetType() == typeof(float))
             {
-                return new ReturnValue((float)(Math.Sqrt(parameter0.NumberValue)));
+                return (float)(Math.Sqrt((float)parameter0));
             }
             else
             {
-                m_sprakRunner.getRuntimeErrorHandler().errorOccured(new Error("Can't use sqrt on something that's not a number", Error.ErrorType.SYNTAX, 0, 0));
-                return new ReturnValue(0.0f);
+				throw new Error("Can't use sqrt on something that's not a number", Error.ErrorType.SYNTAX, 0, 0);
             }
         }
 
-        private ReturnValue f(ReturnValue[] parameters)
+        private object f(object[] parameters)
         {
-            return new ReturnValue();
+            return new object();
         }
 		
 		public ErrorHandler getCompileTimeErrorHandler() { return m_sprakRunner.getCompileTimeErrorHandler(); }
@@ -74,7 +73,7 @@ namespace ProgrammingLanguageNr1
 			m_sprakRunner.printTree(printExecutionCounters);
 		}
 
-		public ReturnValue RunFunction(string functionName, ReturnValue[] args) {
+		public object RunFunction(string functionName, object[] args) {
 			return m_sprakRunner.RunFunction (functionName, args);
 		}
 

@@ -6,7 +6,7 @@ namespace ProgrammingLanguageNr1
 {
     public class ExternalFunctionCreator
     {
-        public delegate ReturnValue OnFunctionCall(ReturnValue[] pParameters);
+        public delegate object OnFunctionCall(object[] pParameters);
         public Dictionary<string, OnFunctionCall> externalFunctions = new Dictionary<string, OnFunctionCall>();
 
         public ExternalFunctionCreator(FunctionDefinition[] functionDefinitions)
@@ -53,11 +53,35 @@ namespace ProgrammingLanguageNr1
             return functionNode;
         }
 
+		static public ReturnValueType GetReturnTypeFromString(string name) {
+			switch (name.ToLower())
+            {
+            case "number":
+                return ReturnValueType.NUMBER;
+            case "string":
+				return ReturnValueType.STRING;
+            case "void":
+				return ReturnValueType.VOID;
+			case "bool":
+				return ReturnValueType.BOOL;
+			case "array":
+				return ReturnValueType.ARRAY;
+			case "range":
+				return ReturnValueType.RANGE;
+			case "var":
+				return ReturnValueType.UNKNOWN_TYPE;
+			case "unknown_type":
+				return ReturnValueType.UNKNOWN_TYPE;
+            default:
+				throw new Exception("GetReturnTypeFromString can't handle built in type with name " + name);
+            }
+		}
+
         private AST createParameterDefinition(string typeName, string variableName)
         {
             AST parameter = new AST(new Token(Token.TokenType.PARAMETER, "<PARAMETER>"));
 
-            AST declaration = new AST_VariableDeclaration(new Token(Token.TokenType.VAR_DECLARATION, "<PARAMETER_DECLARATION>"), ReturnValue.getReturnValueTypeFromString(typeName), variableName);
+            AST declaration = new AST_VariableDeclaration(new Token(Token.TokenType.VAR_DECLARATION, "<PARAMETER_DECLARATION>"), GetReturnTypeFromString(typeName), variableName);
             AST assigment = new AST_Assignment(new Token(Token.TokenType.ASSIGNMENT, "="), variableName);
 
             parameter.addChild(declaration);

@@ -15,7 +15,7 @@ namespace ProgrammingLanguageNr1
             return m_name;
         }
 
-        public ReturnValueType getReturnValueType()
+		public ReturnValueType getReturnValueType()
         {
             return m_returnValueType;
         }
@@ -26,6 +26,6 @@ namespace ProgrammingLanguageNr1
         }
 
         string m_name;
-        ReturnValueType m_returnValueType;
+		ReturnValueType m_returnValueType;
     }
 }

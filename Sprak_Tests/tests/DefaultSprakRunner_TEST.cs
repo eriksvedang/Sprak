@@ -394,9 +394,9 @@ namespace ProgrammingLanguageNr1.tests
 			);
 			
 			VariableDefinition[] vars = new VariableDefinition[3];
-			vars[0] = new VariableDefinition("MAGIC_NUMBER", new ReturnValue(43));
-			vars[1] = new VariableDefinition("MAGIC_BOOL", new ReturnValue(true));
-			vars[2] = new VariableDefinition("MAGIC_STRING", new ReturnValue("hej"));
+			vars[0] = new VariableDefinition("MAGIC_NUMBER", (43));
+			vars[1] = new VariableDefinition("MAGIC_BOOL", (true));
+			vars[2] = new VariableDefinition("MAGIC_STRING", ("hej"));
 			
             SprakRunner program = new SprakRunner(programString, funcs, vars);
 			
@@ -409,9 +409,9 @@ namespace ProgrammingLanguageNr1.tests
         }
 			          
 		static List<string> s_output;
-		ReturnValue print(ReturnValue[] args) {
-			s_output.Add(Convert.ToString(args[0].ToString()));
-			return new ReturnValue();
+		object print(object[] args) {
+			s_output.Add(ReturnValueConversions.PrettyStringRepresenation(args[0]));
+			return new object();
 		}
 
 		[Test()]
@@ -685,14 +685,14 @@ namespace ProgrammingLanguageNr1.tests
 			program.run();
 			program.printOutputToConsole();
 			program.getCompileTimeErrorHandler().printErrorsToConsole();
-			ReturnValue result1 = program.RunFunction ("foo", new ReturnValue[] {});
-			ReturnValue result2 = program.RunFunction ("bar", new ReturnValue[] {});
+			object result1 = program.RunFunction ("foo", new object[] {});
+			object result2 = program.RunFunction ("bar", new object[] {});
 
 			Console.WriteLine ("Result from foo: " + result1.ToString ());
 			Console.WriteLine ("Result from bar: " + result2.ToString ());
 
-			Assert.AreEqual (42, (int)result1.NumberValue);
-			Assert.AreEqual (127, (int)result2.NumberValue);
+			Assert.AreEqual (42, (int)(float)result1);
+			Assert.AreEqual (127, (int)(float)result2);
 		}
 
 		[Test()]
@@ -704,9 +704,9 @@ namespace ProgrammingLanguageNr1.tests
 			program.printOutputToConsole();
 			program.getCompileTimeErrorHandler().printErrorsToConsole();
 
-			ReturnValue result = program.RunFunction ("double", new ReturnValue[] { new ReturnValue(40) });
+			object result = program.RunFunction ("double", new object[] { 40 });
 			Console.WriteLine ("Result from double: " + result.ToString ());
-			Assert.AreEqual (80, (int)result.NumberValue);
+			Assert.AreEqual (80, (int)(float)result);
 		}
 
 		[Test()]
@@ -719,10 +719,10 @@ namespace ProgrammingLanguageNr1.tests
 			program.printOutputToConsole();
 			program.getCompileTimeErrorHandler().printErrorsToConsole();
 			
-			ReturnValue result = program.RunFunction ("double", new ReturnValue[] { new ReturnValue(32) });
+			object result = program.RunFunction ("double", new object[] { 32 });
 
 			Console.WriteLine ("Result from double: " + result.ToString ());
-			Assert.AreEqual (64, (int)result.NumberValue);
+			Assert.AreEqual (64, (int)(float)result);
 
 			Assert.AreEqual(1, program.Output.Count);
 		}
@@ -745,7 +745,7 @@ namespace ProgrammingLanguageNr1.tests
 		{
 			TextReader programString = File.OpenText("code78.txt");
 			DefaultSprakRunner program = new DefaultSprakRunner(programString);
-			program.RunFunction("Foo", new ReturnValue[] { new ReturnValue("Left") });
+			program.RunFunction("Foo", new object[] { "Left" });
 
 			program.printOutputToConsole();
 			program.getCompileTimeErrorHandler().printErrorsToConsole();
@@ -759,7 +759,7 @@ namespace ProgrammingLanguageNr1.tests
 		{
 			TextReader programString = File.OpenText("code79.txt");
 			DefaultSprakRunner program = new DefaultSprakRunner(programString);
-			program.RunFunction("Foo", new ReturnValue[] { new ReturnValue("Forward") });
+			program.RunFunction("Foo", new object[] { "Forward" });
 
 			program.printOutputToConsole();
 			program.getCompileTimeErrorHandler().printErrorsToConsole();
@@ -923,11 +923,14 @@ namespace ProgrammingLanguageNr1.tests
 			Assert.AreEqual(0, program.getCompileTimeErrorHandler().getErrors().Count);
 		}
 
-		ReturnValue ExternalFunctionCall(ReturnValue[] args) {
-			string argsAsText = "id = " + args [0] + ", functionName = " + args [1] + ", args = " + args [2];
+		object ExternalFunctionCall(object[] args) {
+			string argsAsText = 
+				"id = " + args [0] + 
+				", functionName = " + ReturnValueConversions.PrettyStringRepresenation(args [1]) + 
+				", args = " + ReturnValueConversions.PrettyStringRepresenation(args [2]);
 			Console.WriteLine("Fake external function call with args " + argsAsText);
 			s_output.Add(argsAsText);
-			return new ReturnValue();
+			return new object();
 		}
 
 		[Test()]

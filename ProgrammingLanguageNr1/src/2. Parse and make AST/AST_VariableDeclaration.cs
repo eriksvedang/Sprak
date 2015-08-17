@@ -14,9 +14,9 @@ namespace ProgrammingLanguageNr1
         }
 
         string m_name;
-        ReturnValueType m_type;
+		ReturnValueType m_type;
 
-        public ReturnValueType Type
+		public ReturnValueType Type
         {
             get { return m_type; }
             set { m_type = value; }
@@ -27,6 +27,7 @@ namespace ProgrammingLanguageNr1
             get { return m_name; }
             set { m_name = value; }
         }
+
         public override string ToString()
         {
                 return base.ToString() + " " + m_name + " of type " + m_type;

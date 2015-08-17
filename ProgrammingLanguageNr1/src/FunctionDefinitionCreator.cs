@@ -65,6 +65,8 @@ namespace ProgrammingLanguageNr1
 			return functionDocumentations;
 		}
 
+		static HashSet<Type> acceptableTypes = new HashSet<Type>() { typeof(float), typeof(string), typeof(bool), typeof(Range), typeof(VoidType), typeof(object[]) };
+
 		static List<FunctionDefinition> CreateFunctionDefinitions (object pProgramTarget, Dictionary<string, FunctionDocumentation> functionDocumentations, MethodInfo[] methodInfos)
 		{
 			List<FunctionDefinition> functionDefinitions = new List<FunctionDefinition>();
@@ -93,8 +95,8 @@ namespace ProgrammingLanguageNr1
 					}
 					*/
 					parameterNames.Add (parameterInfo.Name);
-					parameterTypes.Add (ReturnValue.SystemTypeToReturnValueType (parameterInfo.ParameterType));
-					parameterTypeNames.Add (ReturnValue.SystemTypeToReturnValueType (parameterInfo.ParameterType).ToString ().ToLower ());
+					parameterTypes.Add (ReturnValueConversions.SystemTypeToReturnValueType (parameterInfo.ParameterType));
+					parameterTypeNames.Add (ReturnValueConversions.SystemTypeToReturnValueType (parameterInfo.ParameterType).ToString ().ToLower ());
 				}
 
 				MethodInfo lambdaMethodInfo = methodInfo; // "hard copy" because of c# lambda rules
@@ -109,38 +111,17 @@ namespace ProgrammingLanguageNr1
 					}
 
 					int i = 0;
-					foreach (ReturnValue sprakArg in sprakArguments) {
-						//Console.WriteLine(string.Format("Argument {0} in function {1} is of type {2}", i, shortname, realParamInfo[i].ParameterType));
+					foreach (object sprakArg in sprakArguments) {
+						Console.WriteLine(string.Format("Argument {0} in function {1} is of type {2}", i, shortname, realParamInfo[i].ParameterType));
 
 						var realParamType = realParamInfo [i].ParameterType;
-						//Console.WriteLine("Real param type is " + realParamType);
+						Console.WriteLine("Real param type is " + realParamType);
 						
-						if (realParamInfo[i].ParameterType.IsArray) {
-							object[] converted = new object[sprakArg.ArrayValue.Count];
-							int arrayCounter = 0;
-							foreach(ReturnValue arrayItem in sprakArg.ArrayValue.Values) {
-								converted[arrayCounter] = arrayItem.GetValueAsObject();
-								arrayCounter++;
-							}
-							parameters.Add (converted);
-						}
-						else if (realParamType == typeof(int)) {
-							parameters.Add (Convert.ToInt32 (sprakArg.NumberValue));
-						}
-						else if (realParamType == typeof(float)) {
-							parameters.Add (sprakArg.NumberValue);
-						}
-						else if (realParamType == typeof(bool)) {
-							parameters.Add (sprakArg.BoolValue);
-						}
-						else if (realParamType == typeof(string)) {
-							parameters.Add (sprakArg.StringValue);
-						}
-						else if (realParamType == typeof(object)) {
-							parameters.Add (sprakArg.GetValueAsObject());
+						if (acceptableTypes.Contains(realParamType)) {
+							parameters.Add (sprakArg);
 						}
 						else {
-							throw new Error("Can't deal with arg " + i.ToString() + " in function " + shortname);
+							throw new Error("Can't deal with arg " + i.ToString() + " of type " + realParamType + " in function " + shortname);
 						}
 						
 						i++;
@@ -159,15 +140,19 @@ namespace ProgrammingLanguageNr1
 						throw e.GetBaseException();
 					}
 
+					if(!acceptableTypes.Contains(lambdaMethodInfo.ReturnType)) {
+						throw new Error("Function '" + shortname + "' can't return value of type " + lambdaMethodInfo.ReturnType.ToString());
+					}
+
 					if (lambdaMethodInfo.ReturnType == typeof(void)) {
-						return new ReturnValue (ReturnValueType.VOID);
+						return VoidType.voidType;
 					}
 					else {
-						return new ReturnValue (ReturnValue.SystemTypeToReturnValueType (result.GetType() /*lambdaMethodInfo.ReturnType*/), result);
+						return result;
 					}
 				});
 
-				ReturnValueType returnValueType = ReturnValue.SystemTypeToReturnValueType (methodInfo.ReturnType);
+				ReturnValueType returnValueType = ReturnValueConversions.SystemTypeToReturnValueType (methodInfo.ReturnType);
 
 				FunctionDocumentation doc;
 

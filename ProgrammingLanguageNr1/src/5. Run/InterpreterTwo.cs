@@ -101,7 +101,7 @@ namespace ProgrammingLanguageNr1
         private void PrintValueStack()
         {
             Console.Write("VALUE_STACK: ");
-            foreach (ReturnValue rv in m_valueStack)
+            foreach (object rv in m_valueStack)
             {
                 Console.Write(rv.ToString() + ", ");
             }
@@ -120,7 +120,7 @@ namespace ProgrammingLanguageNr1
             }
         }
 		
-        public void SwapStackTopValueTo(ReturnValue pValue)
+        public void SwapStackTopValueTo(object pValue)
         {
 			if(m_valueStack.Count > 0) {
             	m_valueStack.Pop();
@@ -136,7 +136,7 @@ namespace ProgrammingLanguageNr1
 		/// Sets the program to execute function.
 		/// Returns true if the program had the function.
 		/// </summary>
-		public bool SetProgramToExecuteFunction (string functionName, ReturnValue[] args)
+		public bool SetProgramToExecuteFunction (string functionName, object[] args)
 		{
 			//Console.WriteLine ("Will execute '" + functionName + "' in global scope '" + m_globalScope + "'");
 
@@ -182,7 +182,7 @@ namespace ProgrammingLanguageNr1
 			return true; // all went well (starting the function)
 		}
 			
-		public ReturnValue GetGlobalVariableValue(string pName) 
+		public object GetGlobalVariableValue(string pName) 
 		{
             return m_globalMemorySpace.getValue(pName);
 		}
@@ -332,19 +332,19 @@ namespace ProgrammingLanguageNr1
             Debug.Assert(ifnode != null);
 			#endif
 
-            ReturnValue r = PopValue();
+            object r = PopValue();
 			#if DEBUG
             Debug.Assert(r != null);
 			#endif
 
             AST subNode = null;
 
-			if (r.getReturnValueType () != ReturnValueType.BOOL) {
+			if (r.GetType() != typeof(bool)) {
 				var token = ifnode.getToken ();
-				throw new Error ("Can't use value " + r + " of type " + r.getPrettyReturnValueType () + " in if-statement", Error.ErrorType.RUNTIME, token.LineNr, token.LinePosition);
+				throw new Error ("Can't use value " + r + " of type " + ReturnValueConversions.PrettyObjectType (r.GetType()) + " in if-statement", Error.ErrorType.RUNTIME, token.LineNr, token.LinePosition);
 			}
 
-			if (r.BoolValue)
+			if ((bool)r)
             {
                 subNode = ifnode.getChild(1);
             }
@@ -389,7 +389,7 @@ namespace ProgrammingLanguageNr1
 			return m_externalFunctionCreator.externalFunctions.ContainsKey(pFunctionName);
 		}
 
-		void CallExternalFunction(string pFunctionName, ReturnValue[] pParameters)
+		void CallExternalFunction(string pFunctionName, object[] pParameters)
 		{
 //			Console.WriteLine("Calling external function " + pFunctionName + " with parameters:");
 //			foreach (var p in pParameters) {
@@ -401,8 +401,8 @@ namespace ProgrammingLanguageNr1
 //			}
 
 			ExternalFunctionCreator.OnFunctionCall fc = m_externalFunctionCreator.externalFunctions[pFunctionName];
-			ReturnValue rv = fc(pParameters);
-			if (rv.getReturnValueType() != ReturnValueType.VOID) {
+			object rv = fc(pParameters);
+			if (!(rv is VoidType)) {
 				PushValue(rv);
 			}
 		}
@@ -425,7 +425,7 @@ namespace ProgrammingLanguageNr1
 			#endif
 
             int nrOfParameters = functionDefinitionNode.getChild(2).getChildren().Count;
-            ReturnValue[] parameters = new ReturnValue[nrOfParameters];
+            object[] parameters = new object[nrOfParameters];
             for (int i = nrOfParameters - 1; i >= 0; i--)
             {
                 parameters[i] = PopValue();
@@ -444,7 +444,7 @@ namespace ProgrammingLanguageNr1
 
         private void Operator()
         {
-            ReturnValue result;
+            object result;
             float rhs, lhs;
 
             switch (CurrentNode.getTokenString())
@@ -454,51 +454,51 @@ namespace ProgrammingLanguageNr1
                     break;
 
                 case "-":
-                    rhs = PopValue().NumberValue;
-                    lhs = PopValue().NumberValue;
-                    result = new ReturnValue(lhs - rhs);
+					rhs = PopNumberValue();
+                    lhs = PopNumberValue();
+                    result = lhs - rhs;
                     break;
 
                 case "*":
-                    result = new ReturnValue(PopValue().NumberValue * PopValue().NumberValue);
+                    result = PopNumberValue() * PopNumberValue();
                     break;
 
                 case "/":
-                    rhs = PopValue().NumberValue;
-                    lhs = PopValue().NumberValue;
-                    result = new ReturnValue(lhs / rhs);
+                    rhs = PopNumberValue();
+                    lhs = PopNumberValue();
+                    result = lhs / rhs;
                     break;
                 case "<":
-                    rhs = PopValue().NumberValue;
-                    lhs = PopValue().NumberValue;
-                    result = new ReturnValue(lhs < rhs);
+                    rhs = PopNumberValue();
+                    lhs = PopNumberValue();
+                    result = lhs < rhs;
                     break;
                 case ">":
-                    rhs = PopValue().NumberValue;
-                    lhs = PopValue().NumberValue;
-                    result = new ReturnValue(lhs > rhs);
+                    rhs = PopNumberValue();
+                    lhs = PopNumberValue();
+                    result = lhs > rhs;
                     break;
 				case ">=":
-                    rhs = PopValue().NumberValue;
-                    lhs = PopValue().NumberValue;
-                    result = new ReturnValue(lhs >= rhs);
+                    rhs = PopNumberValue();
+                    lhs = PopNumberValue();
+                    result = lhs >= rhs;
                     break;
 				case "<=":
-                    rhs = PopValue().NumberValue;
-                    lhs = PopValue().NumberValue;
-                    result = new ReturnValue(lhs <= rhs);
+                    rhs = PopNumberValue();
+                    lhs = PopNumberValue();
+                    result = lhs <= rhs;
                     break;
 				case "==":
                     result = equalityTest();
                     break;
 				case "!=":
-                    result = new ReturnValue(!equalityTest().BoolValue);
+					result = !PopBoolValue();
                     break;
                 case "&&":
-					result = new ReturnValue(PopValue().BoolValue && PopValue().BoolValue);
+					result = PopBoolValue() && PopBoolValue();
                     break;
 				case "||":
-					result = new ReturnValue(PopValue().BoolValue || PopValue().BoolValue);
+					result = PopBoolValue() || PopBoolValue();
 					break;
 
                 default:
@@ -510,68 +510,50 @@ namespace ProgrammingLanguageNr1
             PushValue(result);
         }
 		
-		private ReturnValue equalityTest() {
-			ReturnValue rhs = PopValue();
-            ReturnValue lhs = PopValue();
+		private object equalityTest() {
+			object rhs = PopValue();
+            object lhs = PopValue();
 
 			if (lhs == rhs) {
-				return new ReturnValue (true);
+				return true;
 			}
 			
-			if(rhs.getReturnValueType() == ReturnValueType.NUMBER && 
-			   lhs.getReturnValueType() == ReturnValueType.NUMBER) 
+			if(lhs.GetType() == rhs.GetType() && rhs is IComparable && lhs is IComparable)
 			{
-				return new ReturnValue(lhs.NumberValue == rhs.NumberValue);
+				return (rhs as IComparable).CompareTo(lhs as IComparable) == 0;
 			}
-			
-			if(rhs.getReturnValueType() == ReturnValueType.BOOL && 
-			   lhs.getReturnValueType() == ReturnValueType.BOOL) 
-			{
-				return new ReturnValue(lhs.BoolValue == rhs.BoolValue);
-			}
-			
-			if(rhs.getReturnValueType() == ReturnValueType.STRING && 
-			   lhs.getReturnValueType() == ReturnValueType.STRING) 
-			{
-				return new ReturnValue(lhs.StringValue.ToLower() == rhs.StringValue.ToLower());
-			}
+						
+			//throw new Error("Can't compare those two things (" + lhs.ToString() + " of type " + lhs.GetType() + " and " + rhs.ToString() + " of type " + rhs.GetType() + ")");
 
-//			if(rhs.getReturnValueType() == ReturnValueType.ARRAY && 
-//				lhs.getReturnValueType() == ReturnValueType.ARRAY) 
-//			{
-//				if (lhs.ArrayValue.Count != rhs.ArrayValue.Count) {
-//					return new ReturnValue (false);
-//				}
-//			}
-			
-			//throw new Error("Can't compare those two things (" + lhs.ToString() + " of type " + lhs.getReturnValueType() + " and " + rhs.ToString() + " of type " + rhs.getReturnValueType() + ")");
-
-			return new ReturnValue(false);
+			return false;
 		}
 		
-		private ReturnValue AddStuffTogetherHack() {
+		private object AddStuffTogetherHack() {
 		
-			ReturnValue rhs = PopValue();
-			ReturnValue lhs = PopValue();
+			object rhs = PopValue();
+			object lhs = PopValue();
 
-			var rightValueType = rhs.getReturnValueType ();
-			var leftValueType = lhs.getReturnValueType ();
+			var rightValueType = rhs.GetType ();
+			var leftValueType = lhs.GetType ();
 				
-			if (rightValueType == ReturnValueType.NUMBER && leftValueType == ReturnValueType.NUMBER) {
-				return new ReturnValue (rhs.NumberValue + lhs.NumberValue);
-			} else if (rightValueType == ReturnValueType.STRING || leftValueType == ReturnValueType.STRING) {
-				return new ReturnValue (lhs.ToString () + rhs.ToString ());
-			} else if (rightValueType == ReturnValueType.ARRAY || leftValueType == ReturnValueType.ARRAY) {
-				SortedDictionary<ReturnValue, ReturnValue> newArray = new SortedDictionary<ReturnValue, ReturnValue>();
-				for(int i = 0; i < lhs.ArrayValue.Count; i++) {
-					newArray.Add(new ReturnValue(i), lhs.ArrayValue[new ReturnValue(i)]);
+			if (rightValueType == typeof(float) && leftValueType == typeof(float)) {
+				return (float)rhs + (float)lhs;
+			} else if (rightValueType == typeof(string) || leftValueType == typeof(string)) {
+				return lhs.ToString () + rhs.ToString ();
+			} else if (rightValueType == typeof(object[]) || leftValueType == typeof(object[])) {
+				throw new Error("Array concatenation is temporarily disabled.");
+			} else if (rightValueType == typeof(SortedDictionary<object, object>) || leftValueType == typeof(SortedDictionary<object, object>)) {
+				var lhsArray = lhs as SortedDictionary<object, object>;
+				var rhsArray = rhs as SortedDictionary<object, object>;
+				SortedDictionary<object, object> newArray = new SortedDictionary<object, object>();
+				for(int i = 0; i < lhsArray.Count; i++) {
+					newArray.Add(i, lhsArray[i]);
 				}
-				for(int i = 0; i < rhs.ArrayValue.Count; i++) {
-					newArray.Add(new ReturnValue(i + lhs.ArrayValue.Count), rhs.ArrayValue[new ReturnValue(i)]);
+				for(int i = 0; i < rhsArray.Count; i++) {
+					newArray.Add(i + lhsArray.Count, rhsArray[i]);
 				}
-				var a = new ReturnValue (newArray);
-				Console.WriteLine ("Created new array by concatenation: " + a.ToString ());
-				return a;
+				Console.WriteLine ("Created new array by concatenation: " + newArray.ToString ());
+				return newArray;
 			}
 			else {
 				throw new Error ("Can't add " + lhs + " to " + rhs);
@@ -580,21 +562,22 @@ namespace ProgrammingLanguageNr1
 
         private void ResolveVariableName()
         {
-            ReturnValue value = m_currentScope.getValue(CurrentNode.getTokenString());
+            object value = m_currentScope.getValue(CurrentNode.getTokenString());
             PushValue(value);
         }
 		
 		private void ArrayLookup() 
 		{
-			ReturnValue index = PopValue();
-			ReturnValue array = m_currentScope.getValue(CurrentNode.getTokenString());
-			ReturnValue val = null;
+			object index = PopValue();
+			object array = m_currentScope.getValue(CurrentNode.getTokenString());
+			object val = null;
 
-			if (array.getReturnValueType () == ReturnValueType.RANGE) {
+			if (array is Range) {
+				//Console.WriteLine ("LOOKING UP KEY " + index + " IN RANGE " + array.ToString ()); // + ", the result was " + theNumber);
 
-				if (index.getReturnValueType () == ReturnValueType.NUMBER) {
-					Range range = array.RangeValue;
-					int i = range.step * (int)index.NumberValue;
+				if (index.GetType () == typeof(float)) {
+					Range range = (Range)array;
+					int i = range.step * (int)(float)index;
 					int theNumber = range.start + i;
 					int lowerBound = 0;
 					int upperBound = 0;
@@ -610,29 +593,28 @@ namespace ProgrammingLanguageNr1
 					} else if (theNumber > upperBound) {
 						throw new Error ("Index " + index.ToString () + " is outside the range " + array.ToString ());
 					}
-					val = new ReturnValue ((float)theNumber);
-					//Console.WriteLine ("LOOKING UP KEY " + index + " IN RANGE " + array.ToString () + ", the result was " + theNumber);
+					val = (float)theNumber;
 				} else {
 					throw new Error ("Can't look up " + index.ToString () + " in the range " + array.ToString ());
 				}
 
-			} else if (array.getReturnValueType () == ReturnValueType.ARRAY) {
+			} else if (array.GetType () == typeof(SortedDictionary<object,object>)) {
 				//Console.WriteLine ("LOOKING UP KEY " + index + " IN ARRAY " + array.ToString ());
 
-				if (array.ArrayValue.ContainsKey (index)) {
-					val = array.ArrayValue [index];
+				var a = array as SortedDictionary<object,object>;
+
+				if (a.TryGetValue((int)(float)index, out val)) { // TODO: <- now this only works on numeric indexes :(
+					// success
 				} else {
-					//val = new ReturnValue(0f);
-					throw new Error ("Can't find the index '" + index + "' (" + index.getReturnValueType () + ") in the array '" + CurrentNode.getTokenString () + "'", Error.ErrorType.RUNTIME, CurrentNode.getToken ().LineNr, CurrentNode.getToken ().LinePosition);
+					throw new Error ("Can't find the index '" + index + "' (" + index.GetType () + ") in the array '" + CurrentNode.getTokenString () + "'", Error.ErrorType.RUNTIME, CurrentNode.getToken ().LineNr, CurrentNode.getToken ().LinePosition);
 				}
-			} else if (array.getReturnValueType () == ReturnValueType.STRING) {
-				string s = array.StringValue;
-				int i = (int)index.NumberValue;
+			} else if (array.GetType () == typeof(string)) {
+				string s = (string)array;
+				int i = (int)(float)index;
 				if (i >= 0 && i < s.Length) {
-					val = new ReturnValue (s [i].ToString());
+					val = s[i].ToString();
 				} else {
-					//val = new ReturnValue(0f);
-					throw new Error ("The index '" + i + "' (" + index.getReturnValueType () + ") is outside the bounds of the string '" + CurrentNode.getTokenString () + "'", Error.ErrorType.RUNTIME, CurrentNode.getToken ().LineNr, CurrentNode.getToken ().LinePosition);
+					throw new Error ("The index '" + i + "' (" + index.GetType () + ") is outside the bounds of the string '" + CurrentNode.getTokenString () + "'", Error.ErrorType.RUNTIME, CurrentNode.getToken ().LineNr, CurrentNode.getToken ().LinePosition);
 				}
 			} else {
 				throw new Error ("Can't convert " + array.ToString () + " to an array (for lookup)");
@@ -660,65 +642,42 @@ namespace ProgrammingLanguageNr1
         {
             ReturnValueType type = (CurrentNode as AST_VariableDeclaration).Type;
             string variableName = (CurrentNode as AST_VariableDeclaration).Name;
-            ReturnValue initValue = new ReturnValue(type);
+            object initValue = type;
             m_currentScope.setValue(variableName, initValue);
         }
 		
-		private ReturnValue ConvertToType(ReturnValue valueToConvert, ReturnValueType type) {
-#if WRITE_CONVERT_INFO
-			Console.WriteLine("Converting " + valueToConvert + " from type " + valueToConvert.getReturnValueType() + " to the type " + type);
-#endif
-			ReturnValue result = null;
-			
-			if(type == ReturnValueType.VOID) {
-				throw new Error("Can't convert to void.");
-			}
-			else if(type == ReturnValueType.UNKNOWN_TYPE) {
-				// Don't convert but make a new copy with the same type
-				type = valueToConvert.getReturnValueType();
-			}
-			
-			if (type == ReturnValueType.ARRAY) {
-				result = new ReturnValue (valueToConvert.ArrayValue);
-			} else if (type == ReturnValueType.BOOL) {
-				result = new ReturnValue (valueToConvert.BoolValue);
-			} else if (type == ReturnValueType.NUMBER) {
-				result = new ReturnValue (valueToConvert.NumberValue);
-			} else if (type == ReturnValueType.STRING) {
-				result = new ReturnValue (valueToConvert.StringValue);
-			} else if (type == ReturnValueType.RANGE) {
-				result = new ReturnValue (valueToConvert.RangeValue);
-			} else {
-				throw new Error ("Failed to convert value " + valueToConvert);
-			}
-#if WRITE_CONVERT_INFO
-			Console.WriteLine("Result: " + result.ToString());
-#endif
-			return result;
+		private object ConvertToType(object valueToConvert, ReturnValueType type) {
+
+
+			return valueToConvert;
+
 		}
 
         private void AssignmentSignal()
         {
             string variableName = (CurrentNode as AST_Assignment).VariableName;
-			ReturnValue expressionValue = PopValue();
-			ReturnValueType type = m_currentScope.getValue(variableName).getReturnValueType();
-			ReturnValue convertedValue = ConvertToType(expressionValue, type);
-			m_currentScope.setValue(variableName, convertedValue);
+			object expressionValue = PopValue();
+			// TODO: convert the value as before
+//			Type type = m_currentScope.getValue(variableName).GetType();
+//			object convertedValue = ConvertToType(, type);
+			m_currentScope.setValue(variableName, expressionValue);
         }
 		
 		private void AssignmentToArrayElementSignal() {
 			string variableName = (CurrentNode as AST_Assignment).VariableName;
-			ReturnValue valueToSet = PopValue();
-			ReturnValue index = PopValue();
+			object valueToSet = PopValue();
+			object index = PopValue();
 
-			ReturnValue rv = m_currentScope.getValue(variableName);
+			object rv = m_currentScope.getValue(variableName);
 
-			if (rv.getReturnValueType () != ReturnValueType.ARRAY) {
+			if (rv.GetType () != typeof(SortedDictionary<object,object>)) {
 				var token = (CurrentNode as AST_Assignment).getToken();
-				throw new Error ("Can't assign to the variable '" + variableName + "' since it's of the type " + rv.getPrettyReturnValueType(), Error.ErrorType.RUNTIME, token.LineNr, token.LinePosition);
+				throw new Error ("Can't assign to the variable '" + variableName + "' since it's of the type " + ReturnValueConversions.PrettyObjectType(rv.GetType()), Error.ErrorType.RUNTIME, token.LineNr, token.LinePosition);
 			}
 			
-			SortedDictionary<ReturnValue, ReturnValue> array = rv.ArrayValue;
+			SortedDictionary<object, object> array = rv as SortedDictionary<object, object>;
+
+			Console.WriteLine("Checking if index " + index + " of type " + index.GetType() + " is within range of array of length " + array.Count);
 
 			if(array.ContainsKey(index)) {
 				array[index] = valueToSet;
@@ -730,18 +689,18 @@ namespace ProgrammingLanguageNr1
 
         private void ArrayEndSignal() 
 		{
-			// pop the right number of values and add them to a new ReturnValue of array type
+			// pop the right number of values and add them to a new object of array type
 			AST_ArrayEndSignal arrayEndSignal = CurrentNode as AST_ArrayEndSignal;
-			SortedDictionary<ReturnValue, ReturnValue> array = new SortedDictionary<ReturnValue, ReturnValue>();
-			ReturnValue[] values = new ReturnValue[arrayEndSignal.ArraySize];
+			SortedDictionary<object, object> array = new SortedDictionary<object, object>();
+			object[] values = new object[arrayEndSignal.ArraySize];
 			for(int i = 0; i < arrayEndSignal.ArraySize; i++) {
 				values[i] = PopValue();
 			}
 			//for(int i = 0; i < arrayEndSignal.ArraySize; i++) {
 			for(int i = arrayEndSignal.ArraySize - 1; i >= 0; i--) {
-				array.Add(new ReturnValue(arrayEndSignal.ArraySize - i - 1), values[i]);
+				array.Add(arrayEndSignal.ArraySize - i - 1, values[i]);
 			}
-			PushValue(new ReturnValue(array));
+			PushValue(array);
 		}
 
         private void ReturnSignal()
@@ -816,7 +775,7 @@ namespace ProgrammingLanguageNr1
             return b.ToString();
         }
         
-        public ReturnValue PopValue()
+        public object PopValue()
         {
 			if(m_valueStack.Count == 0) {
 				throw new Error("Can't access value (have you forgotten to return a value from a function?)");
@@ -824,7 +783,7 @@ namespace ProgrammingLanguageNr1
 #if PRINT_STACK
             	Console.WriteLine("Popping value " + m_valueStack.Peek());
 #endif			
-            ReturnValue poppedValue = m_valueStack.Pop();
+            object poppedValue = m_valueStack.Pop();
 #if PRINT_STACK
 			PrintMemoryStack();
             PrintValueStack();
@@ -832,7 +791,33 @@ namespace ProgrammingLanguageNr1
             return poppedValue;
         }
 
-        public void PushValue(ReturnValue value)
+		public float PopNumberValue() {
+			object n = PopValue();
+			if(n.GetType() == typeof(float)) {
+				return (float)n;
+			}
+			else if(n.GetType() == typeof(int)) {
+				return (float)(int)n;
+			}
+			else {
+				throw new Error("Can't convert value " + n.ToString() + " of type " + n.GetType() + " to a number");
+			}
+		}
+
+		public bool PopBoolValue() {
+			object n = PopValue();
+			if(n.GetType() == typeof(bool)) {
+				return (bool)n;
+			}
+			else if(n.GetType() == typeof(float)) {
+				return ((float)n != 0f) ? true : false;
+			}
+			else {
+				throw new Error("Can't convert value " + n.ToString() + " of type " + n.GetType() + " to a bool");
+			}
+		}
+
+        public void PushValue(object value)
         {
 #if PRINT_STACK
             Console.WriteLine("Pushing value " + value);
@@ -869,7 +854,7 @@ namespace ProgrammingLanguageNr1
         MemorySpace m_globalMemorySpace;
         MemorySpace m_currentMemorySpace;
         Stack<MemorySpace> m_memorySpaceStack = new Stack<MemorySpace>();
-        Stack<ReturnValue> m_valueStack = new Stack<ReturnValue>();
+        Stack<object> m_valueStack = new Stack<object>();
 		MemorySpaceNodeListCache m_memorySpaceNodeListCache = new MemorySpaceNodeListCache();
 		int m_topLevelDepth = 0; // the stack depth at wich the program starts and ends, normally 0 but can be 1 if jumping into a function
     }

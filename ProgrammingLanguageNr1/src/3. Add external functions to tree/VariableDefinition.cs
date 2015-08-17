@@ -7,13 +7,13 @@ namespace ProgrammingLanguageNr1
 	{
         public VariableDefinition() { }
 
-		public VariableDefinition (string pVariableName, ReturnValue pInitValue)
+		public VariableDefinition (string pVariableName, object pInitValue)
         {
             variableName = pVariableName;
 			initValue = pInitValue;
         }
 
         public string variableName;
-		public ReturnValue initValue;
+		public object initValue;
 	}
 }

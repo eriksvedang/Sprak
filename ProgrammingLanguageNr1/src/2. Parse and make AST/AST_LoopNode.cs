@@ -11,11 +11,11 @@ namespace ProgrammingLanguageNr1
 		public void setScope(Scope scope) { m_scope = scope; }
 		public Scope getScope() { return m_scope; }
         
-		//public void setForeachArray(ReturnValue foreachArray) { m_foreachArray = foreachArray; }
-		//public ReturnValue getForeachArray() { return m_foreachArray; }			
+		//public void setForeachArray(object foreachArray) { m_foreachArray = foreachArray; }
+		//public object getForeachArray() { return m_foreachArray; }			
 		
 		Scope m_scope;
-		//ReturnValue m_foreachArray;
+		//object m_foreachArray;
 	}
 }
 

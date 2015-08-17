@@ -11,7 +11,7 @@ namespace ProgrammingLanguageNr1.tests
 	public class DemoClass
 	{
 		[SprakAPI("returns two values", "floatA", "second float")]
-		public int API_GetValues(int pFloatA, int pFloatB) { return (int)(pFloatA * pFloatB); }
+		public float API_GetValues(float pFloatA, float pFloatB) { return (int)(pFloatA * pFloatB); }
 
 		[SprakAPI("werw", "sdf")]
 		public bool API_UseBool(bool pFloatA) { return pFloatA; }
@@ -32,21 +32,22 @@ namespace ProgrammingLanguageNr1.tests
             {
                 if (fd.functionName == "NumberToString")
                 {
-                    ReturnValue rv = fd.callback(new ReturnValue[]{ new ReturnValue(ReturnValueType.NUMBER, 1.5f)});
-                    Assert.AreEqual((1.5f).ToString(), rv.StringValue);
+                    object rv = fd.callback(new object[]{ 1.5f });
+                    Assert.AreEqual((1.5f).ToString(), (string)rv);
                 }
                 if (fd.functionName == "GetValues")
                 {
                     Console.WriteLine("retval " + fd.functionDocumentation.GetFunctionDescription() + ", " + 
                         fd.functionDocumentation.GetArgumentDescription(0) + 
                         ", " + fd.functionDocumentation.GetArgumentDescription(1));
-                    ReturnValue rv = fd.callback(new ReturnValue[] { new ReturnValue(3.0f), new ReturnValue(4.0f)});
-                    Assert.AreEqual(12f, rv.NumberValue, 0.001f);
+                    object rv = fd.callback(new object[] { 3.0f, 4.0f });
+					Console.WriteLine("rv type: " + rv.GetType());
+                    Assert.AreEqual(12f, (float)rv, 0.001f);
                 }
                 if (fd.functionName == "UseBool")
                 {
-                    ReturnValue rv = fd.callback(new ReturnValue[] { new ReturnValue(true)});
-                    Assert.AreEqual(true, rv.BoolValue);
+                    object rv = fd.callback(new object[] { true });
+                    Assert.AreEqual(true, (bool)rv);
                 }
             }
         }
@@ -56,8 +57,8 @@ namespace ProgrammingLanguageNr1.tests
 				"void", "print",
 				new string[] { "string" }, new string[] { "text" },
 				o => {
-				Console.WriteLine (o[0].StringValue);
-				return new ReturnValue (); }, 
+				Console.WriteLine ((string)o[0]);
+				return new object (); }, 
 				FunctionDocumentation.Default ());
 		}
 
@@ -81,8 +82,8 @@ namespace ProgrammingLanguageNr1.tests
 			Assert.AreEqual (0, program.getCompileTimeErrorHandler().getErrors().Count);
 		}
 
-		ReturnValue ThisFunctionTakesANumber(ReturnValue[] pArguments) {
-			return new ReturnValue(pArguments[0].NumberValue * 2.0f);
+		object ThisFunctionTakesANumber(object[] pArguments) {
+			return (float)pArguments[0] * 2.0f;
 		}
 
 		public class ClassWithFunction
@@ -143,7 +144,8 @@ namespace ProgrammingLanguageNr1.tests
 			SprakRunner program = new SprakRunner(programString, moreFunctionDefinitions.ToArray());
 			
 			program.run();
-			
+
+			Assert.AreEqual (0, program.getRuntimeErrorHandler().getErrors().Count);
 			Assert.AreEqual (0, program.getCompileTimeErrorHandler().getErrors().Count);
 		}
 

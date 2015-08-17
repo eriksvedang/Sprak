@@ -115,7 +115,7 @@ namespace ProgrammingLanguageNr1
             m_memorySpaces.Pop();
         }
 
-        public void setValue(string name, ReturnValue val) {
+        public void setValue(string name, object val) {
             Scope scope = resolveToScope(name);
             if(scope == null) throw new Exception("scope is null, trying to set '" + name + "' to value " + val + " from scope '" + m_name + "'");
 			if(scope.m_memorySpaces == null) throw new Exception("scope.m_memorySpaces is null, trying to set " + name + " from scope " + m_name);
@@ -123,7 +123,7 @@ namespace ProgrammingLanguageNr1
             scope.m_memorySpaces.Peek().setValue(name, val);
 		}
 
-        public ReturnValue getValue(string name) {
+        public object getValue(string name) {
             Scope scope = resolveToScope(name);
             Debug.Assert(scope != null, "Can't resolve scope " + name);
 			Stack<MemorySpace> memorySpaceStack = scope.m_memorySpaces;

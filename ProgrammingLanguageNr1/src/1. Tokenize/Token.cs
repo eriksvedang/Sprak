@@ -121,18 +121,18 @@ namespace ProgrammingLanguageNr1
 	}
 	
 	public class TokenWithValue : Token {
-		public TokenWithValue(TokenType tokenType, string tokenString, int lineNr, int linePosition, ReturnValue pValue)
+		public TokenWithValue(TokenType tokenType, string tokenString, int lineNr, int linePosition, object pValue)
 			: base(tokenType, tokenString, lineNr, linePosition)
 		{
 			m_value = pValue;
 		}		
-		public TokenWithValue(TokenType pTokenType, string pTokenString, ReturnValue pValue) : base(pTokenType, pTokenString) {
+		public TokenWithValue(TokenType pTokenType, string pTokenString, object pValue) : base(pTokenType, pTokenString) {
 			m_value = pValue;
 		}
-		public ReturnValue getValue() {
+		public object getValue() {
 			return m_value;
 		}
-		private ReturnValue m_value;
+		private object m_value;
 	}
 }
 

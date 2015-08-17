@@ -13,10 +13,10 @@ namespace ProgrammingLanguageNr1.tests
 			
             AST root = new AST();
 			MemorySpace memorySpace = new MemorySpace("globals", root, new Scope(Scope.ScopeType.MAIN_SCOPE, "blah"), cache);
-			ReturnValue val = new ReturnValue(5.9f);
+			object val = 5.9f;
 			memorySpace.setValue("x", val);
-			Assert.AreEqual(ReturnValueType.NUMBER, memorySpace.getValue("x").getReturnValueType());
-			Assert.AreEqual(5.9f, memorySpace.getValue("x").NumberValue);
+			Assert.AreEqual(typeof(float), memorySpace.getValue("x").GetType());
+			Assert.AreEqual(5.9f, (float)memorySpace.getValue("x"));
 		}
 	}
 }

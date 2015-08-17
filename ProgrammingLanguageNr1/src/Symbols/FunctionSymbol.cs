@@ -18,7 +18,7 @@ namespace ProgrammingLanguageNr1
             m_returnValueType = type;
 		}
 
-        public ReturnValueType getReturnValueType()
+		public ReturnValueType getReturnValueType()
         {
             return m_returnValueType;
         }
@@ -26,7 +26,7 @@ namespace ProgrammingLanguageNr1
 		public AST getFunctionDefinitionNode() { return m_functionDefinitionNode; }
 
 		private AST m_functionDefinitionNode;
-        private ReturnValueType m_returnValueType;
+		private ReturnValueType m_returnValueType;
     }
 }
 

@@ -11,10 +11,10 @@ namespace ProgrammingLanguageNr1
 		{
 		}
 		
-		public void setForeachArray(ReturnValue foreachArray) { m_foreachArray = foreachArray; }
-		public ReturnValue getForeachArray() { return m_foreachArray; }			
+		public void setForeachArray(object foreachArray) { m_foreachArray = foreachArray; }
+		public object getForeachArray() { return m_foreachArray; }			
 	
-		ReturnValue m_foreachArray;
+		object m_foreachArray;
 	}
 }
 

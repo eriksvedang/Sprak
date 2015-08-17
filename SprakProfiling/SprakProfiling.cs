@@ -31,11 +31,11 @@ namespace SprakProfiling
 			runner.run (int.MaxValue);
         }
 		
-		private static ReturnValue print(ReturnValue[] parameters)
+		private static object print(object[] parameters)
         {
-            ReturnValue parameter0 = parameters[0];
+            object parameter0 = parameters[0];
 			Console.WriteLine (parameter0);
-            return new ReturnValue(); // void
+            return new object(); // void
         }
     }
 }

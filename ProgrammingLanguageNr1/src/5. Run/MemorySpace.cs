@@ -91,7 +91,7 @@ namespace ProgrammingLanguageNr1
             }
         }
 		
-		public void setValue(string name, ReturnValue val) {
+		public void setValue(string name, object val) {
             Debug.Assert(name != null);
             Debug.Assert(val != null);
 
@@ -109,7 +109,7 @@ namespace ProgrammingLanguageNr1
             return m_valuesForStrings.ContainsKey(name);
         }
 		
-		public ReturnValue getValue(string name) {
+		public object getValue(string name) {
             Debug.Assert(name != null);
 
 			if(!m_valuesForStrings.ContainsKey(name)) {
@@ -179,7 +179,7 @@ namespace ProgrammingLanguageNr1
         }
 
 		string m_name;
-        Dictionary<string, ReturnValue> m_valuesForStrings = new Dictionary<string, ReturnValue>();
+        Dictionary<string, object> m_valuesForStrings = new Dictionary<string, object>();
         AST[] m_nodes;
         int m_currentNode;
         Scope m_scope;

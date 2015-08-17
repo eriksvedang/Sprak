@@ -7,7 +7,7 @@ namespace ProgrammingLanguageNr1
 	public interface Symbol
 	{
         string getName();
-        ReturnValueType getReturnValueType();		
+		ReturnValueType getReturnValueType();		
 	}
 }
 

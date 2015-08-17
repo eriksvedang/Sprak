@@ -68,7 +68,7 @@ namespace ProgrammingLanguageNr1
         private void evaluateFunctionScope(AST tree)
         {
             // Define function name
-            ReturnValueType returnType = ReturnValue.getReturnValueTypeFromString(tree.getChild(0).getTokenString());
+			ReturnValueType returnType = ExternalFunctionCreator.GetReturnTypeFromString(tree.getChild(0).getTokenString());
             string functionName = tree.getChild(1).getTokenString();
 
             Symbol functionScope = new FunctionSymbol(m_currentScope, functionName, returnType, tree);

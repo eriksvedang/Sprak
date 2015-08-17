@@ -381,7 +381,7 @@ namespace ProgrammingLanguageNr1
 					nameToken.getTokenString (), 
 					nameToken.LineNr, 
 					nameToken.LinePosition,
-					new ReturnValue(nameToken.getTokenString()));
+					nameToken.getTokenString());
 
 				argumentList.addChild (new AST(functionNameToken));
 
@@ -489,14 +489,14 @@ namespace ProgrammingLanguageNr1
 				
 				operandTree = new AST(new TokenWithValue(operandToken.getTokenType(), 
 				                                         operandToken.getTokenString(),
-				                                         new ReturnValue(number)));
+				                                         number));
 			}
 			else if (lookAheadType(1) == Token.TokenType.QUOTED_STRING) 
 			{
 				Token operandToken = match(Token.TokenType.QUOTED_STRING);
 				operandTree = new AST(new TokenWithValue(operandToken.getTokenType(), 
 				                                         operandToken.getTokenString(),
-				                                         new ReturnValue(operandToken.getTokenString())));
+				                                         operandToken.getTokenString()));
 			}
 			else if (lookAheadType(1) == Token.TokenType.BOOLEAN_VALUE) 
 			{
@@ -504,7 +504,7 @@ namespace ProgrammingLanguageNr1
 				bool boolean = operandToken.getTokenString().ToLower() == "true" ? true : false;
 				operandTree = new AST(new TokenWithValue(operandToken.getTokenType(), 
 				                                         operandToken.getTokenString(),
-				                                         new ReturnValue(boolean)));
+				                                         boolean));
 			}
 			else if (lookAheadType(1) == Token.TokenType.OPERATOR &&
 					 lookAhead(1).getTokenString() == "-")
@@ -601,7 +601,7 @@ namespace ProgrammingLanguageNr1
 			}
 			
 			operationTree.addChild(new AST(nameToken));
-			operationTree.addChild(new AST(new TokenWithValue(Token.TokenType.NUMBER, "1", new ReturnValue(1.0f))));
+			operationTree.addChild(new AST(new TokenWithValue(Token.TokenType.NUMBER, "1", 1.0f)));
 			
 			AST assignmentTree = new AST_Assignment(new Token(Token.TokenType.ASSIGNMENT, "="), nameToken.getTokenString());
 			assignmentTree.addChild(operationTree);
@@ -617,7 +617,7 @@ namespace ProgrammingLanguageNr1
 			
 			AST negativeExpressionTree = new AST(new Token(Token.TokenType.OPERATOR, "*"));
 
-			AST minusSign = new AST(new TokenWithValue(Token.TokenType.NUMBER, "-1", lookAhead(1).LineNr, lookAhead(1).LinePosition, new ReturnValue(-1.0f))); 
+			AST minusSign = new AST(new TokenWithValue(Token.TokenType.NUMBER, "-1", lookAhead(1).LineNr, lookAhead(1).LinePosition, -1.0f)); 
 			AST expressionTree = parenthesisExpression(); 
 			//operand();
 			negativeExpressionTree.addChild(minusSign);
@@ -818,7 +818,7 @@ Console.WriteLine("Popping out from ifElse branch");
 
             AST_VariableDeclaration declarationTree = new AST_VariableDeclaration(
                 new Token(Token.TokenType.VAR_DECLARATION, "<VAR_DECL>", lookAhead(1).LineNr, lookAhead(1).LinePosition),
-                ReturnValue.getReturnValueTypeFromString(typeName.getTokenString()),
+                ExternalFunctionCreator.GetReturnTypeFromString(typeName.getTokenString()),
                 variableName.getTokenString());
 						
 			return declarationTree;
@@ -1033,7 +1033,7 @@ Console.WriteLine("Popping out from ifElse branch");
 			AST name = new AST(match(Token.TokenType.NAME));
 
             AST declaration = new AST_VariableDeclaration(new Token(Token.TokenType.VAR_DECLARATION, "<PARAMETER_DECLARATION>"),
-                ReturnValue.getReturnValueTypeFromString(type.getTokenString()), name.getTokenString());
+			                                              ExternalFunctionCreator.GetReturnTypeFromString(type.getTokenString()), name.getTokenString());
 
 
             AST assigment = new AST_Assignment(new Token(Token.TokenType.ASSIGNMENT, "="), name.getTokenString());
@@ -1107,7 +1107,7 @@ Console.WriteLine("Popping out from ifElse branch");
 				
 				AST_Assignment loopIndexAssignment
 					= new AST_Assignment(new Token(Token.TokenType.ASSIGNMENT, "="), "__index__");
-				loopIndexAssignment.addChild(new AST(new TokenWithValue(Token.TokenType.NUMBER, "-1", new ReturnValue(-1.0f))));
+				loopIndexAssignment.addChild(new AST(new TokenWithValue(Token.TokenType.NUMBER, "-1", -1.0f)));
 				
 				loopBlockStatements.addChild(loopIndexAssignment);
 
@@ -1243,7 +1243,7 @@ Console.WriteLine("Popping out from ifElse branch");
 			// increase __index__
 			AST incrementNode = new AST(new Token(Token.TokenType.OPERATOR, "+"));
 			incrementNode.addChild(new AST(new Token(Token.TokenType.NAME, "__index__")));
-			incrementNode.addChild(new AST(new TokenWithValue(Token.TokenType.NUMBER, "1", new ReturnValue(1.0f))));
+			incrementNode.addChild(new AST(new TokenWithValue(Token.TokenType.NUMBER, "1", 1.0f)));
 			AST_Assignment assignmentNode = new AST_Assignment(new Token(Token.TokenType.ASSIGNMENT, "="), "__index__");
 			assignmentNode.addChild(incrementNode);			
 			statementList.addChild(assignmentNode);   
