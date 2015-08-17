@@ -39,14 +39,14 @@ namespace ProgrammingLanguageNr1
 			{ typeof(float), "number" },
 			{ typeof(string), "string" },
 			{ typeof(bool), "bool" },
-			{ typeof(object[]), "array" },
+			{ typeof(object[]), "prim-array" },
 		};
 		
 		static public string PrettyObjectType (Type t) 
 		{
-//			if(t.IsSubclassOf(typeof(Array))) {
-//				return "array";
-//			}
+			if(t == typeof(SortedDictionary<KeyWrapper,object>)) {
+				return "array";
+			}
 			
 			string s;
 			if(typeToString.TryGetValue(t, out s)) {

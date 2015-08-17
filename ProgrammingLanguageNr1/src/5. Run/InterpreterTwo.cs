@@ -426,13 +426,13 @@ namespace ProgrammingLanguageNr1
 
 			var parameterDefs = functionDefinitionNode.getChild(2).getChildren();
 
-			ASTPainter painter = new ASTPainter();
+			//ASTPainter painter = new ASTPainter();
 
 			int nrOfParameters = parameterDefs.Count;
             object[] parameters = new object[nrOfParameters];
             for (int i = nrOfParameters - 1; i >= 0; i--)
             {
-				painter.PaintAST(parameterDefs[i]);
+				//painter.PaintAST(parameterDefs[i]);
 
 				var paramDef = parameterDefs[i];
 				var declaration = paramDef.getChild(0) as AST_VariableDeclaration;
@@ -681,7 +681,7 @@ namespace ProgrammingLanguageNr1
 				return new Range(0, 0, 0);
 			}
 			else if(type == ReturnValueType.ARRAY) {
-				return new object[] {};
+				return new SortedDictionary<KeyWrapper, object>();
 			}
 			else if(type == ReturnValueType.VOID) {
 				return VoidType.voidType;
@@ -728,16 +728,6 @@ namespace ProgrammingLanguageNr1
 				}
 				else {
 					array.Add(new KeyWrapper(index), valueToSet);
-				}
-			}
-			else if (rv.GetType () == typeof(object[])) {
-				var arr = (object[])rv;
-				int i = (int)(float)index;
-				if(i > 0 && i <= arr.Length) {
-					arr[i] = valueToSet;
-				}
-				else {
-					throw new Error("Index is outside range of array (" + index + ")");
 				}
 			}
 			else {
