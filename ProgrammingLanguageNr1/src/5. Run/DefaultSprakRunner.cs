@@ -11,7 +11,7 @@ namespace ProgrammingLanguageNr1
     	public DefaultSprakRunner(TextReader stream)
 		{
             FunctionDefinition[] functionDefinitions = new FunctionDefinition[] {
-                new FunctionDefinition("void", "print", new string[] { "string" }, new string[] { "text" }, new ExternalFunctionCreator.OnFunctionCall(print), FunctionDocumentation.Default()),
+                new FunctionDefinition("void", "print", new string[] { "var" }, new string[] { "the thing to print" }, new ExternalFunctionCreator.OnFunctionCall(print), FunctionDocumentation.Default()),
                 new FunctionDefinition("number", "sqrt", new string[] { "number" }, new string[] { "f" }, new ExternalFunctionCreator.OnFunctionCall(sqrt), FunctionDocumentation.Default())
             };
 

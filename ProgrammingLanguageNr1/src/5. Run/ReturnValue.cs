@@ -21,11 +21,20 @@ namespace ProgrammingLanguageNr1
 
 	public class ReturnValueConversions {
 
+		public static T SafeUnwrap<T>(object[] args, int index) {
+			if(args[index].GetType() == typeof(T)) {
+				return (T)args[index];
+			}
+			else {
+				throw new Error("Argument " + index + " is of wrong type (" + args[index].GetType() + "), should be " + typeof(T).ToString());
+			}
+		}
+
 		static Dictionary<Type, ReturnValueType> typeToReturnValueType = new Dictionary<Type, ReturnValueType>() {
 			{ typeof(float), ReturnValueType.NUMBER },
 			{ typeof(string), ReturnValueType.STRING },
 			{ typeof(bool), ReturnValueType.BOOL },
-			{ typeof(Array), ReturnValueType.ARRAY },
+			{ typeof(object[]), ReturnValueType.ARRAY },
 		};
 		
 		public static ReturnValueType SystemTypeToReturnValueType(Type t) {
@@ -39,11 +48,12 @@ namespace ProgrammingLanguageNr1
 			{ typeof(float), "number" },
 			{ typeof(string), "string" },
 			{ typeof(bool), "bool" },
+			{ typeof(object[]), "prim-array" },
 		};
 		
 		static public string PrettyObjectType (Type t) 
 		{
-			if(t.IsSubclassOf(typeof(Array))) {
+			if(t == typeof(SortedDictionary<KeyWrapper,object>)) {
 				return "array";
 			}
 			
@@ -60,6 +70,7 @@ namespace ProgrammingLanguageNr1
 			//Console.WriteLine("Will pretty print object " + o.ToString() + " of type " + o.GetType());
 
 			if(o.GetType() == typeof(string)) {
+				//return "'" + (string)o + "'";
 				return (string)o;
 			}
 			else if(o.GetType() == typeof(bool)) {
@@ -68,30 +79,37 @@ namespace ProgrammingLanguageNr1
 			else if(o.GetType() == typeof(float)) {
 				return o.ToString();	
 			}
-//			else if(o.GetType() == typeof(object[])) {
-//				
-//			}
+			else if(o.GetType() == typeof(int)) {
+				return o.ToString() + "i";
+			}
+			else if(o.GetType() == typeof(object[])) {
+				return MakePrimitiveObjectArrayString((object[])o);
+			}
 			else if(o is Range) {
 				return ((Range)o).ToString();
 			}
-			else if(o is SortedDictionary<object,object>) {
-				return MakeArrayString(o as SortedDictionary<object,object>);
+			else if(o is KeyWrapper) {
+				return "{" + ((KeyWrapper)o).value.ToString() + "}";
+			}
+//			else if(o is ReturnValueType) {
+//				return o.ToString();
+//			}
+			else if(o is SortedDictionary<KeyWrapper,object>) {
+				return MakeArrayString(o as SortedDictionary<KeyWrapper,object>);
 			}
 
-			throw new Error("Can't pretty print " + o.ToString());
+			throw new Error("Can't pretty print " + o.ToString() + " of type " + o.GetType());
 		}
 
-		static string MakeArrayString (SortedDictionary<object,object> array)
+		static string MakePrimitiveObjectArrayString (object[] array)
 		{
 			if(array != null) {
 				StringBuilder s = new StringBuilder();
-				s.Append("[");
-				int count = array.Count;
+				s.Append("@[");
+				int count = array.Length;
 				int emergencyBreak = 0;
-				//Console.WriteLine ("Keys in array: " + string.Join (", ", m_arrayValue.Keys.Select (k => "Key " + k.ToString () + " of type " + k.m_returnType).ToArray()));
-				foreach(var key in array.Keys) {
-					//Console.WriteLine ("- Looking up key " + key);
-					s.Append(PrettyStringRepresenation(array[key]));
+				for(int i = 0; i < array.Length; i++) {
+					s.Append(PrettyStringRepresenation(array[i]));
 					count--;
 					if(count > 0) {
 						s.Append(", ");
@@ -108,6 +126,125 @@ namespace ProgrammingLanguageNr1
 			else {
 				return "";
 			}
+		}
+
+		static string MakeArrayString (SortedDictionary<KeyWrapper,object> array)
+		{
+			if(array != null) {
+				StringBuilder s = new StringBuilder();
+				s.Append("[");
+				int count = array.Count;
+				int emergencyBreak = 0;
+				//Console.WriteLine ("Keys in array: " + string.Join (", ", m_arrayValue.Keys.Select (k => "Key " + k.ToString () + " of type " + k.m_returnType).ToArray()));
+				foreach(var key in array.Keys) {
+					//Console.WriteLine ("- Looking up key " + key);
+					s.Append(/*PrettyStringRepresenation(key.value) + "=>" + */PrettyStringRepresenation(array[key]));
+					count--;
+					if(count > 0) {
+						s.Append(", ");
+					}
+					emergencyBreak++;
+					if (emergencyBreak > 10) {
+						s.Append ("...");
+						break;
+					}
+				}
+				s.Append("]");
+				return s.ToString();
+			}
+			else {
+				return "";
+			}
+		}
+
+		public static object ChangeTypeBasedOnReturnValueType (object obj, ReturnValueType type)
+		{
+			//Console.WriteLine("Will try to change obj '" + PrettyStringRepresenation(obj) + "' of type " + obj.GetType() + " to return value type " + type);
+
+			if(type == ReturnValueType.STRING) {
+				return PrettyStringRepresenation(obj);
+			}
+			else if(type == ReturnValueType.NUMBER) {
+				if(obj.GetType() == typeof(float)) {
+					return (float)obj;
+				}
+				if(obj.GetType() == typeof(int)) {
+					// This is a HACK since I couldn't get all obj:s to be floats, some ints were getting trough even though I tried to weed them out :/
+					return (float)(int)obj;
+				}
+				else if(obj.GetType() == typeof(string)) {
+					try {
+						return (float)Convert.ToDouble ((string)obj, CultureInfo.InvariantCulture);
+					}
+					catch(System.FormatException) {
+						throw new Error("Can't convert " + obj.ToString() + " to a number");
+					}
+				}
+			}
+			else if(type == ReturnValueType.RANGE) {
+				return (Range)obj;
+			}
+			else if(type == ReturnValueType.ARRAY) {
+				if(obj.GetType() == typeof(object[])) {
+					return obj;
+				}
+				else if(obj.GetType() == typeof(SortedDictionary<KeyWrapper,object>)) {
+					//Console.WriteLine("Not changing type of array " + PrettyStringRepresenation(obj));
+					return obj;
+				}
+				else if(obj.GetType() == typeof(Range)) {
+					return obj;
+				}
+				else {
+					throw new Error("Can't convert " + obj.ToString() + " to an array");
+				}
+			}
+			else if(type == ReturnValueType.BOOL) {
+				return (bool)obj;
+			}
+			else if(type == ReturnValueType.UNKNOWN_TYPE) {
+				return obj;
+			}
+
+			throw new Exception("Can't change type from " + obj.GetType() + " to " + type);
+		}
+	}
+
+
+	public struct KeyWrapper : IComparable<KeyWrapper>
+	{
+		public KeyWrapper(object o) {
+			this.value = o;
+		}
+
+		public object value;
+
+		public override int GetHashCode () {
+			if (this.value.GetType() == typeof(int)) {
+				return (int)this.value;
+			}
+			else if (this.value.GetType() == typeof(float)) {
+				return (int)(float)this.value;
+			} 
+			else if (this.value.GetType() == typeof(bool)) {
+				if ((bool)this.value) {
+					return 9998;
+				} else {
+					return 9999;
+				}
+			} 
+			else if (this.value == typeof(string)) {
+				return 10000 + ((string)value).GetHashCode () % 10000;
+			} 
+			else {
+				return 20000 + base.GetHashCode () % 10000;
+			}
+		}
+
+		public int CompareTo(KeyWrapper pOther) {
+			int diff = this.GetHashCode () - pOther.GetHashCode ();
+			//Console.WriteLine ("Comparing " + this.ToString () + " with " + pOther.ToString () + ", diff = " + diff);
+			return diff;
 		}
 	}
 
@@ -126,7 +263,7 @@ namespace ProgrammingLanguageNr1
 //        {
 //            m_returnType = type;
 //			if(m_returnType == ReturnValueType.ARRAY) {
-//				m_arrayValue = new SortedDictionary<object, object>();
+//				m_arrayValue = new SortedDictionary<KeyWrapper, object>();
 //				#if MEMORY_LOG
 //				Console.WriteLine("Created array with " + m_arrayValue.Count + " items");
 //				#endif
@@ -143,7 +280,7 @@ namespace ProgrammingLanguageNr1
 //            case ReturnValueType.BOOL: m_boolValue = (bool)pData; break;
 //            case ReturnValueType.ARRAY:
 //	            {
-//					m_arrayValue = new SortedDictionary<object, object>();
+//					m_arrayValue = new SortedDictionary<KeyWrapper, object>();
 //	                int i = 0;
 //	                foreach(object element in (pData as IEnumerable))
 //	                {
@@ -213,7 +350,7 @@ namespace ProgrammingLanguageNr1
 //			m_returnType = ReturnValueType.BOOL;
 //		}
 //		
-//		public object (SortedDictionary<object, object> arrayValue)
+//		public object (SortedDictionary<KeyWrapper, object> arrayValue)
 //		{
 //			this.ArrayValue = arrayValue;
 //			m_returnType = ReturnValueType.ARRAY;
@@ -228,7 +365,7 @@ namespace ProgrammingLanguageNr1
 //		public void setType(ReturnValueType newType) {
 //			m_returnType = newType;
 //			if(m_returnType == ReturnValueType.ARRAY && m_arrayValue == null) {
-//				m_arrayValue = new SortedDictionary<object, object>();
+//				m_arrayValue = new SortedDictionary<KeyWrapper, object>();
 //			}
 //		}
 //				
@@ -311,7 +448,7 @@ namespace ProgrammingLanguageNr1
 //			}
 //		}
 //		
-//		public SortedDictionary<object, object> ArrayValue {
+//		public SortedDictionary<KeyWrapper, object> ArrayValue {
 //			set {
 //				m_arrayValue = value;
 //				m_returnType = ReturnValueType.ARRAY;
@@ -331,7 +468,7 @@ namespace ProgrammingLanguageNr1
 //				}
 //				else if(m_returnType == ReturnValueType.STRING) {
 //					int len = m_stringValue.Length;
-//					var array = new SortedDictionary<object, object>();
+//					var array = new SortedDictionary<KeyWrapper, object>();
 //					for(int i = 0; i < len; i++) {
 //						string s = Convert.ToString(m_stringValue[i]);
 //						array.Add(new object(i), new object(s));
@@ -460,7 +597,7 @@ namespace ProgrammingLanguageNr1
 //				return ReturnValueType.VOID;
 //			}
 //
-//			if (t.IsArray || t == typeof(SortedDictionary<object,object>)) {
+//			if (t.IsArray || t == typeof(SortedDictionary<KeyWrapper,object>)) {
 //				return ReturnValueType.ARRAY;
 //			}
 //
@@ -537,7 +674,7 @@ namespace ProgrammingLanguageNr1
 //		float m_numberValue = 0.0f;
 //		string m_stringValue = "";
 //		bool m_boolValue = false;
-//		SortedDictionary<object, object> m_arrayValue = null;
+//		SortedDictionary<KeyWrapper, object> m_arrayValue = null;
 //		Range m_range;
 //	}
 }

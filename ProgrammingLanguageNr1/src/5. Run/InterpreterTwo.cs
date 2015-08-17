@@ -209,7 +209,7 @@ namespace ProgrammingLanguageNr1
             }
         
 #if WRITE_DEBUG_INFO
-            Console.WriteLine("\nExecuting " + CurrentNode.getTokenString());
+			Console.WriteLine("\nExecuting " + CurrentNode.getTokenString());
 #endif
 			try {
 				SwitchOnStatement();
@@ -424,22 +424,40 @@ namespace ProgrammingLanguageNr1
 			}
 			#endif
 
-            int nrOfParameters = functionDefinitionNode.getChild(2).getChildren().Count;
+			var parameterDefs = functionDefinitionNode.getChild(2).getChildren();
+
+			//ASTPainter painter = new ASTPainter();
+
+			int nrOfParameters = parameterDefs.Count;
             object[] parameters = new object[nrOfParameters];
             for (int i = nrOfParameters - 1; i >= 0; i--)
             {
-                parameters[i] = PopValue();
+				//painter.PaintAST(parameterDefs[i]);
+
+				var paramDef = parameterDefs[i];
+				var declaration = paramDef.getChild(0) as AST_VariableDeclaration;
+
+				parameters[i] = ReturnValueConversions.ChangeTypeBasedOnReturnValueType(PopValue(), declaration.Type);
+
             }
 
-			if (IsFunctionExternal(functionName)) {
-				CallExternalFunction(functionName, parameters);
-			} else {
-				PushNewScope(functionDefinitionNode.getScope(), functionName + "_memorySpace" + functionCounter++, functionDefinitionNode);
+			//try {
 
-				for (int i = nrOfParameters - 1; i >= 0; i--) {
-					PushValue(parameters[i]); // reverse order
+				if (IsFunctionExternal(functionName)) {
+					CallExternalFunction(functionName, parameters);
+				} else {
+					PushNewScope(functionDefinitionNode.getScope(), functionName + "_memorySpace" + functionCounter++, functionDefinitionNode);
+
+					for (int i = nrOfParameters - 1; i >= 0; i--) {
+						PushValue(parameters[i]); // reverse order
+					}
 				}
-			}
+
+//			}
+//			catch(Exception e) {
+//				Console.WriteLine("Exception when calling " + functionName + ": " + e.StackTrace);
+//				throw e;
+//			}
         }
 
         private void Operator()
@@ -539,20 +557,20 @@ namespace ProgrammingLanguageNr1
 			if (rightValueType == typeof(float) && leftValueType == typeof(float)) {
 				return (float)rhs + (float)lhs;
 			} else if (rightValueType == typeof(string) || leftValueType == typeof(string)) {
-				return lhs.ToString () + rhs.ToString ();
-			} else if (rightValueType == typeof(object[]) || leftValueType == typeof(object[])) {
-				throw new Error("Array concatenation is temporarily disabled.");
-			} else if (rightValueType == typeof(SortedDictionary<object, object>) || leftValueType == typeof(SortedDictionary<object, object>)) {
-				var lhsArray = lhs as SortedDictionary<object, object>;
-				var rhsArray = rhs as SortedDictionary<object, object>;
-				SortedDictionary<object, object> newArray = new SortedDictionary<object, object>();
+				return ReturnValueConversions.PrettyStringRepresenation(lhs) + ReturnValueConversions.PrettyStringRepresenation(rhs);
+			} else if (rightValueType == typeof(object[]) && leftValueType == typeof(object[])) {
+				throw new Error("Primitive array concatenation is temporarily disabled.");
+			} else if (rightValueType == typeof(SortedDictionary<KeyWrapper, object>) && leftValueType == typeof(SortedDictionary<KeyWrapper, object>)) {
+				var lhsArray = lhs as SortedDictionary<KeyWrapper, object>;
+				var rhsArray = rhs as SortedDictionary<KeyWrapper, object>;
+				var newArray = new SortedDictionary<KeyWrapper, object>();
 				for(int i = 0; i < lhsArray.Count; i++) {
-					newArray.Add(i, lhsArray[i]);
+					newArray.Add(new KeyWrapper(i), lhsArray[new KeyWrapper(i)]);
 				}
 				for(int i = 0; i < rhsArray.Count; i++) {
-					newArray.Add(i + lhsArray.Count, rhsArray[i]);
+					newArray.Add(new KeyWrapper(i + lhsArray.Count), rhsArray[new KeyWrapper(i)]);
 				}
-				Console.WriteLine ("Created new array by concatenation: " + newArray.ToString ());
+				Console.WriteLine ("Created new array by concatenation: " + ReturnValueConversions.PrettyStringRepresenation(newArray));
 				return newArray;
 			}
 			else {
@@ -573,14 +591,14 @@ namespace ProgrammingLanguageNr1
 			object val = null;
 
 			if (array is Range) {
-				//Console.WriteLine ("LOOKING UP KEY " + index + " IN RANGE " + array.ToString ()); // + ", the result was " + theNumber);
+				//Console.WriteLine ("LOOKING UP KEY " + index + " IN RANGE " + array.ToString ());
 
 				if (index.GetType () == typeof(float)) {
 					Range range = (Range)array;
-					int i = range.step * (int)(float)index;
-					int theNumber = range.start + i;
-					int lowerBound = 0;
-					int upperBound = 0;
+					float i = range.step * (int)(float)index;
+					float theNumber = range.start + i;
+					float lowerBound = 0;
+					float upperBound = 0;
 					if (range.step > 0) {
 						lowerBound = range.start;
 						upperBound = range.end;
@@ -594,20 +612,25 @@ namespace ProgrammingLanguageNr1
 						throw new Error ("Index " + index.ToString () + " is outside the range " + array.ToString ());
 					}
 					val = (float)theNumber;
+					//Console.WriteLine("The result was " + val);
 				} else {
 					throw new Error ("Can't look up " + index.ToString () + " in the range " + array.ToString ());
 				}
 
-			} else if (array.GetType () == typeof(SortedDictionary<object,object>)) {
-				//Console.WriteLine ("LOOKING UP KEY " + index + " IN ARRAY " + array.ToString ());
+			} else if (array.GetType () == typeof(SortedDictionary<KeyWrapper,object>)) {
+				//Console.WriteLine ("LOOKING UP KEY " + index + " of type " + index.GetType() + " IN ARRAY " + ReturnValueConversions.PrettyStringRepresenation(array));
 
-				var a = array as SortedDictionary<object,object>;
+				var a = array as SortedDictionary<KeyWrapper,object>;
 
-				if (a.TryGetValue((int)(float)index, out val)) { // TODO: <- now this only works on numeric indexes :(
-					// success
+				if (a.TryGetValue(new KeyWrapper(index), out val)) {
+					//Console.WriteLine("The result was " + val);
 				} else {
 					throw new Error ("Can't find the index '" + index + "' (" + index.GetType () + ") in the array '" + CurrentNode.getTokenString () + "'", Error.ErrorType.RUNTIME, CurrentNode.getToken ().LineNr, CurrentNode.getToken ().LinePosition);
 				}
+			} else if (array.GetType () == typeof(object[])) {
+				var a = (object[])array;
+				int i = (int)(float)index;
+				val = a[i];
 			} else if (array.GetType () == typeof(string)) {
 				string s = (string)array;
 				int i = (int)(float)index;
@@ -642,9 +665,37 @@ namespace ProgrammingLanguageNr1
         {
             ReturnValueType type = (CurrentNode as AST_VariableDeclaration).Type;
             string variableName = (CurrentNode as AST_VariableDeclaration).Name;
-            object initValue = type;
+            object initValue = DefaultValue(type);
             m_currentScope.setValue(variableName, initValue);
         }
+
+		object DefaultValue (ReturnValueType type)
+		{
+			if(type == ReturnValueType.STRING) {
+				return "";
+			}
+			else if(type == ReturnValueType.BOOL) {
+				return false;
+			}
+			else if(type == ReturnValueType.NUMBER) {
+				return 0.0f;
+			}
+			else if(type == ReturnValueType.RANGE) {
+				return new Range(0, 0, 0);
+			}
+			else if(type == ReturnValueType.ARRAY) {
+				return new SortedDictionary<KeyWrapper, object>();
+			}
+			else if(type == ReturnValueType.VOID) {
+				return VoidType.voidType;
+			}
+			else if(type == ReturnValueType.UNKNOWN_TYPE) {
+				return VoidType.voidType;
+			}
+			else {
+				throw new Error("No default value for " + type);
+			}
+		}
 		
 		private object ConvertToType(object valueToConvert, ReturnValueType type) {
 
@@ -670,20 +721,21 @@ namespace ProgrammingLanguageNr1
 
 			object rv = m_currentScope.getValue(variableName);
 
-			if (rv.GetType () != typeof(SortedDictionary<object,object>)) {
-				var token = (CurrentNode as AST_Assignment).getToken();
-				throw new Error ("Can't assign to the variable '" + variableName + "' since it's of the type " + ReturnValueConversions.PrettyObjectType(rv.GetType()), Error.ErrorType.RUNTIME, token.LineNr, token.LinePosition);
-			}
-			
-			SortedDictionary<object, object> array = rv as SortedDictionary<object, object>;
+			if (rv.GetType () == typeof(SortedDictionary<KeyWrapper,object>)) {
+				SortedDictionary<KeyWrapper, object> array = rv as SortedDictionary<KeyWrapper, object>;				
 
-			Console.WriteLine("Checking if index " + index + " of type " + index.GetType() + " is within range of array of length " + array.Count);
+				//Console.WriteLine("Checking if index " + index + " of type " + index.GetType() + " is within range of array of length " + array.Count);
 
-			if(array.ContainsKey(index)) {
-				array[index] = valueToSet;
+				if(array.ContainsKey(new KeyWrapper(index))) {
+					array[new KeyWrapper(index)] = valueToSet;
+				}
+				else {
+					array.Add(new KeyWrapper(index), valueToSet);
+				}
 			}
 			else {
-				array.Add(index, valueToSet);
+				var token = (CurrentNode as AST_Assignment).getToken();
+				throw new Error ("Can't assign to the variable '" + variableName + "' since it's of the type " + ReturnValueConversions.PrettyObjectType(rv.GetType()), Error.ErrorType.RUNTIME, token.LineNr, token.LinePosition);
 			}
 		}
 
@@ -691,14 +743,14 @@ namespace ProgrammingLanguageNr1
 		{
 			// pop the right number of values and add them to a new object of array type
 			AST_ArrayEndSignal arrayEndSignal = CurrentNode as AST_ArrayEndSignal;
-			SortedDictionary<object, object> array = new SortedDictionary<object, object>();
+			SortedDictionary<KeyWrapper, object> array = new SortedDictionary<KeyWrapper, object>();
 			object[] values = new object[arrayEndSignal.ArraySize];
 			for(int i = 0; i < arrayEndSignal.ArraySize; i++) {
 				values[i] = PopValue();
 			}
 			//for(int i = 0; i < arrayEndSignal.ArraySize; i++) {
 			for(int i = arrayEndSignal.ArraySize - 1; i >= 0; i--) {
-				array.Add(arrayEndSignal.ArraySize - i - 1, values[i]);
+				array.Add(new KeyWrapper(arrayEndSignal.ArraySize - i - 1), values[i]);
 			}
 			PushValue(array);
 		}

@@ -83,7 +83,8 @@ namespace ProgrammingLanguageNr1.tests
 		}
 
 		object ThisFunctionTakesANumber(object[] pArguments) {
-			return (float)pArguments[0] * 2.0f;
+			Console.WriteLine("pArguments[0] is of type " + pArguments[0].GetType());
+			return ((float)pArguments[0]) * 2.0f;
 		}
 
 		public class ClassWithFunction
@@ -116,7 +117,7 @@ namespace ProgrammingLanguageNr1.tests
 		
 		public class DemoClassThree
 	    {
-	        [SprakAPI("adds all the numbers", "numbers")]
+	        [SprakAPI("adds all the numbers", "the numbers")]
 	        public float API_AddListOfNumbers(object[] nums) 
 			{ 
 				float sum = 0;

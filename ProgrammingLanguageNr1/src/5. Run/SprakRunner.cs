@@ -1,3 +1,5 @@
+//#define TYPE_FUNCTION
+
 using System;
 using System.IO;
 using System.Collections.Generic;
@@ -64,9 +66,11 @@ namespace ProgrammingLanguageNr1
 				new FunctionDocumentation("Add an element to the end of an array", new string[] { "The array to add an element to", "The element to add" });
 			result.Add(new FunctionDefinition("void", "Append", new string[] { "array", "var" }, new string[] { "array", "elem" }, new ExternalFunctionCreator.OnFunctionCall(API_append), functionDoc_Append));
 
-//            FunctionDocumentation functionDoc_type =
-//                new FunctionDocumentation("Get the type of something (returns a string)", new string[] { "The value to get the type of" });
-//            result.Add(new FunctionDefinition("string", "type", new string[] { "var" }, new string[] { "value" }, new ExternalFunctionCreator.OnFunctionCall(API_type), functionDoc_type));
+#if TYPE_FUNCTION
+            FunctionDocumentation functionDoc_type =
+                new FunctionDocumentation("Get the type of something (returns a string)", new string[] { "The value to get the type of" });
+            result.Add(new FunctionDefinition("string", "type", new string[] { "var" }, new string[] { "value" }, new ExternalFunctionCreator.OnFunctionCall(API_type), functionDoc_type));
+#endif
 
 			FunctionDocumentation functionDoc_Round =
 				new FunctionDocumentation("Round a number to the nearest integer", new string[] { "The number to round" });
@@ -268,10 +272,10 @@ namespace ProgrammingLanguageNr1
 		{
 			m_interpreter.SetProgramToExecuteFunction (functionName, args);
 			run ();
-			return GetFinalobject();
+			return GetFinalReturnValue();
 		}
 
-		public object GetFinalobject()
+		public object GetFinalReturnValue()
 		{
 			if (!m_interpreter.ValueStackIsEmpty()) {
 				object result = m_interpreter.PopValue();
@@ -291,19 +295,28 @@ namespace ProgrammingLanguageNr1
 
         private static object API_createArrayOrRangeOfIndexes(object[] args)
         {
-			if (args [0].GetType () == typeof(SortedDictionary<object,object>)) {
-				SortedDictionary<object, object> originalArray = args [0] as SortedDictionary<object,object>;
-				SortedDictionary<object, object> newArray = new SortedDictionary<object, object> ();
+			if (args [0].GetType () == typeof(SortedDictionary<KeyWrapper,object>)) {
+				var originalArray = args [0] as SortedDictionary<KeyWrapper,object>;
+				var newArray = new SortedDictionary<KeyWrapper, object> ();
 				int i = 0;
 				foreach (var index in originalArray.Keys) {
-					newArray.Add (i, index);
+					newArray.Add (new KeyWrapper((float)i), index.value);
 					i++;
 				}		
+				return newArray;
+			}
+			else if (args [0].GetType () == typeof(object[])) {
+				var original = (object[])args[0];
+				SortedDictionary<KeyWrapper, object> newArray = new SortedDictionary<KeyWrapper, object> ();
+				for(int i = 0; i < original.Length; i++) {
+					var val = original[i];
+					newArray.Add (new KeyWrapper((float)i), val);
+				}
 				return newArray;
 			} 
 			else if (args [0].GetType () == typeof(Range)) {
 				Range r = (Range)args [0];
-				Range indexRange = new Range (0, Math.Abs (r.end - r.start) + 1, 1);
+				Range indexRange = new Range (0, Math.Abs ((int)(r.end - r.start)) + 1, 1);
 				//Console.WriteLine ("GetIndexes created index range: " + indexRange);
 				return indexRange;
 			} 
@@ -319,17 +332,17 @@ namespace ProgrammingLanguageNr1
 
 		private static object API_hasKey(object[] args)
 		{
-			SortedDictionary<object, object> array = args[0] as SortedDictionary<object,object>;
+			SortedDictionary<KeyWrapper, object> array = args[0] as SortedDictionary<KeyWrapper,object>;
 			object index = args[1];
-			return array.ContainsKey (index);
+			return array.ContainsKey (new KeyWrapper(index));
 		}
 
         private static object API_removeElement(object[] args)
         {
-			SortedDictionary<object, object> array = args[0] as SortedDictionary<object,object>;
+			SortedDictionary<KeyWrapper, object> array = args[0] as SortedDictionary<KeyWrapper,object>;
 			object index = args[1];
-			if (array.ContainsKey (index)) {
-				array.Remove (index);
+			if (array.ContainsKey (new KeyWrapper(index))) {
+				array.Remove (new KeyWrapper(index));
 				return new object ();
 			} else {
 				throw new Error ("Can't remove item with key " + index + " from array");
@@ -338,19 +351,20 @@ namespace ProgrammingLanguageNr1
 
 		private static object API_removeAllElements(object[] args)
 		{
-			SortedDictionary<object, object> array = args[0] as SortedDictionary<object,object>;
+			SortedDictionary<KeyWrapper, object> array = args[0] as SortedDictionary<KeyWrapper,object>;
 			array.Clear ();
 			return new object ();
 		}
 
 		private static object API_append(object[] args)
 		{
-			SortedDictionary<object, object> array = args[0] as SortedDictionary<object,object>;
+			SortedDictionary<KeyWrapper, object> array = args[0] as SortedDictionary<KeyWrapper,object>;
 			object val = args [1];
 
 			// Slow but correct way of doing it:
 			int maxArrayIndex = -1;
-			foreach (var key in array.Keys) {
+			foreach (var keyWrapper in array.Keys) {
+				var key = keyWrapper.value;
 				if (key.GetType () == typeof(float) &&
 				    maxArrayIndex < (float)key) {
 					maxArrayIndex = (int)(float)key;
@@ -358,20 +372,23 @@ namespace ProgrammingLanguageNr1
 			}
 			//int maxArrayIndex = array.Count; // TODO: this is a bug if the array contains sparse indexes or stuff like that
 
-			array.Add (maxArrayIndex + 1, val);
+			array.Add (new KeyWrapper((float)maxArrayIndex + 1), val);
 			return VoidType.voidType;
 		}
 
         private static object API_count(object[] args)
         {
-			if (args [0].GetType () == typeof(SortedDictionary<object,object>)) {
-				SortedDictionary<object, object> array = args[0] as SortedDictionary<object,object>;
+			if (args [0].GetType () == typeof(SortedDictionary<KeyWrapper,object>)) {
+				SortedDictionary<KeyWrapper, object> array = args[0] as SortedDictionary<KeyWrapper,object>;
 				return (float)array.Count;
+			}
+			if (args [0].GetType () == typeof(object[])) {
+				return (float)((object[])args[0]).Length;
 			}
 			else if(args [0].GetType () == typeof(Range)) {
 				Range r = (Range)args [0];
-				int length = r.end - r.start;
-				return (float)length;
+				float length = r.end - r.start;
+				return length;
 			}
 			else if(args [0].GetType () == typeof(string)) {
 				return (float)((string)args[0]).Length;
@@ -384,9 +401,9 @@ namespace ProgrammingLanguageNr1
         private static object API_allocate(object[] args)
         {
 			int size = (int)(float)args[0];
-			SortedDictionary<object, object> array = new SortedDictionary<object, object>();
+			SortedDictionary<KeyWrapper, object> array = new SortedDictionary<KeyWrapper, object>();
 			for(int i  = 0; i < size; i++) {
-				array.Add(i, VoidType.voidType);
+				array.Add(new KeyWrapper(i), VoidType.voidType);
 			}
 			return array;
 		}
@@ -411,7 +428,7 @@ namespace ProgrammingLanguageNr1
 				return range;
 			} else {
 				// Create a normal array
-				SortedDictionary<object, object> array = new SortedDictionary<object, object> ();
+				SortedDictionary<KeyWrapper, object> array = new SortedDictionary<KeyWrapper, object> ();
 			
 				int step = 0;
 				if (start < end) { 
@@ -424,7 +441,7 @@ namespace ProgrammingLanguageNr1
 				int index = 0;
 				for (int nr = start; nr != end; nr += step) {
 					//Console.WriteLine("nr: " + nr);
-					array [index] = (float)nr;
+					array [new KeyWrapper((float)index)] = (float)nr;
 					index++;
 				}
 				return array;

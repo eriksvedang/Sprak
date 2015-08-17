@@ -11,9 +11,9 @@ namespace ProgrammingLanguageNr1
 			this.step = pStep;
 		}
 
-		public int start {get;set;}
-		public int end {get;set;}
-		public int step {get;set;}
+		public float start {get;set;}
+		public float end {get;set;}
+		public float step {get;set;}
 
 		public override string ToString ()
 		{

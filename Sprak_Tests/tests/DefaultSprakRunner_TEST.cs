@@ -394,7 +394,7 @@ namespace ProgrammingLanguageNr1.tests
 			);
 			
 			VariableDefinition[] vars = new VariableDefinition[3];
-			vars[0] = new VariableDefinition("MAGIC_NUMBER", (43));
+			vars[0] = new VariableDefinition("MAGIC_NUMBER", (43.0f));
 			vars[1] = new VariableDefinition("MAGIC_BOOL", (true));
 			vars[2] = new VariableDefinition("MAGIC_STRING", ("hej"));
 			
