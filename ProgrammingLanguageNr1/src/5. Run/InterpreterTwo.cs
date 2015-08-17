@@ -584,7 +584,7 @@ namespace ProgrammingLanguageNr1
 			object val = null;
 
 			if (array is Range) {
-				Console.WriteLine ("LOOKING UP KEY " + index + " IN RANGE " + array.ToString ());
+				//Console.WriteLine ("LOOKING UP KEY " + index + " IN RANGE " + array.ToString ());
 
 				if (index.GetType () == typeof(float)) {
 					Range range = (Range)array;
@@ -605,23 +605,19 @@ namespace ProgrammingLanguageNr1
 						throw new Error ("Index " + index.ToString () + " is outside the range " + array.ToString ());
 					}
 					val = (float)theNumber;
-					Console.WriteLine("The result was " + theNumber);
+					//Console.WriteLine("The result was " + val);
 				} else {
 					throw new Error ("Can't look up " + index.ToString () + " in the range " + array.ToString ());
 				}
 
 			} else if (array.GetType () == typeof(SortedDictionary<KeyWrapper,object>)) {
-				Console.WriteLine ("LOOKING UP KEY " + index + " of type " + index.GetType() + " IN ARRAY " + ReturnValueConversions.PrettyStringRepresenation(array));
+				//Console.WriteLine ("LOOKING UP KEY " + index + " of type " + index.GetType() + " IN ARRAY " + ReturnValueConversions.PrettyStringRepresenation(array));
 
 				var a = array as SortedDictionary<KeyWrapper,object>;
 
 				if (a.TryGetValue(new KeyWrapper(index), out val)) {
-					Console.WriteLine("The result was " + val);
+					//Console.WriteLine("The result was " + val);
 				} else {
-					Console.WriteLine("keys:");
-					foreach(var k in a.Keys) {
-						Console.WriteLine("- " + k.value.ToString() + " of type " + k.value.GetType().ToString());
-					}
 					throw new Error ("Can't find the index '" + index + "' (" + index.GetType () + ") in the array '" + CurrentNode.getTokenString () + "'", Error.ErrorType.RUNTIME, CurrentNode.getToken ().LineNr, CurrentNode.getToken ().LinePosition);
 				}
 			} else if (array.GetType () == typeof(object[])) {

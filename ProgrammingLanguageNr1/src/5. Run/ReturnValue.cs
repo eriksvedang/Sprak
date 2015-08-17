@@ -150,7 +150,7 @@ namespace ProgrammingLanguageNr1
 
 		public static object ChangeTypeBasedOnReturnValueType (object obj, ReturnValueType type)
 		{
-			Console.WriteLine("Will try to change obj '" + PrettyStringRepresenation(obj) + "' of type " + obj.GetType() + " to return value type " + type);
+			//Console.WriteLine("Will try to change obj '" + PrettyStringRepresenation(obj) + "' of type " + obj.GetType() + " to return value type " + type);
 
 			if(type == ReturnValueType.STRING) {
 				string s = PrettyStringRepresenation(obj);
@@ -165,7 +165,7 @@ namespace ProgrammingLanguageNr1
 					try {
 						return (float)Convert.ToDouble ((string)obj, CultureInfo.InvariantCulture);
 					}
-					catch(System.FormatException e) {
+					catch(System.FormatException) {
 						throw new Error("Can't convert " + obj.ToString() + " to a number");
 					}
 				}

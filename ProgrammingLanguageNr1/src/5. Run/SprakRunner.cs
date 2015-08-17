@@ -291,8 +291,6 @@ namespace ProgrammingLanguageNr1
 
         private static object API_createArrayOrRangeOfIndexes(object[] args)
         {
-			Console.WriteLine("Called API_createArrayOrRangeOfIndexes...");
-
 			if (args [0].GetType () == typeof(SortedDictionary<KeyWrapper,object>)) {
 				var originalArray = args [0] as SortedDictionary<KeyWrapper,object>;
 				var newArray = new SortedDictionary<KeyWrapper, object> ();
@@ -304,13 +302,11 @@ namespace ProgrammingLanguageNr1
 				return newArray;
 			}
 			else if (args [0].GetType () == typeof(object[])) {
-				//Console.WriteLine("It's an object array");
 				var original = (object[])args[0];
 				SortedDictionary<KeyWrapper, object> newArray = new SortedDictionary<KeyWrapper, object> ();
 				for(int i = 0; i < original.Length; i++) {
 					var val = original[i];
 					newArray.Add (new KeyWrapper((float)i), val);
-					//Console.WriteLine("Key " + i + " => " + val);
 				}
 				return newArray;
 			} 
