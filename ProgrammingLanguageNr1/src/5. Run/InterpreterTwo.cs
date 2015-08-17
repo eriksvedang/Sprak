@@ -441,15 +441,23 @@ namespace ProgrammingLanguageNr1
 
             }
 
-			if (IsFunctionExternal(functionName)) {
-				CallExternalFunction(functionName, parameters);
-			} else {
-				PushNewScope(functionDefinitionNode.getScope(), functionName + "_memorySpace" + functionCounter++, functionDefinitionNode);
+			//try {
 
-				for (int i = nrOfParameters - 1; i >= 0; i--) {
-					PushValue(parameters[i]); // reverse order
+				if (IsFunctionExternal(functionName)) {
+					CallExternalFunction(functionName, parameters);
+				} else {
+					PushNewScope(functionDefinitionNode.getScope(), functionName + "_memorySpace" + functionCounter++, functionDefinitionNode);
+
+					for (int i = nrOfParameters - 1; i >= 0; i--) {
+						PushValue(parameters[i]); // reverse order
+					}
 				}
-			}
+
+//			}
+//			catch(Exception e) {
+//				Console.WriteLine("Exception when calling " + functionName + ": " + e.StackTrace);
+//				throw e;
+//			}
         }
 
         private void Operator()

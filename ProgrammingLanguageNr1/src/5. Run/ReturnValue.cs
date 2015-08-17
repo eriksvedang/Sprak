@@ -159,12 +159,10 @@ namespace ProgrammingLanguageNr1
 
 		public static object ChangeTypeBasedOnReturnValueType (object obj, ReturnValueType type)
 		{
-			Console.WriteLine("Will try to change obj '" + PrettyStringRepresenation(obj) + "' of type " + obj.GetType() + " to return value type " + type);
+			//Console.WriteLine("Will try to change obj '" + PrettyStringRepresenation(obj) + "' of type " + obj.GetType() + " to return value type " + type);
 
 			if(type == ReturnValueType.STRING) {
-				string s = PrettyStringRepresenation(obj);
-				Console.WriteLine("s = " + s);
-				return s;
+				return PrettyStringRepresenation(obj);
 			}
 			else if(type == ReturnValueType.NUMBER) {
 				if(obj.GetType() == typeof(float)) {

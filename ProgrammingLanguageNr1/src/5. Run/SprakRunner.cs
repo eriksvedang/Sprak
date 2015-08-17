@@ -1,3 +1,5 @@
+//#define TYPE_FUNCTION
+
 using System;
 using System.IO;
 using System.Collections.Generic;
@@ -64,9 +66,11 @@ namespace ProgrammingLanguageNr1
 				new FunctionDocumentation("Add an element to the end of an array", new string[] { "The array to add an element to", "The element to add" });
 			result.Add(new FunctionDefinition("void", "Append", new string[] { "array", "var" }, new string[] { "array", "elem" }, new ExternalFunctionCreator.OnFunctionCall(API_append), functionDoc_Append));
 
-//            FunctionDocumentation functionDoc_type =
-//                new FunctionDocumentation("Get the type of something (returns a string)", new string[] { "The value to get the type of" });
-//            result.Add(new FunctionDefinition("string", "type", new string[] { "var" }, new string[] { "value" }, new ExternalFunctionCreator.OnFunctionCall(API_type), functionDoc_type));
+#if TYPE_FUNCTION
+            FunctionDocumentation functionDoc_type =
+                new FunctionDocumentation("Get the type of something (returns a string)", new string[] { "The value to get the type of" });
+            result.Add(new FunctionDefinition("string", "type", new string[] { "var" }, new string[] { "value" }, new ExternalFunctionCreator.OnFunctionCall(API_type), functionDoc_type));
+#endif
 
 			FunctionDocumentation functionDoc_Round =
 				new FunctionDocumentation("Round a number to the nearest integer", new string[] { "The number to round" });

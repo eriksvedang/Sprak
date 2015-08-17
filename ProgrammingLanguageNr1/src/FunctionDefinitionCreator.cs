@@ -103,7 +103,7 @@ namespace ProgrammingLanguageNr1
 
 					int i = 0;
 					foreach (object sprakArg in sprakArguments) {
-						Console.WriteLine(string.Format("Parameter {0} in function {1} is of type {2}", i, shortname, realParamInfo[i].ParameterType));
+						//Console.WriteLine(string.Format("Parameter {0} in function {1} is of type {2}", i, shortname, realParamInfo[i].ParameterType));
 
 						var realParamType = realParamInfo [i].ParameterType;
 
@@ -112,7 +112,7 @@ namespace ProgrammingLanguageNr1
 						}
 
 						if(sprakArg.GetType() == typeof(int)) {
-							// YES, this is kind of a hack
+							// YES, this is kind of a HACK (allowing definitions with int arguments, making them work like the were floats. Remove later!
 							sprakArguments[i] = (float)sprakArg;
 							realParamType = typeof(int);
 						}
@@ -132,11 +132,11 @@ namespace ProgrammingLanguageNr1
 					object result = null;
 
 					try {
-						Console.WriteLine("Will call " + shortname  + " with sprak arguments:");
-						int j = 0;
-						foreach(var a in sprakArguments) {
-							Console.WriteLine(" Argument " + (j++) + ": " + ReturnValueConversions.PrettyStringRepresenation(a) + " (" + a.GetType() + ")");
-						}
+//						Console.WriteLine("Will call " + shortname  + " with sprak arguments:");
+//						int j = 0;
+//						foreach(var a in sprakArguments) {
+//							Console.WriteLine(" Argument " + (j++) + ": " + ReturnValueConversions.PrettyStringRepresenation(a) + " (" + a.GetType() + ")");
+//						}
 						result = lambdaMethodInfo.Invoke (pProgramTarget, sprakArguments.ToArray ());
 					}
 					catch(System.Reflection.TargetInvocationException e) {
