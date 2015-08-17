@@ -96,7 +96,6 @@ namespace ProgrammingLanguageNr1
 				ExternalFunctionCreator.OnFunctionCall function = (sprakArguments =>  {
 
 					ParameterInfo[] realParamInfo = lambdaMethodInfo.GetParameters ();
-					List<object> parameters = new List<object> ();
 
 					if(sprakArguments.Count() != realParamInfo.Length) {
 						throw new Error("Should call '" + shortname + "' with " + realParamInfo.Length + " argument" + (realParamInfo.Length == 1 ? "" : "s"));
@@ -104,16 +103,19 @@ namespace ProgrammingLanguageNr1
 
 					int i = 0;
 					foreach (object sprakArg in sprakArguments) {
-						Console.WriteLine(string.Format("Argument {0} in function {1} is of type {2}", i, shortname, realParamInfo[i].ParameterType));
+						Console.WriteLine(string.Format("Parameter {0} in function {1} is of type {2}", i, shortname, realParamInfo[i].ParameterType));
 
 						var realParamType = realParamInfo [i].ParameterType;
-						Console.WriteLine("Real param type is " + realParamType);
-						
+
+						if(sprakArg.GetType() == typeof(SortedDictionary<KeyWrapper,object>)) {
+							sprakArguments[i] = (sprakArg as SortedDictionary<KeyWrapper,object>).Values.ToArray();
+						}
+
 						if (acceptableTypes.Contains(realParamType)) {
-							parameters.Add (sprakArg);
+							// OK
 						}
 						else {
-							throw new Error("Can't deal with arg " + i.ToString() + " of type " + realParamType + " in function " + shortname);
+							throw new Error("Can't deal with parameter " + i.ToString() + " of type " + realParamType + " in function " + shortname);
 						}
 						
 						i++;
@@ -124,11 +126,12 @@ namespace ProgrammingLanguageNr1
 					object result = null;
 
 					try {
-						Console.WriteLine("Will call " + shortname  + " with parameters:");
-						foreach(var p in parameters) {
-							Console.WriteLine("- " + ReturnValueConversions.PrettyStringRepresenation(p) + ", type = " + p.GetType());
+						Console.WriteLine("Will call " + shortname  + " with sprak arguments:");
+						int j = 0;
+						foreach(var a in sprakArguments) {
+							Console.WriteLine((j++) + " " + ReturnValueConversions.PrettyStringRepresenation(a) + ", type = " + a.GetType());
 						}
-						result = lambdaMethodInfo.Invoke (pProgramTarget, parameters.ToArray ());
+						result = lambdaMethodInfo.Invoke (pProgramTarget, sprakArguments.ToArray ());
 					}
 					catch(System.Reflection.TargetInvocationException e) {
 						//Console.WriteLine("Got an exception when calling the lambda: " + e.ToString());

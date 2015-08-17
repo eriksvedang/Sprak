@@ -1,3 +1,3 @@
 
-var l = ["a" "b" "c"]
-print(l[1])
+var xs = ["a" "b" "c"]
+print(xs[1])
