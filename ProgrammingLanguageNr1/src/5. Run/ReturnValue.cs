@@ -19,6 +19,10 @@ namespace ProgrammingLanguageNr1
 		public static VoidType voidType = new VoidType();
 	};
 
+	public struct UnknownType {
+		public static UnknownType unknownType = new UnknownType();
+	};
+
 	public class ReturnValueConversions {
 
 		public static T SafeUnwrap<T>(object[] args, int index) {
@@ -30,17 +34,40 @@ namespace ProgrammingLanguageNr1
 			}
 		}
 
-		static Dictionary<Type, ReturnValueType> typeToReturnValueType = new Dictionary<Type, ReturnValueType>() {
-			{ typeof(float), ReturnValueType.NUMBER },
-			{ typeof(string), ReturnValueType.STRING },
-			{ typeof(bool), ReturnValueType.BOOL },
-			{ typeof(object[]), ReturnValueType.ARRAY },
-		};
+//		static Dictionary<Type, ReturnValueType> typeToReturnValueType = new Dictionary<Type, ReturnValueType>() {
+//			{ typeof(float), ReturnValueType.NUMBER },
+//			{ typeof(string), ReturnValueType.STRING },
+//			{ typeof(bool), ReturnValueType.BOOL },
+//			{ typeof(object[]), ReturnValueType.ARRAY },
+//			{ typeof(Range), ReturnValueType.RANGE },
+//			{ typeof(VoidType), ReturnValueType.VOID },
+//		};
 		
 		public static ReturnValueType SystemTypeToReturnValueType(Type t) {
-			ReturnValueType retValType = ReturnValueType.VOID;
-			typeToReturnValueType.TryGetValue(t, out retValType);
-			return retValType;
+			if(t == typeof(SortedDictionary<KeyWrapper,object>)) {
+				return ReturnValueType.ARRAY;
+			}
+			else if(t == typeof(float)) {
+				return ReturnValueType.NUMBER;
+			}
+			else if(t == typeof(bool)) {
+				return ReturnValueType.BOOL;
+			}
+			else if(t == typeof(string)) {
+				return ReturnValueType.STRING;
+			}
+			else if(t == typeof(Range)) {
+				return ReturnValueType.RANGE;
+			}
+			else if(t == typeof(VoidType)) {
+				return ReturnValueType.VOID;
+			}
+			else {
+				return ReturnValueType.UNKNOWN_TYPE;
+			}
+//			ReturnValueType retValType = ReturnValueType.UNKNOWN_TYPE;
+//			typeToReturnValueType.TryGetValue(t, out retValType);
+//			return retValType;
 		}
 
 

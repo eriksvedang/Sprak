@@ -154,7 +154,8 @@ namespace ProgrammingLanguageNr1
 
 				if (functionDefinitionNode != null) {
 
-					int nrOfParameters = functionDefinitionNode.getChild(2).getChildren().Count;
+					var parameters = functionDefinitionNode.getChild(2).getChildren();
+					int nrOfParameters = parameters.Count;
 					if (nrOfParameters != args.Length) {
 						throw new Error ("The function " + functionName + " takes " + nrOfParameters + " arguments, not " + args.Length);
 					}
@@ -170,7 +171,9 @@ namespace ProgrammingLanguageNr1
 					PushNewScope(functionDefinitionNode.getScope(), nameOfNewMemorySpace, functionDefinitionNode);
 
 					for (int i = args.Length - 1; i >= 0; i--) {
-						PushValue(args[i]); // reverse order
+						var declaration = parameters[i].getChild(0) as AST_VariableDeclaration;
+						object convertedValue = ReturnValueConversions.ChangeTypeBasedOnReturnValueType(args[i], declaration.Type);
+						PushValue(convertedValue); // reverse order
 					}
 
 					//Console.WriteLine ("Ready to start running function '" + functionName + "' with memory space '" + nameOfNewMemorySpace + "'");
@@ -339,12 +342,12 @@ namespace ProgrammingLanguageNr1
 
             AST subNode = null;
 
-			if (r.GetType() != typeof(bool)) {
+			if (r.GetType() != typeof(bool) && r.GetType() != typeof(float)) {
 				var token = ifnode.getToken ();
 				throw new Error ("Can't use value " + r + " of type " + ReturnValueConversions.PrettyObjectType (r.GetType()) + " in if-statement", Error.ErrorType.RUNTIME, token.LineNr, token.LinePosition);
 			}
 
-			if ((bool)r)
+			if (ConvertToBool(r))
             {
                 subNode = ifnode.getChild(1);
             }
@@ -460,6 +463,36 @@ namespace ProgrammingLanguageNr1
 //			}
         }
 
+		private float ConvertToNumber(object o) {
+			if(o.GetType() == typeof(float)) {
+				return (float)o;
+			}
+			else if(o.GetType() == typeof(int)) {
+				return (float)(int)o;
+			}
+			else if(o.GetType() == typeof(string)) {
+				float f = 0f;
+				if(float.TryParse((string)o, out f)) {
+					return f;
+				}
+			}
+
+			throw new Error("Can't convert value " + o + " of type " + ReturnValueConversions.PrettyObjectType(o.GetType()) + " to number");
+		}
+
+		private bool ConvertToBool(object o) {
+			if(o.GetType() == typeof(bool)) {
+				return (bool)o;
+			}
+			else if(o.GetType() == typeof(float)) {
+				return ((float)o == 0f ? false : true);
+			}
+			else if(o.GetType() == typeof(int)) {
+				return ((int)o == 0 ? false : true);
+			}
+			throw new Error("Can't convert value " + o + " of type " + ReturnValueConversions.PrettyObjectType(o.GetType()) + " to bool");
+		}
+
         private void Operator()
         {
             object result;
@@ -472,51 +505,51 @@ namespace ProgrammingLanguageNr1
                     break;
 
                 case "-":
-					rhs = PopNumberValue();
-                    lhs = PopNumberValue();
+					rhs = ConvertToNumber(PopValue());
+                    lhs = ConvertToNumber(PopValue());
                     result = lhs - rhs;
                     break;
 
                 case "*":
-                    result = PopNumberValue() * PopNumberValue();
+                    result = ConvertToNumber(PopValue()) * ConvertToNumber(PopValue());
                     break;
 
                 case "/":
-                    rhs = PopNumberValue();
-                    lhs = PopNumberValue();
+                    rhs = ConvertToNumber(PopValue());
+                    lhs = ConvertToNumber(PopValue());
                     result = lhs / rhs;
                     break;
                 case "<":
-                    rhs = PopNumberValue();
-                    lhs = PopNumberValue();
+                    rhs = ConvertToNumber(PopValue());
+                    lhs = ConvertToNumber(PopValue());
                     result = lhs < rhs;
                     break;
                 case ">":
-                    rhs = PopNumberValue();
-                    lhs = PopNumberValue();
+                    rhs = ConvertToNumber(PopValue());
+                    lhs = ConvertToNumber(PopValue());
                     result = lhs > rhs;
                     break;
 				case ">=":
-                    rhs = PopNumberValue();
-                    lhs = PopNumberValue();
+                    rhs = ConvertToNumber(PopValue());
+                    lhs = ConvertToNumber(PopValue());
                     result = lhs >= rhs;
                     break;
 				case "<=":
-                    rhs = PopNumberValue();
-                    lhs = PopNumberValue();
+                    rhs = ConvertToNumber(PopValue());
+                    lhs = ConvertToNumber(PopValue());
                     result = lhs <= rhs;
                     break;
 				case "==":
                     result = equalityTest();
                     break;
 				case "!=":
-					result = !PopBoolValue();
+					result = !ConvertToBool(PopValue());
                     break;
                 case "&&":
-					result = PopBoolValue() && PopBoolValue();
+					result = ConvertToBool(PopValue()) && ConvertToBool(PopValue());
                     break;
 				case "||":
-					result = PopBoolValue() || PopBoolValue();
+					result = ConvertToBool(PopValue()) || ConvertToBool(PopValue());
 					break;
 
                 default:
@@ -535,8 +568,14 @@ namespace ProgrammingLanguageNr1
 			if (lhs == rhs) {
 				return true;
 			}
-			
-			if(lhs.GetType() == rhs.GetType() && rhs is IComparable && lhs is IComparable)
+
+			if(lhs.GetType() == typeof(float) && lhs.GetType() == rhs.GetType()) {
+				return (((float)rhs) == ((float)lhs));
+			}
+			else if(lhs.GetType() == typeof(int) && lhs.GetType() == rhs.GetType()) {
+				return (((int)rhs) == ((int)lhs));
+			}
+			else if(lhs.GetType() == rhs.GetType() && rhs is IComparable && lhs is IComparable)
 			{
 				return (rhs as IComparable).CompareTo(lhs as IComparable) == 0;
 			}
@@ -554,8 +593,12 @@ namespace ProgrammingLanguageNr1
 			var rightValueType = rhs.GetType ();
 			var leftValueType = lhs.GetType ();
 				
+			//Console.WriteLine("Adding " + lhs + " of type " + leftValueType + " together with " + rhs + " of type " + rightValueType);
+
 			if (rightValueType == typeof(float) && leftValueType == typeof(float)) {
 				return (float)rhs + (float)lhs;
+			} if (rightValueType == typeof(int) && leftValueType == typeof(int)) {
+				return (float)((int)rhs + (int)lhs);
 			} else if (rightValueType == typeof(string) || leftValueType == typeof(string)) {
 				return ReturnValueConversions.PrettyStringRepresenation(lhs) + ReturnValueConversions.PrettyStringRepresenation(rhs);
 			} else if (rightValueType == typeof(object[]) && leftValueType == typeof(object[])) {
@@ -690,28 +733,28 @@ namespace ProgrammingLanguageNr1
 				return VoidType.voidType;
 			}
 			else if(type == ReturnValueType.UNKNOWN_TYPE) {
-				return VoidType.voidType;
+				return UnknownType.unknownType;
 			}
 			else {
 				throw new Error("No default value for " + type);
 			}
 		}
 		
-		private object ConvertToType(object valueToConvert, ReturnValueType type) {
-
-
-			return valueToConvert;
-
+		private object ConvertToType(object valueToConvert, Type type) {
+			var returnValueType = ReturnValueConversions.SystemTypeToReturnValueType(type);
+			Console.WriteLine("Assignment of " + ReturnValueConversions.PrettyStringRepresenation(valueToConvert) + 
+			                  " will convert it from " + valueToConvert.GetType() + " to " + type.ToString() + " (" + returnValueType + ")");
+			object newObject = ReturnValueConversions.ChangeTypeBasedOnReturnValueType(valueToConvert, returnValueType);
+			return newObject;
 		}
 
         private void AssignmentSignal()
         {
             string variableName = (CurrentNode as AST_Assignment).VariableName;
 			object expressionValue = PopValue();
-			// TODO: convert the value as before
-//			Type type = m_currentScope.getValue(variableName).GetType();
-//			object convertedValue = ConvertToType(, type);
-			m_currentScope.setValue(variableName, expressionValue);
+			Type type = m_currentScope.getValue(variableName).GetType();
+			object convertedValue = ConvertToType(expressionValue, type);
+			m_currentScope.setValue(variableName, convertedValue);
         }
 		
 		private void AssignmentToArrayElementSignal() {
@@ -843,31 +886,31 @@ namespace ProgrammingLanguageNr1
             return poppedValue;
         }
 
-		public float PopNumberValue() {
-			object n = PopValue();
-			if(n.GetType() == typeof(float)) {
-				return (float)n;
-			}
-			else if(n.GetType() == typeof(int)) {
-				return (float)(int)n;
-			}
-			else {
-				throw new Error("Can't convert value " + n.ToString() + " of type " + n.GetType() + " to a number");
-			}
-		}
-
-		public bool PopBoolValue() {
-			object n = PopValue();
-			if(n.GetType() == typeof(bool)) {
-				return (bool)n;
-			}
-			else if(n.GetType() == typeof(float)) {
-				return ((float)n != 0f) ? true : false;
-			}
-			else {
-				throw new Error("Can't convert value " + n.ToString() + " of type " + n.GetType() + " to a bool");
-			}
-		}
+//		public float PopNumberValue() {
+//			object n = PopValue();
+//			if(n.GetType() == typeof(float)) {
+//				return (float)n;
+//			}
+//			else if(n.GetType() == typeof(int)) {
+//				return (float)(int)n;
+//			}
+//			else {
+//				throw new Error("Can't convert value " + n.ToString() + " of type " + n.GetType() + " to a number");
+//			}
+//		}
+//
+//		public bool PopBoolValue() {
+//			object n = PopValue();
+//			if(n.GetType() == typeof(bool)) {
+//				return (bool)n;
+//			}
+//			else if(n.GetType() == typeof(float)) {
+//				return ((float)n != 0f) ? true : false;
+//			}
+//			else {
+//				throw new Error("Can't convert value " + n.ToString() + " of type " + n.GetType() + " to a bool");
+//			}
+//		}
 
         public void PushValue(object value)
         {
