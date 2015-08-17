@@ -742,8 +742,7 @@ namespace ProgrammingLanguageNr1
 		
 		private object ConvertToType(object valueToConvert, Type type) {
 			var returnValueType = ReturnValueConversions.SystemTypeToReturnValueType(type);
-			Console.WriteLine("Assignment of " + ReturnValueConversions.PrettyStringRepresenation(valueToConvert) + 
-			                  " will convert it from " + valueToConvert.GetType() + " to " + type.ToString() + " (" + returnValueType + ")");
+//			Console.WriteLine("Assignment of " + ReturnValueConversions.PrettyStringRepresenation(valueToConvert) + " will convert it from " + valueToConvert.GetType() + " to " + type.ToString() + " (" + returnValueType + ")");
 			object newObject = ReturnValueConversions.ChangeTypeBasedOnReturnValueType(valueToConvert, returnValueType);
 			return newObject;
 		}
