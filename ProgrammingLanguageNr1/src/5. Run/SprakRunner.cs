@@ -268,10 +268,10 @@ namespace ProgrammingLanguageNr1
 		{
 			m_interpreter.SetProgramToExecuteFunction (functionName, args);
 			run ();
-			return GetFinalobject();
+			return GetFinalReturnValue();
 		}
 
-		public object GetFinalobject()
+		public object GetFinalReturnValue()
 		{
 			if (!m_interpreter.ValueStackIsEmpty()) {
 				object result = m_interpreter.PopValue();

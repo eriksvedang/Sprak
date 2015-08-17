@@ -21,6 +21,15 @@ namespace ProgrammingLanguageNr1
 
 	public class ReturnValueConversions {
 
+		public static T SafeUnwrap<T>(object[] args, int index) {
+			if(args[index].GetType() == typeof(T)) {
+				return (T)args[index];
+			}
+			else {
+				throw new Error("Argument " + index + " is of wrong type (" + args[index].GetType() + "), should be " + typeof(T).ToString());
+			}
+		}
+
 		static Dictionary<Type, ReturnValueType> typeToReturnValueType = new Dictionary<Type, ReturnValueType>() {
 			{ typeof(float), ReturnValueType.NUMBER },
 			{ typeof(string), ReturnValueType.STRING },
@@ -150,7 +159,7 @@ namespace ProgrammingLanguageNr1
 
 		public static object ChangeTypeBasedOnReturnValueType (object obj, ReturnValueType type)
 		{
-			//Console.WriteLine("Will try to change obj '" + PrettyStringRepresenation(obj) + "' of type " + obj.GetType() + " to return value type " + type);
+			Console.WriteLine("Will try to change obj '" + PrettyStringRepresenation(obj) + "' of type " + obj.GetType() + " to return value type " + type);
 
 			if(type == ReturnValueType.STRING) {
 				string s = PrettyStringRepresenation(obj);
@@ -160,6 +169,10 @@ namespace ProgrammingLanguageNr1
 			else if(type == ReturnValueType.NUMBER) {
 				if(obj.GetType() == typeof(float)) {
 					return (float)obj;
+				}
+				if(obj.GetType() == typeof(int)) {
+					// This is a HACK since I couldn't get all obj:s to be floats, some ints were getting trough even though I tried to weed them out :/
+					return (float)(int)obj;
 				}
 				else if(obj.GetType() == typeof(string)) {
 					try {
@@ -195,7 +208,7 @@ namespace ProgrammingLanguageNr1
 				return obj;
 			}
 
-			throw new Error("Can't change type from " + obj.GetType() + " to " + type);
+			throw new Exception("Can't change type from " + obj.GetType() + " to " + type);
 		}
 	}
 
@@ -236,6 +249,8 @@ namespace ProgrammingLanguageNr1
 			return diff;
 		}
 	}
+
+
 
 
 //	

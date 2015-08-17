@@ -439,7 +439,6 @@ namespace ProgrammingLanguageNr1
 
 				parameters[i] = ReturnValueConversions.ChangeTypeBasedOnReturnValueType(PopValue(), declaration.Type);
 
-
             }
 
 			if (IsFunctionExternal(functionName)) {

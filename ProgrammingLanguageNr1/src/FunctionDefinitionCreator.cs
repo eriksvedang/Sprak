@@ -65,7 +65,7 @@ namespace ProgrammingLanguageNr1
 			return functionDocumentations;
 		}
 
-		static HashSet<Type> acceptableTypes = new HashSet<Type>() { typeof(float), typeof(string), typeof(bool), typeof(Range), typeof(VoidType), typeof(object[]) };
+		static HashSet<Type> acceptableTypes = new HashSet<Type>() { typeof(float), typeof(string), typeof(bool), typeof(Range), typeof(void), typeof(object[]) };
 
 		static List<FunctionDefinition> CreateFunctionDefinitions (object pProgramTarget, Dictionary<string, FunctionDocumentation> functionDocumentations, MethodInfo[] methodInfos)
 		{
@@ -87,7 +87,7 @@ namespace ProgrammingLanguageNr1
 
 				foreach (ParameterInfo parameterInfo in lambdaMethodInfo.GetParameters ()) {
 					var t = ReturnValueConversions.SystemTypeToReturnValueType (parameterInfo.ParameterType);
-					Console.WriteLine("Registering parameter '" + parameterInfo.Name + "' (" + parameterInfo.ParameterType + ") with ReturnValueType " + t + " for function " + shortname);
+					//Console.WriteLine("Registering parameter '" + parameterInfo.Name + "' (" + parameterInfo.ParameterType + ") with ReturnValueType " + t + " for function " + shortname);
 					parameterNames.Add (parameterInfo.Name);
 					parameterTypes.Add (t);
 					parameterTypeNames.Add (t.ToString().ToLower());
@@ -111,6 +111,12 @@ namespace ProgrammingLanguageNr1
 							sprakArguments[i] = (sprakArg as SortedDictionary<KeyWrapper,object>).Values.ToArray();
 						}
 
+						if(sprakArg.GetType() == typeof(int)) {
+							// YES, this is kind of a hack
+							sprakArguments[i] = (float)sprakArg;
+							realParamType = typeof(int);
+						}
+
 						if (acceptableTypes.Contains(realParamType)) {
 							// OK
 						}
@@ -129,7 +135,7 @@ namespace ProgrammingLanguageNr1
 						Console.WriteLine("Will call " + shortname  + " with sprak arguments:");
 						int j = 0;
 						foreach(var a in sprakArguments) {
-							Console.WriteLine((j++) + " " + ReturnValueConversions.PrettyStringRepresenation(a) + ", type = " + a.GetType());
+							Console.WriteLine(" Argument " + (j++) + ": " + ReturnValueConversions.PrettyStringRepresenation(a) + " (" + a.GetType() + ")");
 						}
 						result = lambdaMethodInfo.Invoke (pProgramTarget, sprakArguments.ToArray ());
 					}
@@ -137,6 +143,11 @@ namespace ProgrammingLanguageNr1
 						//Console.WriteLine("Got an exception when calling the lambda: " + e.ToString());
 						//Console.WriteLine("The base exception: " + e.GetBaseException().ToString());
 						throw e.GetBaseException();
+					}
+
+					// HACK
+					if(lambdaMethodInfo.ReturnType == typeof(int)) {
+						return (float)(int)result;
 					}
 
 					if(!acceptableTypes.Contains(lambdaMethodInfo.ReturnType)) {
