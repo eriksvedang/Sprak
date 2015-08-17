@@ -25,7 +25,7 @@ namespace ProgrammingLanguageNr1
 			{ typeof(float), ReturnValueType.NUMBER },
 			{ typeof(string), ReturnValueType.STRING },
 			{ typeof(bool), ReturnValueType.BOOL },
-			{ typeof(Array), ReturnValueType.ARRAY },
+			{ typeof(object[]), ReturnValueType.ARRAY },
 		};
 		
 		public static ReturnValueType SystemTypeToReturnValueType(Type t) {
@@ -39,13 +39,14 @@ namespace ProgrammingLanguageNr1
 			{ typeof(float), "number" },
 			{ typeof(string), "string" },
 			{ typeof(bool), "bool" },
+			{ typeof(object[]), "array" },
 		};
 		
 		static public string PrettyObjectType (Type t) 
 		{
-			if(t.IsSubclassOf(typeof(Array))) {
-				return "array";
-			}
+//			if(t.IsSubclassOf(typeof(Array))) {
+//				return "array";
+//			}
 			
 			string s;
 			if(typeToString.TryGetValue(t, out s)) {
@@ -57,7 +58,7 @@ namespace ProgrammingLanguageNr1
 
 		static public string PrettyStringRepresenation(object o) {
 
-			//Console.WriteLine("Will pretty print object " + o.ToString() + " of type " + o.GetType());
+			Console.WriteLine("Will pretty print object " + o.ToString() + " of type " + o.GetType());
 
 			if(o.GetType() == typeof(string)) {
 				return (string)o;
@@ -68,17 +69,47 @@ namespace ProgrammingLanguageNr1
 			else if(o.GetType() == typeof(float)) {
 				return o.ToString();	
 			}
-//			else if(o.GetType() == typeof(object[])) {
-//				
-//			}
+			else if(o.GetType() == typeof(object[])) {
+				return MakePrimitiveObjectArrayString((object[])o);
+			}
 			else if(o is Range) {
 				return ((Range)o).ToString();
 			}
+//			else if(o is ReturnValueType) {
+//				return o.ToString();
+//			}
 			else if(o is SortedDictionary<object,object>) {
 				return MakeArrayString(o as SortedDictionary<object,object>);
 			}
 
-			throw new Error("Can't pretty print " + o.ToString());
+			throw new Error("Can't pretty print " + o.ToString() + " of type " + o.GetType());
+		}
+
+		static string MakePrimitiveObjectArrayString (object[] array)
+		{
+			if(array != null) {
+				StringBuilder s = new StringBuilder();
+				s.Append("[");
+				int count = array.Length;
+				int emergencyBreak = 0;
+				for(int i = 0; i < array.Length; i++) {
+					s.Append(PrettyStringRepresenation(array[i]));
+					count--;
+					if(count > 0) {
+						s.Append(", ");
+					}
+					emergencyBreak++;
+					if (emergencyBreak > 10) {
+						s.Append ("...");
+						break;
+					}
+				}
+				s.Append("]");
+				return s.ToString();
+			}
+			else {
+				return "";
+			}
 		}
 
 		static string MakeArrayString (SortedDictionary<object,object> array)
@@ -108,6 +139,55 @@ namespace ProgrammingLanguageNr1
 			else {
 				return "";
 			}
+		}
+
+		public static object ChangeTypeBasedOnReturnValueType (object obj, ReturnValueType type)
+		{
+			Console.WriteLine("Will change " + obj.ToString() + "of type " + obj.GetType() + " to return value type " + type);
+
+			if(type == ReturnValueType.STRING) {
+				string s = PrettyStringRepresenation(obj);
+				Console.WriteLine("s = " + s);
+				return s;
+			}
+			else if(type == ReturnValueType.NUMBER) {
+				if(obj.GetType() == typeof(float)) {
+					return (float)obj;
+				}
+				else if(obj.GetType() == typeof(string)) {
+					try {
+						return (float)Convert.ToDouble ((string)obj, CultureInfo.InvariantCulture);
+					}
+					catch(System.FormatException e) {
+						throw new Error("Can't convert " + obj.ToString() + " to a number");
+					}
+				}
+			}
+			else if(type == ReturnValueType.RANGE) {
+				return (Range)obj;
+			}
+			else if(type == ReturnValueType.ARRAY) {
+				if(obj.GetType() == typeof(object[])) {
+					return obj;
+				}
+				else if(obj.GetType() == typeof(SortedDictionary<object,object>)) {
+					return (obj as SortedDictionary<object,object>).Values.ToArray();
+				}
+				else if(obj.GetType() == typeof(Range)) {
+					return obj;
+				}
+				else {
+					throw new Error("Can't convert " + obj.ToString() + " to an array");
+				}
+			}
+			else if(type == ReturnValueType.BOOL) {
+				return (bool)obj;
+			}
+			else if(type == ReturnValueType.UNKNOWN_TYPE) {
+				return obj;
+			}
+
+			throw new Error("Can't change type from " + obj.GetType() + " to " + type);
 		}
 	}
 

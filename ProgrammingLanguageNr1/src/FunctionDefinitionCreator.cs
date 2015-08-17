@@ -77,29 +77,21 @@ namespace ProgrammingLanguageNr1
 					continue;
 				}
 
-				/*if (methodInfo.ReturnType.IsArray) {
-					throw new Exception ("FunctionDefinitionCreator can't handle array return value");
-				}*/
+				MethodInfo lambdaMethodInfo = methodInfo; // "hard copy" because of c# lambda rules
 
-				//Console.WriteLine("parsing " + mi.Name + " return Type " + mi.ReturnType.Name);
-				string shortname = methodInfo.Name.Substring (4);
+				string shortname = lambdaMethodInfo.Name.Substring (4);
 	
 				List<ReturnValueType> parameterTypes = new List<ReturnValueType> ();
 				List<string> parameterNames = new List<string> ();
 				List<string> parameterTypeNames = new List<string> ();
 
-				foreach (ParameterInfo parameterInfo in methodInfo.GetParameters ()) {
-					/*
-					if (parameterInfo.ParameterType.IsArray) {
-						throw new Exception ("FunctionDefinitionCreator can't handle array parameters");
-					}
-					*/
+				foreach (ParameterInfo parameterInfo in lambdaMethodInfo.GetParameters ()) {
+					var t = ReturnValueConversions.SystemTypeToReturnValueType (parameterInfo.ParameterType);
+					Console.WriteLine("Registering parameter '" + parameterInfo.Name + "' (" + parameterInfo.ParameterType + ") with ReturnValueType " + t + " for function " + shortname);
 					parameterNames.Add (parameterInfo.Name);
-					parameterTypes.Add (ReturnValueConversions.SystemTypeToReturnValueType (parameterInfo.ParameterType));
-					parameterTypeNames.Add (ReturnValueConversions.SystemTypeToReturnValueType (parameterInfo.ParameterType).ToString ().ToLower ());
+					parameterTypes.Add (t);
+					parameterTypeNames.Add (t.ToString().ToLower());
 				}
-
-				MethodInfo lambdaMethodInfo = methodInfo; // "hard copy" because of c# lambda rules
 
 				ExternalFunctionCreator.OnFunctionCall function = (sprakArguments =>  {
 
@@ -132,6 +124,10 @@ namespace ProgrammingLanguageNr1
 					object result = null;
 
 					try {
+						Console.WriteLine("Will call " + shortname  + " with parameters:");
+						foreach(var p in parameters) {
+							Console.WriteLine("- " + ReturnValueConversions.PrettyStringRepresenation(p) + ", type = " + p.GetType());
+						}
 						result = lambdaMethodInfo.Invoke (pProgramTarget, parameters.ToArray ());
 					}
 					catch(System.Reflection.TargetInvocationException e) {
@@ -152,7 +148,7 @@ namespace ProgrammingLanguageNr1
 					}
 				});
 
-				ReturnValueType returnValueType = ReturnValueConversions.SystemTypeToReturnValueType (methodInfo.ReturnType);
+				ReturnValueType returnValueType = ReturnValueConversions.SystemTypeToReturnValueType (lambdaMethodInfo.ReturnType);
 
 				FunctionDocumentation doc;
 

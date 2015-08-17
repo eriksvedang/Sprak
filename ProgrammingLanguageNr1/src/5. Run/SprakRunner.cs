@@ -300,6 +300,14 @@ namespace ProgrammingLanguageNr1
 					i++;
 				}		
 				return newArray;
+			}
+			else if (args [0].GetType () == typeof(object[])) {
+				var original = (object[])args[0];
+				SortedDictionary<object, object> newArray = new SortedDictionary<object, object> ();
+				for(int i = 0; i < original.Length; i++) {
+					newArray.Add (i, original[i]);
+				}		
+				return newArray;
 			} 
 			else if (args [0].GetType () == typeof(Range)) {
 				Range r = (Range)args [0];
@@ -367,6 +375,9 @@ namespace ProgrammingLanguageNr1
 			if (args [0].GetType () == typeof(SortedDictionary<object,object>)) {
 				SortedDictionary<object, object> array = args[0] as SortedDictionary<object,object>;
 				return (float)array.Count;
+			}
+			if (args [0].GetType () == typeof(object[])) {
+				return (float)((object[])args[0]).Length;
 			}
 			else if(args [0].GetType () == typeof(Range)) {
 				Range r = (Range)args [0];

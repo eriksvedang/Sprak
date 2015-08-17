@@ -424,11 +424,20 @@ namespace ProgrammingLanguageNr1
 			}
 			#endif
 
-            int nrOfParameters = functionDefinitionNode.getChild(2).getChildren().Count;
+			var parameterDefs = functionDefinitionNode.getChild(2).getChildren();
+
+			ASTPainter painter = new ASTPainter();
+
+			int nrOfParameters = parameterDefs.Count;
             object[] parameters = new object[nrOfParameters];
             for (int i = nrOfParameters - 1; i >= 0; i--)
             {
-                parameters[i] = PopValue();
+				//painter.PaintAST(parameterDefs[i]);
+
+				var paramDef = parameterDefs[i];
+				var declaration = paramDef.getChild(0) as AST_VariableDeclaration;
+
+				parameters[i] = ReturnValueConversions.ChangeTypeBasedOnReturnValueType(PopValue(), declaration.Type);
             }
 
 			if (IsFunctionExternal(functionName)) {
@@ -539,10 +548,10 @@ namespace ProgrammingLanguageNr1
 			if (rightValueType == typeof(float) && leftValueType == typeof(float)) {
 				return (float)rhs + (float)lhs;
 			} else if (rightValueType == typeof(string) || leftValueType == typeof(string)) {
-				return lhs.ToString () + rhs.ToString ();
-			} else if (rightValueType == typeof(object[]) || leftValueType == typeof(object[])) {
-				throw new Error("Array concatenation is temporarily disabled.");
-			} else if (rightValueType == typeof(SortedDictionary<object, object>) || leftValueType == typeof(SortedDictionary<object, object>)) {
+				return ReturnValueConversions.PrettyStringRepresenation(lhs) + ReturnValueConversions.PrettyStringRepresenation(rhs);
+			} else if (rightValueType == typeof(object[]) && leftValueType == typeof(object[])) {
+				throw new Error("Primitive array concatenation is temporarily disabled.");
+			} else if (rightValueType == typeof(SortedDictionary<object, object>) && leftValueType == typeof(SortedDictionary<object, object>)) {
 				var lhsArray = lhs as SortedDictionary<object, object>;
 				var rhsArray = rhs as SortedDictionary<object, object>;
 				SortedDictionary<object, object> newArray = new SortedDictionary<object, object>();
@@ -642,9 +651,37 @@ namespace ProgrammingLanguageNr1
         {
             ReturnValueType type = (CurrentNode as AST_VariableDeclaration).Type;
             string variableName = (CurrentNode as AST_VariableDeclaration).Name;
-            object initValue = type;
+            object initValue = DefaultValue(type);
             m_currentScope.setValue(variableName, initValue);
         }
+
+		object DefaultValue (ReturnValueType type)
+		{
+			if(type == ReturnValueType.STRING) {
+				return "";
+			}
+			else if(type == ReturnValueType.BOOL) {
+				return false;
+			}
+			else if(type == ReturnValueType.NUMBER) {
+				return 0.0f;
+			}
+			else if(type == ReturnValueType.RANGE) {
+				return new Range(0, 0, 0);
+			}
+			else if(type == ReturnValueType.ARRAY) {
+				return new object[] {};
+			}
+			else if(type == ReturnValueType.VOID) {
+				return VoidType.voidType;
+			}
+			else if(type == ReturnValueType.UNKNOWN_TYPE) {
+				return VoidType.voidType;
+			}
+			else {
+				throw new Error("No default value for " + type);
+			}
+		}
 		
 		private object ConvertToType(object valueToConvert, ReturnValueType type) {
 
@@ -670,20 +707,29 @@ namespace ProgrammingLanguageNr1
 
 			object rv = m_currentScope.getValue(variableName);
 
-			if (rv.GetType () != typeof(SortedDictionary<object,object>)) {
-				var token = (CurrentNode as AST_Assignment).getToken();
-				throw new Error ("Can't assign to the variable '" + variableName + "' since it's of the type " + ReturnValueConversions.PrettyObjectType(rv.GetType()), Error.ErrorType.RUNTIME, token.LineNr, token.LinePosition);
+			if (rv.GetType () == typeof(SortedDictionary<object,object>)) {
+				SortedDictionary<object, object> array = rv as SortedDictionary<object, object>;				
+				Console.WriteLine("Checking if index " + index + " of type " + index.GetType() + " is within range of array of length " + array.Count);
+				if(array.ContainsKey(index)) {
+					array[index] = valueToSet;
+				}
+				else {
+					array.Add(index, valueToSet);
+				}
 			}
-			
-			SortedDictionary<object, object> array = rv as SortedDictionary<object, object>;
-
-			Console.WriteLine("Checking if index " + index + " of type " + index.GetType() + " is within range of array of length " + array.Count);
-
-			if(array.ContainsKey(index)) {
-				array[index] = valueToSet;
+			else if (rv.GetType () == typeof(object[])) {
+				var arr = (object[])rv;
+				int i = (int)(float)index;
+				if(i > 0 && i <= arr.Length) {
+					arr[i] = valueToSet;
+				}
+				else {
+					throw new Error("Index is outside range of array (" + index + ")");
+				}
 			}
 			else {
-				array.Add(index, valueToSet);
+				var token = (CurrentNode as AST_Assignment).getToken();
+				throw new Error ("Can't assign to the variable '" + variableName + "' since it's of the type " + ReturnValueConversions.PrettyObjectType(rv.GetType()), Error.ErrorType.RUNTIME, token.LineNr, token.LinePosition);
 			}
 		}
 
