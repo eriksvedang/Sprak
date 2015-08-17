@@ -2,9 +2,13 @@
 var a
 var sum = 0
 
-loop from 1 to 1000
+number getVal(array b, number i) 
+    return b[i]
+end
+
+loop from 1 to 2000
   a = [1,2,3,4,5]
-  sum += a[2]
+  sum += getVal(a, 2)
 end
 
 print(sum)

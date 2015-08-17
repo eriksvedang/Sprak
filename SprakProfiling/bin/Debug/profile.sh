@@ -12,3 +12,10 @@ Alloc:
 LD_LIBRARY_PATH=/Library/Frameworks/Mono.framework/Versions/Current/lib  mono --profile=log:calls,alloc,calldepth=10,output=out.mlpd,report GameWorld2_TextView.exe
 
 mono --gc=sgen --profile=log:heapshot MyProgram.exe
+
+
+
+LD_LIBRARY_PATH=/Library/Frameworks/Mono.framework/Versions/Current/lib  mono --profile=log:calls,alloc,calldepth=10,output=out.mlpd,report ./SprakProfiling.exe ../Mem.sprak
+
+
+
