@@ -132,6 +132,10 @@ namespace ProgrammingLanguageNr1
 			}
         }
 
+		public bool HasFunction(string functionName) {
+			return m_globalScope.resolve(functionName) != null;
+		}
+
 		/// <summary>
 		/// Sets the program to execute function.
 		/// Returns true if the program had the function.
@@ -679,11 +683,16 @@ namespace ProgrammingLanguageNr1
 //				int i = (int)(float)index;
 //				val = a[i];
 			} else if (array.GetType () == typeof(string)) {
-				string s = (string)array;
-				if(index.GetType() != typeof(float)) {
+				int i = 0;
+				if(index.GetType() == typeof(float)) {
+					i = (int)(float)index;
+				}
+				else if(index.GetType() == typeof(int)) {
+					i = (int)index;
+				} else {
 					throw new Error("Must use nr when looking up index in string");
 				}
-				int i = (int)(float)index;
+				string s = (string)array;
 				if (i >= 0 && i < s.Length) {
 					val = s[i].ToString();
 				} else {

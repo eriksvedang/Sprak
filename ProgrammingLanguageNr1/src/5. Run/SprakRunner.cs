@@ -572,6 +572,10 @@ namespace ProgrammingLanguageNr1
 			return m_interpreter.SetProgramToExecuteFunction (functionName, args);
 		}
 
+		public bool HasFunction(string functionName) {
+			return m_interpreter.HasFunction(functionName);
+		}
+
         public bool Start()
         {
             if (m_compileTimeErrorHandler.getErrors().Count != 0)

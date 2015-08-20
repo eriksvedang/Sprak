@@ -226,6 +226,14 @@ namespace ProgrammingLanguageNr1
 				else if(obj.GetType() == typeof(Range)) {
 					return obj;
 				}
+				else if(obj.GetType() == typeof(string)) {
+					var a = new SortedDictionary<KeyWrapper,object>();
+					string s = (string)obj;
+					for(int i = 0; i < s.Length; i++) {
+						a.Add(new KeyWrapper(i), s);
+					}
+					return a;
+				}
 				else {
 					throw new Error("Can't convert " + obj.ToString() + " to an array");
 				}
