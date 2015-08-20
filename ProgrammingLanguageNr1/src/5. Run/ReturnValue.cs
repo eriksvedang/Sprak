@@ -30,7 +30,8 @@ namespace ProgrammingLanguageNr1
 				return (T)args[index];
 			}
 			else {
-				throw new Error("Argument " + index + " is of wrong type (" + args[index].GetType() + "), should be " + typeof(T).ToString());
+				throw new Error("Arg " + index + " is of wrong type (" + ReturnValueConversions.PrettyObjectType(args[index].GetType()) + 
+				                "), should be " + ReturnValueConversions.PrettyObjectType(typeof(T)));
 			}
 		}
 
@@ -123,6 +124,9 @@ namespace ProgrammingLanguageNr1
 //			}
 			else if(o is SortedDictionary<KeyWrapper,object>) {
 				return MakeArrayString(o as SortedDictionary<KeyWrapper,object>);
+			}
+			else if(o.GetType() == typeof(UnknownType)) {
+				return o.ToString();
 			}
 
 			throw new Error("Can't pretty print " + o.ToString() + " of type " + o.GetType());

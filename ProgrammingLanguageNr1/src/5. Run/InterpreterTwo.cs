@@ -671,11 +671,18 @@ namespace ProgrammingLanguageNr1
 					throw new Error ("Can't find the index '" + index + "' (" + index.GetType () + ") in the array '" + CurrentNode.getTokenString () + "'", Error.ErrorType.RUNTIME, CurrentNode.getToken ().LineNr, CurrentNode.getToken ().LinePosition);
 				}
 			} else if (array.GetType () == typeof(object[])) {
-				var a = (object[])array;
-				int i = (int)(float)index;
-				val = a[i];
+				throw new Exception("object[] array: " + ReturnValueConversions.PrettyStringRepresenation(array));
+//				var a = (object[])array;
+//				if(index.GetType() != typeof(float)) {
+//					throw new Exception("Index " + index + " is of wrong type: " + index.GetType());
+//				}
+//				int i = (int)(float)index;
+//				val = a[i];
 			} else if (array.GetType () == typeof(string)) {
 				string s = (string)array;
+				if(index.GetType() != typeof(float)) {
+					throw new Error("Must use nr when looking up index in string");
+				}
 				int i = (int)(float)index;
 				if (i >= 0 && i < s.Length) {
 					val = s[i].ToString();

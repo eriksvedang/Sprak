@@ -146,6 +146,14 @@ namespace ProgrammingLanguageNr1.tests
 			
 			program.run();
 
+			foreach(var e in program.getRuntimeErrorHandler().getErrors()) {
+				Console.WriteLine(e);
+			}
+
+			foreach(var e in program.getCompileTimeErrorHandler().getErrors()) {
+				Console.WriteLine(e);
+			}
+
 			Assert.AreEqual (0, program.getRuntimeErrorHandler().getErrors().Count);
 			Assert.AreEqual (0, program.getCompileTimeErrorHandler().getErrors().Count);
 		}

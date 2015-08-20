@@ -65,7 +65,25 @@ namespace ProgrammingLanguageNr1
 			return functionDocumentations;
 		}
 
-		static HashSet<Type> acceptableTypes = new HashSet<Type>() { typeof(float), typeof(string), typeof(bool), typeof(Range), typeof(void), typeof(object[]) };
+		static HashSet<Type> acceptableArgumentTypes = new HashSet<Type>() { 
+			typeof(float), 
+			typeof(string),
+			typeof(bool),
+			typeof(Range),
+			typeof(void), 
+			typeof(object[]),
+			typeof(SortedDictionary<KeyWrapper, object>),
+		};
+
+		static HashSet<Type> acceptableTypes = new HashSet<Type>() { 
+			typeof(float), 
+			typeof(string),
+			typeof(bool),
+			typeof(Range),
+			typeof(void), 
+			//typeof(object[]),
+			typeof(SortedDictionary<KeyWrapper, object>),
+		};
 
 		static List<FunctionDefinition> CreateFunctionDefinitions (object pProgramTarget, Dictionary<string, FunctionDocumentation> functionDocumentations, MethodInfo[] methodInfos)
 		{
@@ -117,7 +135,7 @@ namespace ProgrammingLanguageNr1
 							realParamType = typeof(int);
 						}
 
-						if (acceptableTypes.Contains(realParamType)) {
+						if (acceptableArgumentTypes.Contains(realParamType)) {
 							// OK
 						}
 						else {
@@ -148,6 +166,15 @@ namespace ProgrammingLanguageNr1
 					// HACK
 					if(lambdaMethodInfo.ReturnType == typeof(int)) {
 						return (float)(int)result;
+					}
+
+					if(lambdaMethodInfo.ReturnType == typeof(object[])) {
+						var dictArray = new SortedDictionary<KeyWrapper, object>();
+						int j = 0;
+						foreach(var o in (object[])result) {
+							dictArray.Add(new KeyWrapper((float)j++), o);
+						}
+						Console.WriteLine("Converted object[] to SortedDictionary when returning from " + shortname + ": " + ReturnValueConversions.PrettyStringRepresenation(dictArray));
 					}
 
 					if(!acceptableTypes.Contains(lambdaMethodInfo.ReturnType)) {
