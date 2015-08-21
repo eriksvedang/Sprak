@@ -1835,6 +1835,34 @@ end
 			Assert.AreEqual(0, program.getRuntimeErrorHandler().getErrors().Count);
 			Assert.AreEqual(0, program.Output.Count);
 		}
+
+		[Test()]
+		public void ComparingStrings ()
+		{
+			StringReader programString = new StringReader(
+				@"
+var x = 'aha'
+if x != 'aha'
+  print('nope')
+else
+  print('yes')
+end
+"
+				);
+			
+			DefaultSprakRunner program = new DefaultSprakRunner(programString);
+			program.run();
+			
+			program.printOutputToConsole ();
+			program.getCompileTimeErrorHandler().printErrorsToConsole ();
+			program.getRuntimeErrorHandler().printErrorsToConsole ();
+			
+			Assert.AreEqual(0, program.getCompileTimeErrorHandler().getErrors().Count);
+			Assert.AreEqual(0, program.getRuntimeErrorHandler().getErrors().Count);
+
+			Assert.AreEqual(1, program.Output.Count);
+			Assert.AreEqual("yes", program.Output[0]);
+		}
 	}
 		
 }

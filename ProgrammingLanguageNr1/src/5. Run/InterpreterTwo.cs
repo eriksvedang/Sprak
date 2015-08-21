@@ -547,7 +547,7 @@ namespace ProgrammingLanguageNr1
                     result = equalityTest();
                     break;
 				case "!=":
-					result = !ConvertToBool(PopValue());
+					result = !ConvertToBool(equalityTest());
                     break;
                 case "&&":
 					result = ConvertToBool(PopValue()) && ConvertToBool(PopValue());
@@ -672,10 +672,10 @@ namespace ProgrammingLanguageNr1
 				if (a.TryGetValue(new KeyWrapper(index), out val)) {
 					//Console.WriteLine("The result was " + val);
 				} else {
-					throw new Error ("Can't find the index '" + index + "' (" + index.GetType () + ") in the array '" + CurrentNode.getTokenString () + "'", Error.ErrorType.RUNTIME, CurrentNode.getToken ().LineNr, CurrentNode.getToken ().LinePosition);
+					throw new Error ("Can't find the index '" + index + "' (" + ReturnValueConversions.PrettyObjectType(index.GetType ()) + ") in the array '" + CurrentNode.getTokenString () + "'", Error.ErrorType.RUNTIME, CurrentNode.getToken ().LineNr, CurrentNode.getToken ().LinePosition);
 				}
 			} else if (array.GetType () == typeof(object[])) {
-				throw new Exception("object[] array: " + ReturnValueConversions.PrettyStringRepresenation(array));
+				throw new Error("Illegal object[] array: " + ReturnValueConversions.PrettyStringRepresenation(array));
 //				var a = (object[])array;
 //				if(index.GetType() != typeof(float)) {
 //					throw new Exception("Index " + index + " is of wrong type: " + index.GetType());

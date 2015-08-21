@@ -564,15 +564,23 @@ namespace ProgrammingLanguageNr1
 		/// </summary>
 		public bool ResetAtFunction(string functionName, object[] args) 
 		{
+			//Console.WriteLine("Will call " + functionName);
+
 			if (m_interpreter == null) {
 				//throw new Exception("Interpreter is null!");
+				Console.WriteLine("Interpreter is null");
 				return false;
 			}
+
 			Reset ();
+
 			return m_interpreter.SetProgramToExecuteFunction (functionName, args);
 		}
 
 		public bool HasFunction(string functionName) {
+			if(m_interpreter == null) {
+				return false;
+			}
 			return m_interpreter.HasFunction(functionName);
 		}
 

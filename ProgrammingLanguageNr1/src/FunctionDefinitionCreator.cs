@@ -140,11 +140,13 @@ namespace ProgrammingLanguageNr1
 					object result = null;
 
 					try {
-//						Console.WriteLine("Will call " + shortname  + " with sprak arguments:");
-//						int j = 0;
-//						foreach(var a in sprakArguments) {
-//							Console.WriteLine(" Argument " + (j++) + ": " + ReturnValueConversions.PrettyStringRepresenation(a) + " (" + a.GetType() + ")");
-//						}
+						/*
+						Console.WriteLine("Will call " + shortname  + " with sprak arguments:");
+						int j = 0;
+						foreach(var a in sprakArguments) {
+							Console.WriteLine(" Argument " + (j++) + ": " + ReturnValueConversions.PrettyStringRepresenation(a) + " (" + a.GetType() + ")");
+						}
+						*/
 						result = lambdaMethodInfo.Invoke (pProgramTarget, sprakArguments.ToArray ());
 					}
 					catch(System.Reflection.TargetInvocationException e) {
@@ -162,10 +164,10 @@ namespace ProgrammingLanguageNr1
 						var dictArray = new SortedDictionary<KeyWrapper, object>();
 						int j = 0;
 						foreach(var o in (Array)result) {
-							Console.WriteLine(" - " + o.ToString());
+							//Console.WriteLine(" - " + o.ToString());
 							dictArray.Add(new KeyWrapper((float)j++), o);
 						}
-						Console.WriteLine("Converted object[] to SortedDictionary when returning from " + shortname + ": " + ReturnValueConversions.PrettyStringRepresenation(dictArray));
+						//Console.WriteLine("Converted object[] to SortedDictionary when returning from " + shortname + ": " + ReturnValueConversions.PrettyStringRepresenation(dictArray));
 						return dictArray;
 					}
 
@@ -174,9 +176,11 @@ namespace ProgrammingLanguageNr1
 					}
 
 					if (lambdaMethodInfo.ReturnType == typeof(void)) {
+						//Console.WriteLine("Returning void from " + shortname);
 						return VoidType.voidType;
 					}
 					else {
+						//Console.WriteLine("Returning from " + shortname + ": " + ReturnValueConversions.PrettyStringRepresenation(result));
 						return result;
 					}
 				});
