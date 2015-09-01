@@ -8,6 +8,8 @@ namespace ProgrammingLanguageNr1
 {
 	public class MemorySpace
 	{
+		public static int nrOfMemorySpacesInMemory = 0;
+
 		public MemorySpace (string name, AST root, Scope scope, MemorySpaceNodeListCache cache)
 		{
             Debug.Assert(name != null);
@@ -36,6 +38,14 @@ namespace ProgrammingLanguageNr1
             m_currentNode = -1;
 
             //Console.WriteLine("New memory space " + name + " has got " + list.Count + " AST nodes in its list.");
+
+			nrOfMemorySpacesInMemory++;
+			//Console.WriteLine("CREATED " + name);
+		}
+
+		~MemorySpace() {
+			nrOfMemorySpacesInMemory--;
+			//Console.WriteLine("DELETED " + m_name);
 		}
 
         private void addToList(List<AST> list, AST ast)
@@ -177,6 +187,26 @@ namespace ProgrammingLanguageNr1
         {
             get { return m_scope; }
         }
+
+		public void TraceParentScopes ()
+		{
+			Console.Write("Parent scopes of " + getName() + ": ");
+			Scope s = m_scope;
+			while(s != null) {
+				Console.Write(s.getName() + ", ");
+				s = s.getEnclosingScope();
+			}
+			Console.WriteLine("");
+		}
+				
+		public void Delete() {
+			m_name = "";
+			m_valuesForStrings = null;
+			m_nodes = null;
+			m_currentNode = -1;
+			m_scope = null;
+			m_cache = null;
+		}
 
 		string m_name;
         Dictionary<string, object> m_valuesForStrings = new Dictionary<string, object>();

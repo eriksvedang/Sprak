@@ -1863,6 +1863,107 @@ end
 			Assert.AreEqual(1, program.Output.Count);
 			Assert.AreEqual("yes", program.Output[0]);
 		}
+
+		[Test()]
+		public void InfiniteLoop ()
+		{
+			StringReader programString = new StringReader(
+				@"
+loop
+	
+end
+"
+				);
+			
+			DefaultSprakRunner sprakRunner = new DefaultSprakRunner(programString);
+			sprakRunner.run(30);
+
+			GC.Collect();
+			GC.WaitForPendingFinalizers();
+			
+			sprakRunner.printOutputToConsole ();
+			sprakRunner.getCompileTimeErrorHandler().printErrorsToConsole ();
+			sprakRunner.getRuntimeErrorHandler().printErrorsToConsole ();
+			
+			Assert.AreEqual(0, sprakRunner.getCompileTimeErrorHandler().getErrors().Count);
+			Assert.AreEqual(0, sprakRunner.getRuntimeErrorHandler().getErrors().Count);
+
+			Console.WriteLine("MemorySpace.nrOfMemorySpacesInMemory = " + MemorySpace.nrOfMemorySpacesInMemory);
+			Console.WriteLine("InterpreterTwo.nrOfScopes = " + InterpreterTwo.nrOfScopes);
+
+			//Assert.AreEqual(1, InterpreterTwo.nrOfScopes);
+		}
+
+		[Test()]
+		public void LogoProgram ()
+		{
+			StringReader programString = new StringReader(
+				@"
+loop
+	if CanMove()
+		if Random() < 0.05
+			TurnRight()
+		else if Random() < 0.05
+			TurnLeft()
+		else
+			Move()
+		end
+	else if Random() < 0.75
+		TurnLeft()
+	else
+		TurnRight()
+	end
+					
+	Sleep(1.3)
+end
+
+bool CanMove()
+	return true
+end
+
+bool Random()
+	return 0.5
+end
+
+void TurnLeft()
+
+end
+
+void TurnRight()
+
+end
+
+void Move()
+
+end
+
+void Sleep(number x)
+
+end
+"
+				);
+			
+			DefaultSprakRunner sprakRunner = new DefaultSprakRunner(programString);
+			sprakRunner.run(100);
+			
+			GC.Collect();
+			GC.WaitForPendingFinalizers();
+			
+			sprakRunner.printOutputToConsole ();
+			sprakRunner.getCompileTimeErrorHandler().printErrorsToConsole ();
+			sprakRunner.getRuntimeErrorHandler().printErrorsToConsole ();
+			
+			Assert.AreEqual(0, sprakRunner.getCompileTimeErrorHandler().getErrors().Count);
+			Assert.AreEqual(0, sprakRunner.getRuntimeErrorHandler().getErrors().Count);
+			
+			Console.WriteLine("MemorySpace.nrOfMemorySpacesInMemory = " + MemorySpace.nrOfMemorySpacesInMemory);
+			Console.WriteLine("InterpreterTwo.nrOfScopes = " + InterpreterTwo.nrOfScopes);
+						
+			//Assert.AreEqual(1, InterpreterTwo.nrOfScopes);
+			//Assert.Fail();
+		}
+
+
 	}
 		
 }

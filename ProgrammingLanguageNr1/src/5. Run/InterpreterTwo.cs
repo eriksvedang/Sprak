@@ -1,7 +1,7 @@
 //#define WRITE_DEBUG_INFO
 //#define PRINT_STACK
 //#define WRITE_CONVERT_INFO
-//#define LOG_SCOPES
+#define LOG_SCOPES
 
 //#define BUILT_IN_PROFILING
 
@@ -19,6 +19,8 @@ namespace ProgrammingLanguageNr1
             FINISHED
         }
 
+		public static int nrOfInterpreters = 0;
+
 		public InterpreterTwo(AST ast, Scope globalScope, ErrorHandler errorHandler, ExternalFunctionCreator externalFunctionCreator)
         {
 			#if WRITE_DEBUG_INFO
@@ -31,13 +33,38 @@ namespace ProgrammingLanguageNr1
             m_currentScope = m_globalScope;
             m_externalFunctionCreator = externalFunctionCreator;
             Reset();
+
+			nrOfInterpreters++;
         }
+
+		~InterpreterTwo() {
+			nrOfInterpreters--;
+		}
 
         public void Reset()
         {
 			#if BUILT_IN_PROFILING
 			m_profileData.Clear ();
 			#endif
+
+			if(m_globalMemorySpace != null) {
+				m_globalMemorySpace.Delete();
+				m_globalMemorySpace = null;
+			}
+			if(m_currentMemorySpace != null) {
+				m_currentMemorySpace.Delete();
+				m_currentMemorySpace = null;
+			}
+
+			if(m_globalScope != null) {
+				m_globalScope.ClearMemorySpaces();
+			}
+
+			if(m_currentScope != null) {
+				m_currentScope.ClearMemorySpaces();
+			}
+
+			m_valueStack.Clear();
 
 			m_globalMemorySpace = new MemorySpace("globals", m_ast.getChild (0), m_globalScope, m_memorySpaceNodeListCache);
 			m_currentMemorySpace = m_globalMemorySpace;
@@ -80,21 +107,39 @@ namespace ProgrammingLanguageNr1
 
             m_currentScope = newScope;
             m_memorySpaceStack.Push(m_currentMemorySpace);
+
             m_currentMemorySpace = new MemorySpace(nameOfNewMemorySpace, startNode, m_currentScope, m_memorySpaceNodeListCache);
-            m_currentScope.PushMemorySpace(m_currentMemorySpace);
+			m_currentScope.PushMemorySpace(m_currentMemorySpace);
+
 #if LOG_SCOPES
-			Console.WriteLine("Pushed new scope " + newScope.getName() + " with memory space " + m_currentMemorySpace.getName() + " " + DumpStack());
+			//m_currentMemorySpace.TraceParentScopes();
+			//Console.WriteLine("Pushed new scope " + newScope.getName() + " with memory space " + m_currentMemorySpace.getName() + ", stack: " + DumpStack());
+			//Console.WriteLine("CREATED " + m_currentMemorySpace.getName());
+			nrOfScopes++;
 #endif
         }
 
+		public static int nrOfScopes;
+
         private void PopCurrentScope()
         {
-            m_currentScope.PopMemorySpace();
+#if LOG_SCOPES
+//			Console.WriteLine("Popping " + m_currentScope.getName() + ", memory spaces: ");
+//			foreach(var mem in m_currentScope.memorySpaces) {
+//				Console.WriteLine(mem.getName());
+//			}
+#endif
+
+			var oldScope = m_currentScope;
+            var poppedMemorySpace = m_currentScope.PopMemorySpace();
+
             m_currentMemorySpace = m_memorySpaceStack.Pop();
             m_currentScope = m_currentMemorySpace.Scope;
             m_currentScope.PushMemorySpace(m_currentMemorySpace);
 #if LOG_SCOPES
-            Console.WriteLine("Popped back to scope " + m_currentScope.getName());
+			//Console.WriteLine("Popped back to scope " + m_currentScope.getName() + " from " + oldScope + ", popped " + poppedMemorySpace.getName()  + ", stack: " + DumpStack());
+			//Console.WriteLine("POPPED " + poppedMemorySpace.getName());
+			nrOfScopes--;
 #endif
         }
 
@@ -841,7 +886,14 @@ namespace ProgrammingLanguageNr1
 			#if DEBUG
 			Debug.Assert(loopNode != null);
 			#endif
-			PushNewScope(loopNode.getScope(), "Loop_memorySpace" + loopCounter++, loopNode.getChild(0));
+
+//			Console.WriteLine("At Loop node with scope " + loopNode.getScope().getName());
+//			Console.WriteLine("Memory spaces: ");
+//			foreach(var mem in loopNode.getScope().memorySpaces) {
+//				Console.WriteLine(mem.getName());
+//			}
+
+			PushNewScope(loopNode.getScope(), "Loop_memorySpace_" + loopCounter++, loopNode.getChild(0));
         }
 
         private void BreakStatement()

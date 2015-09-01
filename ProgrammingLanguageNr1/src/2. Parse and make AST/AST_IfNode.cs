@@ -25,6 +25,14 @@ namespace ProgrammingLanguageNr1
 #endif
 			return m_scope; 
 		}
+
+		public override void ClearMemorySpaces ()
+		{
+			base.ClearMemorySpaces ();
+			if(m_scope != null) {
+				m_scope.ClearMemorySpaces();
+			}
+		}
         
 		Scope m_scope;
 	}

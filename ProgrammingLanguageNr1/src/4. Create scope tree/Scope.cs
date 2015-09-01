@@ -14,11 +14,14 @@ namespace ProgrammingLanguageNr1
 			LOOP_BLOCK_SCOPE,
 			IF_SCOPE
 		}
+
+		public static int nrOfScopesInMemory = 0;
 		
 		public Scope (ScopeType scopeType, string name)
 		{
 			m_scopeType = scopeType;
             m_name = name;
+			nrOfScopesInMemory++;
 		}
 
         public Scope(ScopeType scopeType, string name, Scope enclosingScope)
@@ -29,7 +32,12 @@ namespace ProgrammingLanguageNr1
 			m_scopeType = scopeType;
             m_name = name;
             m_enclosingScope = enclosingScope;
+			nrOfScopesInMemory++;
         }
+
+		~Scope() {
+			nrOfScopesInMemory--;
+		}
 		
 		public virtual Scope getEnclosingScope() {
 			return m_enclosingScope;
@@ -60,7 +68,7 @@ namespace ProgrammingLanguageNr1
             else if (m_enclosingScope != null)
             {
                 return m_enclosingScope.resolveToScope(name);
-            }
+			}
             else
             {
                 return null;
@@ -106,13 +114,18 @@ namespace ProgrammingLanguageNr1
 
         public void PushMemorySpace(MemorySpace pMemorySpace)
         {
-            //Console.WriteLine("Push " + pMemorySpace.getName() + " into scope " + this.getName());
+			if(m_memorySpaces.Count > 0 && m_memorySpaces.Peek() == pMemorySpace) {
+				//Console.WriteLine("Pushing duplicate memory space, will ignore");
+				return;
+			}
+
+			//Console.WriteLine("Push " + pMemorySpace.getName() + " into scope " + this.getName());
             m_memorySpaces.Push(pMemorySpace);
         }
 
-        public void PopMemorySpace()
+        public MemorySpace PopMemorySpace()
         {
-            m_memorySpaces.Pop();
+            return m_memorySpaces.Pop();
         }
 
         public void setValue(string name, object val) {
@@ -141,6 +154,10 @@ namespace ProgrammingLanguageNr1
 			get {
 				return m_scopeType;
 			}
+		}
+
+		public Stack<MemorySpace> memorySpaces {
+			get { return m_memorySpaces; }
 		}
 
         protected Dictionary<string, Symbol> m_symbols = new Dictionary<string, Symbol>();

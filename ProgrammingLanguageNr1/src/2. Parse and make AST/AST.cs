@@ -7,12 +7,20 @@ namespace ProgrammingLanguageNr1
 {
 	public class AST
 	{
+		public static int nrOfASTsInMemory = 0;
+
 		public AST () {
+			nrOfASTsInMemory++;
 		}
 		
 		public AST (Token token)
 		{
 			m_token = token;
+			nrOfASTsInMemory++;
+		}
+
+		~AST() {
+			nrOfASTsInMemory--;
 		}
 		
 		public Token.TokenType getTokenType() { 
@@ -154,6 +162,17 @@ namespace ProgrammingLanguageNr1
 				m_executions = value;
 			}
 		}		
+
+		public virtual void ClearMemorySpaces() {
+			if(m_children == null) {
+				return;
+			}
+			foreach(var child in m_children) {
+				if(child != null) {
+					child.ClearMemorySpaces();
+				}
+			}
+		}
 		
 		Token m_token;
 		List<AST> m_children;

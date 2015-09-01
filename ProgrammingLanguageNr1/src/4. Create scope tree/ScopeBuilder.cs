@@ -122,10 +122,12 @@ namespace ProgrammingLanguageNr1
 
             m_currentScope = m_currentScope.getEnclosingScope(); // pop scope
         }
-		
+
+		static int loopSubscopes = 0;
+
 		private void evaluateLoopScope(AST tree)
         {
-            Scope subscope = new Scope(Scope.ScopeType.LOOP_SCOPE, "<LOOP-SUBSCOPE>", m_currentScope);
+			Scope subscope = new Scope(Scope.ScopeType.LOOP_SCOPE, "<LOOP-SUBSCOPE " + (loopSubscopes++) + ">", m_currentScope);
 			m_currentScope = subscope;
 
 #if WRITE_DEBUG_INFO
@@ -139,10 +141,12 @@ namespace ProgrammingLanguageNr1
 
             m_currentScope = m_currentScope.getEnclosingScope(); // pop scope
         }
-		
+
+		static int loopBlockSubscopes = 0;
+
 		private void evaluateLoopBlockScope(AST tree)
         {
-            Scope subscope = new Scope(Scope.ScopeType.LOOP_BLOCK_SCOPE, "<LOOP-BLOCK-SUBSCOPE>", m_currentScope);
+			Scope subscope = new Scope(Scope.ScopeType.LOOP_BLOCK_SCOPE, "<LOOP-BLOCK-SUBSCOPE " + (loopBlockSubscopes++) + ">", m_currentScope);
 			m_currentScope = subscope;
 
 #if WRITE_DEBUG_INFO

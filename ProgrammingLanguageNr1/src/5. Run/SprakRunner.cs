@@ -104,9 +104,17 @@ namespace ProgrammingLanguageNr1
 		{
             construct(stream, functionDefinitions, variableDefinitions);
 		}
+
+		~SprakRunner() {
+			nrOfSprakRunnersInMemory--;
+		}
+
+		public static int nrOfSprakRunnersInMemory = 0;
 		
 		private void construct(TextReader stream, FunctionDefinition[] functionDefinitions, VariableDefinition[] variableDefinitions)
         {
+			nrOfSprakRunnersInMemory++;
+
 			Debug.Assert(stream != null);
             Debug.Assert(functionDefinitions != null);
 			
@@ -257,14 +265,15 @@ namespace ProgrammingLanguageNr1
 			List<FunctionDefinition> allFunctionDefinitions = new List<FunctionDefinition>();
             allFunctionDefinitions.AddRange(builtInFunctions);
             allFunctionDefinitions.AddRange(functionDefinitions);
-            
-			
+            			
 			ExternalFunctionCreator externalFunctionCreator = new ExternalFunctionCreator(allFunctionDefinitions.ToArray());
             AST functionList = ast.getChild(1);
+
             foreach (AST externalFunction in externalFunctionCreator.FunctionASTs)
             {
                 functionList.addChild(externalFunction);
             }
+
             return externalFunctionCreator;
         }
 
@@ -545,15 +554,40 @@ namespace ProgrammingLanguageNr1
                 //m_compileTimeErrorHandler.printErrorsToConsole();
 			}
 		}
+
+		public InterpreterTwo interpreter {
+			get {
+				return m_interpreter;
+			}
+		}
+
+		public void HardReset ()
+		{
+			//m_ast.ClearMemorySpaces();
+
+			// Setting these three things to null actually fixes the memory leak!
+			m_ast = null;
+			m_interpreter = null;
+			m_programIterator = null;
+
+			//m_tokens = null;
+			//m_started = false;
+			//m_compileTimeErrorHandler = null;
+			//m_runtimeErrorHandler = null;
+		}
         
         public void Reset()
         {
             if (m_programIterator != null)
             {
                 m_programIterator.Dispose();
-                m_programIterator = null;
             }
+			m_programIterator = null;
+
+			m_ast.ClearMemorySpaces();
+
             m_started = false;
+
 			if(m_interpreter != null) {
 				m_interpreter.Reset();
 			}
@@ -567,7 +601,7 @@ namespace ProgrammingLanguageNr1
 			//Console.WriteLine("Will call " + functionName);
 
 			if (m_interpreter == null) {
-				//throw new Exception("Interpreter is null!");
+				throw new Exception("Interpreter is null!");
 				Console.WriteLine("Interpreter is null");
 				return false;
 			}
@@ -654,6 +688,7 @@ namespace ProgrammingLanguageNr1
 
 		public ErrorHandler getCompileTimeErrorHandler() { return m_compileTimeErrorHandler; }
 		public ErrorHandler getRuntimeErrorHandler() { return m_runtimeErrorHandler; }
+
 		private AST m_ast;
         private bool m_started;
         private List<Token> m_tokens;

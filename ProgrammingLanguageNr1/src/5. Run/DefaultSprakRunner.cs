@@ -17,7 +17,7 @@ namespace ProgrammingLanguageNr1
 
             m_sprakRunner = new SprakRunner(stream, functionDefinitions);
 		}
-		
+
 		public void printOutputToConsole()
         {
 			Console.WriteLine("PROGRAM OUTPUT:");
@@ -62,6 +62,10 @@ namespace ProgrammingLanguageNr1
         {
             m_sprakRunner.run();
         }
+
+		public void run(int n) {
+			m_sprakRunner.run(n);
+		}
 
 		public List<string> Output
         {
