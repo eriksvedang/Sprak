@@ -589,14 +589,14 @@ namespace ProgrammingLanguageNr1
 		/// <summary>
 		/// Returns true if the function existed
 		/// </summary>
-		public bool ResetAtFunction(string functionName, object[] args) 
+		public InterpreterTwo.ProgramFunctionCallStatus ResetAtFunction(string functionName, object[] args) 
 		{
 			//Console.WriteLine("Will call " + functionName);
 
 			if (m_interpreter == null) {
 				//throw new Exception("Interpreter is null!");
-				Console.WriteLine("Interpreter is null");
-				return false;
+				Console.WriteLine("Interpreter is null when resetting at function " + functionName);
+				return InterpreterTwo.ProgramFunctionCallStatus.NO_FUNCTION;
 			}
 
 			Reset ();

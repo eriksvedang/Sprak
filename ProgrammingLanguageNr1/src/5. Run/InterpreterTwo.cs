@@ -181,11 +181,17 @@ namespace ProgrammingLanguageNr1
 			return m_globalScope.resolve(functionName) != null;
 		}
 
+		public enum ProgramFunctionCallStatus {
+			NO_FUNCTION,
+			EXTERNAL_FUNCTION,
+			NORMAL_FUNCTION,
+		};
+
 		/// <summary>
 		/// Sets the program to execute function.
 		/// Returns true if the program had the function.
 		/// </summary>
-		public bool SetProgramToExecuteFunction (string functionName, object[] args)
+		public ProgramFunctionCallStatus SetProgramToExecuteFunction (string functionName, object[] args)
 		{
 			//Console.WriteLine ("Will execute '" + functionName + "' in global scope '" + m_globalScope + "'");
 
@@ -193,11 +199,12 @@ namespace ProgrammingLanguageNr1
 			//Console.WriteLine("Found function symbol: " + functionSymbol.ToString());
 
 			if(functionSymbol == null) {
-				return false;
+				return ProgramFunctionCallStatus.NO_FUNCTION;
 			}
 
 			if (IsFunctionExternal(functionName)) {
 				CallExternalFunction(functionName, args);
+				return ProgramFunctionCallStatus.EXTERNAL_FUNCTION;
 			} else {
 				AST_FunctionDefinitionNode functionDefinitionNode = (AST_FunctionDefinitionNode)functionSymbol.getFunctionDefinitionNode();
 
@@ -231,7 +238,7 @@ namespace ProgrammingLanguageNr1
 				}
 			}
 
-			return true; // all went well (starting the function)
+			return ProgramFunctionCallStatus.NORMAL_FUNCTION; // all went well (starting the function)
 		}
 			
 		public object GetGlobalVariableValue(string pName) 
