@@ -563,17 +563,10 @@ namespace ProgrammingLanguageNr1
 
 		public void HardReset ()
 		{
-			//m_ast.ClearMemorySpaces();
-
 			// Setting these three things to null actually fixes the memory leak!
 			m_ast = null;
 			m_interpreter = null;
 			m_programIterator = null;
-
-			//m_tokens = null;
-			//m_started = false;
-			//m_compileTimeErrorHandler = null;
-			//m_runtimeErrorHandler = null;
 		}
         
         public void Reset()
@@ -601,7 +594,7 @@ namespace ProgrammingLanguageNr1
 			//Console.WriteLine("Will call " + functionName);
 
 			if (m_interpreter == null) {
-				throw new Exception("Interpreter is null!");
+				//throw new Exception("Interpreter is null!");
 				Console.WriteLine("Interpreter is null");
 				return false;
 			}
