@@ -689,6 +689,8 @@ namespace ProgrammingLanguageNr1
         private ErrorHandler m_compileTimeErrorHandler;
 		private ErrorHandler m_runtimeErrorHandler;
         private IEnumerator<InterpreterTwo.Status> m_programIterator;
+
+		public bool returnFromExternalFunctionCall;
     }
 }
 
