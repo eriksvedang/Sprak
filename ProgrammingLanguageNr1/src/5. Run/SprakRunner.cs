@@ -633,6 +633,10 @@ namespace ProgrammingLanguageNr1
 			
 			try {
 	            if (m_programIterator.MoveNext()) {
+					if(m_programIterator == null) {
+						Console.WriteLine("m_programIterator is null (happens when code is reset while running?)");
+						return InterpreterTwo.Status.FINISHED;
+					}
 	                return m_programIterator.Current;
 	            }
 	            else {
