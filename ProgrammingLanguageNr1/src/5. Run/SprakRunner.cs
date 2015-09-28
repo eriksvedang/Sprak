@@ -4,6 +4,7 @@ using System;
 using System.IO;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 
 namespace ProgrammingLanguageNr1
 {
@@ -81,7 +82,7 @@ namespace ProgrammingLanguageNr1
 			result.Add(new FunctionDefinition("number", "Int", new string[] { "var" }, new string[] { "x" }, new ExternalFunctionCreator.OnFunctionCall(API_int), functionDoc_Int));
 
 			FunctionDocumentation functionDoc_Mod =
-				new FunctionDocumentation("Remove the decimals of a float", new string[] { "Get the remainder of x / y" });
+				new FunctionDocumentation("Get the remainder of x / y", new string[] { "x", "y" });
 			result.Add(new FunctionDefinition("number", "Mod", new string[] { "var", "var" }, new string[] { "x", "y" }, new ExternalFunctionCreator.OnFunctionCall(API_mod), functionDoc_Mod));
 
             return result;
@@ -135,6 +136,7 @@ namespace ProgrammingLanguageNr1
 
 				AddLocalVariables(m_ast, variableDefinitions);
 				ExternalFunctionCreator externalFunctionCreator = AddExternalFunctions(functionDefinitions, m_ast);
+
 				Scope globalScope = CreateScopeTree(m_ast);
 				
 				if(m_compileTimeErrorHandler.getErrors().Count > 0) { 
@@ -265,7 +267,12 @@ namespace ProgrammingLanguageNr1
 			List<FunctionDefinition> allFunctionDefinitions = new List<FunctionDefinition>();
             allFunctionDefinitions.AddRange(builtInFunctions);
             allFunctionDefinitions.AddRange(functionDefinitions);
-            			
+            
+			// HasFunction requires a reference to the SprakRunner
+			FunctionDocumentation functionDoc_HasFunction =
+				new FunctionDocumentation("Check if a function exists on the object", new string[] { "The name of the function" });
+			allFunctionDefinitions.Add(new FunctionDefinition("bool", "HasFunction", new string[] { "string" }, new string[] { "functionName" }, new ExternalFunctionCreator.OnFunctionCall(API_hasFunction), functionDoc_HasFunction));
+
 			ExternalFunctionCreator externalFunctionCreator = new ExternalFunctionCreator(allFunctionDefinitions.ToArray());
             AST functionList = ast.getChild(1);
 
@@ -490,6 +497,10 @@ namespace ProgrammingLanguageNr1
 		private static object API_mod(object[] args)
 		{
 			return (float)(int)(float)args[0] % (int)(float)args[1];
+		}
+
+		private object API_hasFunction(object[] args) {
+			return HasFunction(args[0] as String);
 		}
 		
 		private Scope CreateScopeTree(AST ast)

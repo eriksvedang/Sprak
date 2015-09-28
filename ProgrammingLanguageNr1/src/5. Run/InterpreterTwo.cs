@@ -537,7 +537,9 @@ namespace ProgrammingLanguageNr1
 		}
 
 		private bool ConvertToBool(object o) {
+			//Console.WriteLine("Converting " + o + " of type " + o.GetType() + " to bool");
 			if(o.GetType() == typeof(bool)) {
+				//Console.WriteLine(o + " is bool: " + (bool)o);
 				return (bool)o;
 			}
 			else if(o.GetType() == typeof(float)) {
@@ -602,10 +604,27 @@ namespace ProgrammingLanguageNr1
 					result = !ConvertToBool(equalityTest());
                     break;
                 case "&&":
-					result = ConvertToBool(PopValue()) && ConvertToBool(PopValue());
+
+				object a = PopValue();
+				bool a_bool = ConvertToBool(a);
+				//Console.WriteLine(a + " is of type " + a.GetType() + " , converted " + a_bool + " is of type " + a_bool.GetType());
+				object b = PopValue();
+				bool b_bool = ConvertToBool(b);
+				result = a_bool && b_bool;
+//				Console.WriteLine(string.Format("using &&, a = {0}, b = {1}, a_bool = {2}, b_bool = {3}, result = {4}", a, b, a_bool, b_bool, result));
+
                     break;
+
 				case "||":
-					result = ConvertToBool(PopValue()) || ConvertToBool(PopValue());
+
+				object a2 = PopValue();
+				bool a2_bool = ConvertToBool(a2);
+				//Console.WriteLine(a + " is of type " + a.GetType() + " , converted " + a_bool + " is of type " + a_bool.GetType());
+				object b2 = PopValue();
+				bool b2_bool = ConvertToBool(b2);
+				result = a2_bool || b2_bool;
+//				Console.WriteLine(string.Format("using ||, a2 = {0}, b2 = {1}, a2_bool = {2}, b2_bool = {3}, result = {4}", a2, b2, a2_bool, b2_bool, result));
+
 					break;
 
                 default:
@@ -621,7 +640,10 @@ namespace ProgrammingLanguageNr1
 			object rhs = PopValue();
             object lhs = PopValue();
 
+			Console.WriteLine("Comparing " + lhs + " of type " + lhs.GetType() + " with " + rhs + " of type " + rhs.GetType());
+
 			if (lhs == rhs) {
+				Console.WriteLine("Same object, result = true");
 				return true;
 			}
 
@@ -633,7 +655,9 @@ namespace ProgrammingLanguageNr1
 			}
 			else if(lhs.GetType() == rhs.GetType() && rhs is IComparable && lhs is IComparable)
 			{
-				return (rhs as IComparable).CompareTo(lhs as IComparable) == 0;
+				bool result = (rhs as IComparable).CompareTo(lhs as IComparable) == 0;
+				Console.WriteLine("Result = " + result);
+				return result;
 			}
 						
 			//throw new Error("Can't compare those two things (" + lhs.ToString() + " of type " + lhs.GetType() + " and " + rhs.ToString() + " of type " + rhs.GetType() + ")");

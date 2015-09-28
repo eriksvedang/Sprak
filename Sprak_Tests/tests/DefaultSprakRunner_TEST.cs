@@ -1963,6 +1963,44 @@ end
 			//Assert.Fail();
 		}
 
+		[Test()]
+		public void BooleanBugFromSteam ()
+		{
+			StringReader programString = new StringReader(
+				
+				@"
+
+var val = ''
+
+if (true && (val == 'n' || val == ''))
+    print('Test 1 Correct')
+else
+    print('Test 1 Incorrect')
+end
+
+
+");
+			
+			DefaultSprakRunner sprakRunner = new DefaultSprakRunner(programString);
+			sprakRunner.run(300);
+
+			//sprakRunner.sprakRunner.printTree(false);
+			
+			sprakRunner.printOutputToConsole ();
+			sprakRunner.getCompileTimeErrorHandler().printErrorsToConsole ();
+			sprakRunner.getRuntimeErrorHandler().printErrorsToConsole ();
+			
+			Assert.AreEqual(0, sprakRunner.getCompileTimeErrorHandler().getErrors().Count);
+			Assert.AreEqual(0, sprakRunner.getRuntimeErrorHandler().getErrors().Count);
+			
+			Assert.AreEqual(1, sprakRunner.Output.Count);
+//			Assert.AreEqual("yup", sprakRunner.Output[0]);
+			Assert.AreEqual("Test 1 Correct", sprakRunner.Output[0]);
+//			Assert.AreEqual("Test 2 Correct", sprakRunner.Output[2]);
+//			Assert.AreEqual("Test 3 Correct", sprakRunner.Output[3]);
+			
+		}
+
 
 	}
 		
