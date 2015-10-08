@@ -629,6 +629,13 @@ namespace ProgrammingLanguageNr1
 				//Console.WriteLine("Can't run program since it contains errors!");
                 return m_started = false;
             }
+
+			if(m_interpreter == null) {
+				//throw new Error("Can't start program because of errors.");
+				Console.WriteLine("m_interpreter is null");
+				return false;
+			}
+
             m_programIterator = m_interpreter.GetEnumerator();
             return m_started = true;
         }
