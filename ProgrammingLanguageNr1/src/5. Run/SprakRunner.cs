@@ -1,4 +1,4 @@
-//#define TYPE_FUNCTION
+#define TYPE_FUNCTION
 
 using System;
 using System.IO;
