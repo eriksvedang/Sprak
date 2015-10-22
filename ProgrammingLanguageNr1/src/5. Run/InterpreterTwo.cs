@@ -640,10 +640,10 @@ namespace ProgrammingLanguageNr1
 			object rhs = PopValue();
             object lhs = PopValue();
 
-			Console.WriteLine("Comparing " + lhs + " of type " + lhs.GetType() + " with " + rhs + " of type " + rhs.GetType());
+			//Console.WriteLine("Comparing " + lhs + " of type " + lhs.GetType() + " with " + rhs + " of type " + rhs.GetType());
 
 			if (lhs == rhs) {
-				Console.WriteLine("Same object, result = true");
+				//Console.WriteLine("Same object, result = true");
 				return true;
 			}
 
@@ -656,7 +656,7 @@ namespace ProgrammingLanguageNr1
 			else if(lhs.GetType() == rhs.GetType() && rhs is IComparable && lhs is IComparable)
 			{
 				bool result = (rhs as IComparable).CompareTo(lhs as IComparable) == 0;
-				Console.WriteLine("Result = " + result);
+				//Console.WriteLine("Result = " + result);
 				return result;
 			}
 						
