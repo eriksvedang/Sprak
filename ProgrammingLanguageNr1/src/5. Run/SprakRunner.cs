@@ -70,7 +70,7 @@ namespace ProgrammingLanguageNr1
 #if TYPE_FUNCTION
             FunctionDocumentation functionDoc_type =
                 new FunctionDocumentation("Get the type of something (returns a string)", new string[] { "The value to get the type of" });
-            result.Add(new FunctionDefinition("string", "type", new string[] { "var" }, new string[] { "value" }, new ExternalFunctionCreator.OnFunctionCall(API_type), functionDoc_type));
+            result.Add(new FunctionDefinition("string", "Type", new string[] { "var" }, new string[] { "value" }, new ExternalFunctionCreator.OnFunctionCall(API_type), functionDoc_type));
 #endif
 
 			FunctionDocumentation functionDoc_Round =
