@@ -377,6 +377,10 @@ namespace ProgrammingLanguageNr1
                     ArrayLookup();
                     break;
 
+				case Token.TokenType.NOT:
+					Not();
+					break;
+
                 default:
                     throw new Exception("Hasn't implemented support for token type " + m_currentMemorySpace.CurrentNode.getTokenType() + " yet!");
             }
@@ -706,6 +710,12 @@ namespace ProgrammingLanguageNr1
             object value = m_currentScope.getValue(CurrentNode.getTokenString());
             PushValue(value);
         }
+
+		private void Not() {
+			object a = PopValue();
+			bool a_bool = ConvertToBool(a);
+			PushValue(!a_bool);
+		}
 		
 		private void ArrayLookup() 
 		{

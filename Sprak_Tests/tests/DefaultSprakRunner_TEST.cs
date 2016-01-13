@@ -1800,6 +1800,7 @@ end
 				);
 			
 			DefaultSprakRunner program = new DefaultSprakRunner(programString);
+
 			program.run();
 			
 			program.printOutputToConsole ();
@@ -2002,6 +2003,94 @@ end
 		}
 
 
+		[Test()]
+		public void BetterErrorMessageForMissingEndInElseIf ()
+		{
+			StringReader programString = new StringReader(
+				
+				@"
+void f()
+
+	if(2 == 3)
+		Print(10)
+	else if(5 == 5)
+		var x == y
+		Print(20)
+		Print(30)
+
+end
+
+");			
+			DefaultSprakRunner sprakRunner = new DefaultSprakRunner(programString);
+
+			sprakRunner.printOutputToConsole ();
+			sprakRunner.getCompileTimeErrorHandler().printErrorsToConsole ();
+			sprakRunner.getRuntimeErrorHandler().printErrorsToConsole ();
+			
+			Assert.AreEqual(0, sprakRunner.getCompileTimeErrorHandler().getErrors().Count);
+			Assert.AreEqual(0, sprakRunner.getRuntimeErrorHandler().getErrors().Count);
+		}
+
+		[Test()]
+		public void ArithmeticPrecedence ()
+		{
+			StringReader programString = new StringReader(
+				
+				@"
+print(20 - 3 + 4)
+print(20 / 2 * 4 / 8)
+");			
+			DefaultSprakRunner sprakRunner = new DefaultSprakRunner(programString);
+						
+			//sprakRunner.printTree(false);
+
+			sprakRunner.run(300);
+
+			sprakRunner.printOutputToConsole ();
+			sprakRunner.getCompileTimeErrorHandler().printErrorsToConsole ();
+			sprakRunner.getRuntimeErrorHandler().printErrorsToConsole ();
+			
+			Assert.AreEqual(0, sprakRunner.getCompileTimeErrorHandler().getErrors().Count);
+			Assert.AreEqual(0, sprakRunner.getRuntimeErrorHandler().getErrors().Count);
+
+			Assert.AreEqual(2, sprakRunner.Output.Count);
+			Assert.AreEqual("21", sprakRunner.Output[0]);
+			Assert.AreEqual("5", sprakRunner.Output[1]);
+		}
+
+		[Test()]
+		public void NotOperator ()
+		{
+			StringReader programString = new StringReader(
+				
+				@"
+bool b = !true
+print(b)
+
+bool b2 = !false
+print(b2)
+
+bool b3 = !!false
+print(b3)
+");			
+			DefaultSprakRunner sprakRunner = new DefaultSprakRunner(programString);
+			
+			//sprakRunner.printTree(false);
+			
+			sprakRunner.run(300);
+			
+			sprakRunner.printOutputToConsole ();
+			sprakRunner.getCompileTimeErrorHandler().printErrorsToConsole ();
+			sprakRunner.getRuntimeErrorHandler().printErrorsToConsole ();
+			
+			Assert.AreEqual(0, sprakRunner.getCompileTimeErrorHandler().getErrors().Count);
+			Assert.AreEqual(0, sprakRunner.getRuntimeErrorHandler().getErrors().Count);
+			
+			Assert.AreEqual(3, sprakRunner.Output.Count);
+			Assert.AreEqual("false", sprakRunner.Output[0]);
+			Assert.AreEqual("true", sprakRunner.Output[1]);
+			Assert.AreEqual("false", sprakRunner.Output[2]);
+		}
 	}
 		
 }

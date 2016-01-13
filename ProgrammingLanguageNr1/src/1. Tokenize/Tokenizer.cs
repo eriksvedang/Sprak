@@ -163,6 +163,10 @@ namespace ProgrammingLanguageNr1
 			return new Token(Token.TokenType.DOT, ".");
 		}
 
+		private Token NOT() {
+			return new Token(Token.TokenType.NOT, "!");
+		}
+
 		private Token NEW_LINE() {
 			while(m_currentChar == '\n' || m_currentChar == WINDOWS_LINE_ENDING_CRAP) { // make several new-lines into a single one
 				m_currentLine++;
@@ -199,6 +203,9 @@ namespace ProgrammingLanguageNr1
 			else if ( firstChar == '!' && m_currentChar == '=') {
 				tokenString.Append ('=');
 				readNextChar();
+			}
+			else if ( firstChar == '!') {
+				return NOT();
 			}
 			else if ( firstChar == '&' && m_currentChar == '&') {
 				tokenString.Append ('&');

@@ -243,8 +243,13 @@ namespace ProgrammingLanguageNr1
 #endif
 			
 			AST lhs = comparisonExpression();
-			
-			if ( lookAhead(1).getTokenString() == "&&" ||
+
+			if (lookAheadType(1) == Token.TokenType.NOT)
+			{
+				AST ast = notStatement();
+				return ast;
+			}
+			else if ( lookAhead(1).getTokenString() == "&&" ||
 				 lookAhead(1).getTokenString() == "||"
 				)
 			{
@@ -1286,6 +1291,14 @@ Console.WriteLine("Popping out from ifElse branch");
         {
             return new AST(match(Token.TokenType.BREAK));
         }
+
+		private AST notStatement()
+		{
+			var notAST = new AST(match(Token.TokenType.NOT));
+			var expr = expression();
+			notAST.addChild(expr);
+			return notAST;
+		}
 
         public virtual Token match(Token.TokenType expectedTokenType)
         {

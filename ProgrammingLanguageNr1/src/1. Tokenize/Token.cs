@@ -50,6 +50,8 @@ namespace ProgrammingLanguageNr1
 			FROM,
 			TO,
 
+			NOT,
+
 			AND,
 			OR,
 		};
