@@ -381,14 +381,24 @@ namespace ProgrammingLanguageNr1
 			int maxArrayIndex = -1;
 			foreach (var keyWrapper in array.Keys) {
 				var key = keyWrapper.value;
-				if (key.GetType () == typeof(float) &&
+				if (key.GetType () == typeof (float) &&
 				    maxArrayIndex < (float)key) {
 					maxArrayIndex = (int)(float)key;
+				}
+				else if (key.GetType () == typeof (int) &&
+					maxArrayIndex < (int)key) {
+					maxArrayIndex = (int)key;
 				}
 			}
 			//int maxArrayIndex = array.Count; // TODO: this is a bug if the array contains sparse indexes or stuff like that
 
-			array.Add (new KeyWrapper((float)maxArrayIndex + 1), val);
+			KeyWrapper newIndex = new KeyWrapper((float)maxArrayIndex + 1);
+
+			if (array.ContainsKey(newIndex))
+			{
+				throw new Error("Can't append to array");
+			}
+			array.Add (newIndex, val);
 			return VoidType.voidType;
 		}
 

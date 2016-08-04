@@ -105,7 +105,7 @@ namespace ProgrammingLanguageNr1
 				return ((bool)o) ? "true" : "false";
 			}
 			else if(o.GetType() == typeof(float)) {
-				return o.ToString();	
+				return ((float)o).ToString(CultureInfo.InvariantCulture);
 			}
 			else if(o.GetType() == typeof(int)) {
 				return o.ToString() + "i";
@@ -272,7 +272,7 @@ namespace ProgrammingLanguageNr1
 					return 9999;
 				}
 			} 
-			else if (this.value == typeof(string)) {
+			else if (this.value.GetType() == typeof(string)) {
 				return 10000 + ((string)value).GetHashCode () % 10000;
 			} 
 			else {
