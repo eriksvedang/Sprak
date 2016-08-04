@@ -230,7 +230,7 @@ namespace ProgrammingLanguageNr1
 					var a = new SortedDictionary<KeyWrapper,object>();
 					string s = (string)obj;
 					for(int i = 0; i < s.Length; i++) {
-						a.Add(new KeyWrapper(i), s);
+						a.Add(new KeyWrapper((float)i), s);
 					}
 					return a;
 				}

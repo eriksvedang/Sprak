@@ -2144,6 +2144,26 @@ Append(a, 3)
 
 			Assert.AreEqual ("Can't append to array", sprakRunner.getRuntimeErrorHandler ().getErrors () [0].Message);
 		}
+
+		[Test ()]
+		public void IndexType ()
+		{
+			s_output = new List<string> ();
+			TextReader programString = File.OpenText ("code86.txt");
+
+			DefaultSprakRunner program = new DefaultSprakRunner(programString);
+
+			program.run ();
+
+			Assert.AreEqual (0, program.getCompileTimeErrorHandler ().getErrors ().Count);
+			Assert.AreEqual (0, program.getRuntimeErrorHandler ().getErrors ().Count);
+
+			Assert.AreEqual (4, program.Output.Count);
+			Assert.AreEqual ("[0]", program.Output[0]);
+			Assert.AreEqual ("[0]", program.Output [1]);
+			Assert.AreEqual ("[0, 1]", program.Output [2]);
+			Assert.AreEqual ("[0, 1]", program.Output [3]);
+		}
 	}
 		
 }

@@ -429,7 +429,7 @@ namespace ProgrammingLanguageNr1
 			int size = (int)(float)args[0];
 			SortedDictionary<KeyWrapper, object> array = new SortedDictionary<KeyWrapper, object>();
 			for(int i  = 0; i < size; i++) {
-				array.Add(new KeyWrapper(i), VoidType.voidType);
+				array.Add(new KeyWrapper((float)i), VoidType.voidType);
 			}
 			return array;
 		}
