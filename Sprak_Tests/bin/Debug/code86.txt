@@ -1,0 +1,9 @@
+array a0 = []
+a0[0] = 0
+print(GetIndexes(a0))
+array a1 = [0]
+print(GetIndexes(a1))
+array a2 = [0] + [0]
+print(GetIndexes(a2))
+string a3 = "ab"
+print(GetIndexes(a3))

@@ -105,7 +105,7 @@ namespace ProgrammingLanguageNr1
 				return ((bool)o) ? "true" : "false";
 			}
 			else if(o.GetType() == typeof(float)) {
-				return o.ToString();	
+				return ((float)o).ToString(CultureInfo.InvariantCulture);
 			}
 			else if(o.GetType() == typeof(int)) {
 				return o.ToString() + "i";
@@ -230,7 +230,7 @@ namespace ProgrammingLanguageNr1
 					var a = new SortedDictionary<KeyWrapper,object>();
 					string s = (string)obj;
 					for(int i = 0; i < s.Length; i++) {
-						a.Add(new KeyWrapper(i), s);
+						a.Add(new KeyWrapper((float)i), s);
 					}
 					return a;
 				}
@@ -272,7 +272,7 @@ namespace ProgrammingLanguageNr1
 					return 9999;
 				}
 			} 
-			else if (this.value == typeof(string)) {
+			else if (this.value.GetType() == typeof(string)) {
 				return 10000 + ((string)value).GetHashCode () % 10000;
 			} 
 			else {

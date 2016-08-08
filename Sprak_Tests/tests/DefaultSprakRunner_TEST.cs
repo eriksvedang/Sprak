@@ -2091,6 +2091,79 @@ print(b3)
 			Assert.AreEqual("true", sprakRunner.Output[1]);
 			Assert.AreEqual("false", sprakRunner.Output[2]);
 		}
+
+		[Test()]
+		public void Append()
+		{
+			StringReader programString = new StringReader(
+				@"
+array a1 = []
+Append(a1, 1)
+print(a1 + "" "" + Count(a1))
+
+array a2 = [0]
+Append(a2, 2)
+print(a2+ "" "" + Count(a2))
+
+array a3 = []
+a3[1] = 1
+Append(a3, 3)
+print(a3+ "" "" + Count(a3))
+");
+
+			DefaultSprakRunner sprakRunner = new DefaultSprakRunner(programString);
+			sprakRunner.run(100);
+
+			Assert.AreEqual(0, sprakRunner.getCompileTimeErrorHandler().getErrors().Count);
+			Assert.AreEqual(0, sprakRunner.getRuntimeErrorHandler().getErrors().Count);
+
+			Assert.AreEqual(3, sprakRunner.Output.Count);
+			Assert.AreEqual("[1] 1", sprakRunner.Output[0]);
+			Assert.AreEqual("[0, 2] 2", sprakRunner.Output[1]);
+			Assert.AreEqual("[1, 3] 2", sprakRunner.Output[2]);
+		}
+
+		[Test ()]
+		public void AppendFailure ()
+		{
+			// Test conditions depend on implementation details of array and
+			// Append. If it doesn't work, update or remove the test.
+			StringReader programString = new StringReader (
+				@"
+array a = []
+a[false] = 1
+a[9998] = 2
+Append(a, 3)
+");
+
+			DefaultSprakRunner sprakRunner = new DefaultSprakRunner (programString);
+			sprakRunner.run ();
+
+			Assert.AreEqual (0, sprakRunner.getCompileTimeErrorHandler ().getErrors ().Count);
+			Assert.AreNotEqual (0, sprakRunner.getRuntimeErrorHandler ().getErrors ().Count);
+
+			Assert.AreEqual ("Can't append to array", sprakRunner.getRuntimeErrorHandler ().getErrors () [0].Message);
+		}
+
+		[Test ()]
+		public void IndexType ()
+		{
+			s_output = new List<string> ();
+			TextReader programString = File.OpenText ("code86.txt");
+
+			DefaultSprakRunner program = new DefaultSprakRunner(programString);
+
+			program.run ();
+
+			Assert.AreEqual (0, program.getCompileTimeErrorHandler ().getErrors ().Count);
+			Assert.AreEqual (0, program.getRuntimeErrorHandler ().getErrors ().Count);
+
+			Assert.AreEqual (4, program.Output.Count);
+			Assert.AreEqual ("[0]", program.Output[0]);
+			Assert.AreEqual ("[0]", program.Output [1]);
+			Assert.AreEqual ("[0, 1]", program.Output [2]);
+			Assert.AreEqual ("[0, 1]", program.Output [3]);
+		}
 	}
 		
 }

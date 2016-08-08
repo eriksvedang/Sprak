@@ -692,10 +692,10 @@ namespace ProgrammingLanguageNr1
 				var rhsArray = rhs as SortedDictionary<KeyWrapper, object>;
 				var newArray = new SortedDictionary<KeyWrapper, object>();
 				for(int i = 0; i < lhsArray.Count; i++) {
-					newArray.Add(new KeyWrapper(i), lhsArray[new KeyWrapper(i)]);
+					newArray.Add(new KeyWrapper((float)i), lhsArray[new KeyWrapper(i)]);
 				}
 				for(int i = 0; i < rhsArray.Count; i++) {
-					newArray.Add(new KeyWrapper(i + lhsArray.Count), rhsArray[new KeyWrapper(i)]);
+					newArray.Add(new KeyWrapper((float)(i + lhsArray.Count)), rhsArray[new KeyWrapper(i)]);
 				}
 				Console.WriteLine ("Created new array by concatenation: " + ReturnValueConversions.PrettyStringRepresenation(newArray));
 				return newArray;
@@ -894,7 +894,7 @@ namespace ProgrammingLanguageNr1
 			}
 			//for(int i = 0; i < arrayEndSignal.ArraySize; i++) {
 			for(int i = arrayEndSignal.ArraySize - 1; i >= 0; i--) {
-				array.Add(new KeyWrapper(arrayEndSignal.ArraySize - i - 1), values[i]);
+				array.Add(new KeyWrapper((float)(arrayEndSignal.ArraySize - i - 1)), values[i]);
 			}
 			PushValue(array);
 		}
