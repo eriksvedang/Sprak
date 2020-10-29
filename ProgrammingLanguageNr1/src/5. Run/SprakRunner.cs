@@ -413,7 +413,7 @@ namespace ProgrammingLanguageNr1
 			}
 			else if(args [0].GetType () == typeof(Range)) {
 				Range r = (Range)args [0];
-				float length = r.end - r.start;
+				float length = r.end - r.start + 1;
 				return length;
 			}
 			else if(args [0].GetType () == typeof(string)) {
