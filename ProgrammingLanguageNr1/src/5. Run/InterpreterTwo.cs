@@ -740,9 +740,11 @@ namespace ProgrammingLanguageNr1
 						upperBound = range.start;
 					}
 					if (theNumber < lowerBound) {
-						throw new Error ("Index " + index.ToString () + " is outside the range " + array.ToString ());
+						//throw new Error ("Index " + index.ToString () + " is outside the range " + array.ToString ());
+						theNumber = lowerBound;
 					} else if (theNumber > upperBound) {
-						throw new Error ("Index " + index.ToString () + " is outside the range " + array.ToString ());
+						//throw new Error ("Index " + index.ToString () + " is outside the range " + array.ToString ());
+						theNumber = upperBound;
 					}
 					val = (float)theNumber;
 					//Console.WriteLine("The result was " + val);
